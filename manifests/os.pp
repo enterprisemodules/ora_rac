@@ -295,9 +295,19 @@ class ora_rac::os (
     unless => "/bin/grep '^/var/swap.1' /etc/fstab 2>/dev/null",
   }
 
-  # # # TODO: FIX THIS
-  # service{'iptables':
-  #   ensure  => 'stopped',
-  # }
+  firewall { '10 DB listner':
+    port   => 1521,
+    proto  => tcp,
+    action => accept,
+  }
+  firewall { '20 DB gridcontrol':
+    port   => 3872,
+    proto  => tcp,
+    action => accept,
+  }
+  firewall {'30 DB multicast':
+    pkttype   => 'multicast',
+    action    => accept,
+  }
 
 } # end ora_rac::os
