@@ -23,7 +23,7 @@ class ora_rac::interfaces(
 #
 # First calculate the network adress
 #
-  unless defined('::network_eth2') {
+  unless $::network_eth2 {
     $netmask        = '255.255.255.0'
     $mask_length    = netmask_to_masklen($netmask)
     $network        = cidr_to_network("${private_ipaddress}/${mask_length}")

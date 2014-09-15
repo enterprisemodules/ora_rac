@@ -13,13 +13,17 @@
 #
 # Copyright 2014 Bert Hajee
 #
-class ora_rac::db_master inherits ora_rac::params {
+class ora_rac::db_master(
+  $downloadDir             = '/install',
+  $zipExtract              = true,
+  $puppetDownloadMntPoint  = undef,
+  $remoteFile              = true,
+) inherits ora_rac::params {
   contain ora_rac::hosts
   contain ora_rac::os
   contain ora_rac::base
   contain ora_rac::install
   contain ora_rac::config
-  contain obtain::ora_files
 
   $dirs = [
     '/opt/oracle',
@@ -50,8 +54,9 @@ class ora_rac::db_master inherits ora_rac::params {
     asm_diskgroup          => $data_disk_group_name,
     disks                  => "ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3",
     disk_redundancy        => 'NORMAL',
-    puppetDownloadMntPoint => '/opt/stage',
-    remoteFile             => false,
+    puppetDownloadMntPoint => $puppetDownloadMntPoint, #'/opt/stage',
+    zipExtract             => $zipExtract,
+    remoteFile             => $remoteFile, #false,
     cluster_name           => $cluster_name,
     scan_name              => $scan_name,
     scan_port              => $scan_port,
@@ -62,7 +67,6 @@ class ora_rac::db_master inherits ora_rac::params {
         Class['ora_rac::config'],
         Class['ora_rac::hosts'],
         File[$dirs],
-        Class['obtain::ora_files'],
       ]
   }
 
