@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-define rac::ora_instance(
+define ora_rac::ora_instance(
 	$on,
 	$number,
 	$thread,
@@ -52,7 +52,7 @@ define rac::ora_instance(
 
   file{"/tmp/add_logfiles_${thread}.sql":
     ensure  => 'present',
-    content => template('rac/add_logfiles.sql.erb'),
+    content => template('ora_rac/add_logfiles.sql.erb'),
   }
 
   oracle_exec{"${on}/@/tmp/add_logfiles_${thread}.sql":

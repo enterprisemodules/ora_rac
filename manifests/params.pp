@@ -1,4 +1,4 @@
-# == Class: rac::params
+# == Class: ora_rac::params
 #
 # Read's the instance variables to be used for this application
 # This class is ment to be inherited
@@ -16,7 +16,7 @@
 #
 # Copyright 2014 ProRail
 #
-class rac::params
+class ora_rac::params
 {
   $instance_name        = hiera('instance_name')
   $domain_name          = hiera('domain_name')
@@ -24,42 +24,42 @@ class rac::params
   #
   # Read these next values from the product yaml
   #
-  $private_ipaddress    = hiera('rac::params::private_ipaddress')
-  $oracledb_group       = hiera('rac::params::oracle_group',     'oinstall')
-  $oracledb_gid         = hiera('rac::params::oracle_gid',        7000)
-  $oracledb_user        = hiera('rac::params::oracle_user',      'oracle')
-  $oracledb_uid         = hiera('rac::params::oracle_uid',        7000,)
-  $oper_group           = hiera('rac::params::oper_group',        'oper')
-  $oper_gid             = hiera('rac::params::oper_gid',          7004)
-  $grid_user            = hiera('rac::params::grid_user',         'grid')
-  $grid_uid             = hiera('rac::params::grid_uid',          7001)
-  $dba_group            = hiera('rac::params::dba_group',         'dba')
-  $dba_gid              = hiera('rac::params::dba_gid',           7001)
-  $osdba_group          = hiera('rac::params::osdba_group',       'asmdba')
-  $osdba_gid            = hiera('rac::params::osdba_group',       7002,)
-  $asm_group            = hiera('rac::params::asm_group',         'asmadmin')
-  $asm_gid              = hiera('rac::params::asm_gid',           7003)
-  $asm_oper_group       = hiera('rac::params::asm_oper_group',    'asmoper')
-  $asm_oper_gid         = hiera('rac::params::asm_oper_gid',      7005)
-  $db_password          = hiera("rac::param::password",          'Prorail123')
-  $db_version           = hiera("rac::params::version",           "11.2.0.4")
-  $grid_version         = hiera("rac::params::version",           "11.2.0.4")
+  $private_ipaddress    = hiera('ora_rac::params::private_ipaddress')
+  $oracledb_group       = hiera('ora_rac::params::oracle_group',     'oinstall')
+  $oracledb_gid         = hiera('ora_rac::params::oracle_gid',        7000)
+  $oracledb_user        = hiera('ora_rac::params::oracle_user',      'oracle')
+  $oracledb_uid         = hiera('ora_rac::params::oracle_uid',        7000,)
+  $oper_group           = hiera('ora_rac::params::oper_group',        'oper')
+  $oper_gid             = hiera('ora_rac::params::oper_gid',          7004)
+  $grid_user            = hiera('ora_rac::params::grid_user',         'grid')
+  $grid_uid             = hiera('ora_rac::params::grid_uid',          7001)
+  $dba_group            = hiera('ora_rac::params::dba_group',         'dba')
+  $dba_gid              = hiera('ora_rac::params::dba_gid',           7001)
+  $osdba_group          = hiera('ora_rac::params::osdba_group',       'asmdba')
+  $osdba_gid            = hiera('ora_rac::params::osdba_group',       7002,)
+  $asm_group            = hiera('ora_rac::params::asm_group',         'asmadmin')
+  $asm_gid              = hiera('ora_rac::params::asm_gid',           7003)
+  $asm_oper_group       = hiera('ora_rac::params::asm_oper_group',    'asmoper')
+  $asm_oper_gid         = hiera('ora_rac::params::asm_oper_gid',      7005)
+  $db_password          = hiera("ora_rac::param::password",          'Prorail123')
+  $db_version           = hiera("ora_rac::params::version",           "11.2.0.4")
+  $grid_version         = hiera("ora_rac::params::version",           "11.2.0.4")
   #
   # RAC
   #
-  $scan_name            = hiera('rac::params::scan_name')
-  $scan_port            = hiera('rac::params::scan_port',         1521)
-  $scan_adresses        = hiera('rac::params::scan_adresses')
-  $cluster_name         = hiera('rac::params::cluster_name')
+  $scan_name            = hiera('ora_rac::params::scan_name')
+  $scan_port            = hiera('ora_rac::params::scan_port',         1521)
+  $scan_adresses        = hiera('ora_rac::params::scan_adresses')
+  $cluster_name         = hiera('ora_rac::params::cluster_name')
 
-  $crs_disk_group_name  = hiera('rac::params::crs_disk_group_name','CRS')
-  $data_disk_group_name = hiera('rac::params::data_disk_group_name','DATA')
+  $crs_disk_group_name  = hiera('ora_rac::params::crs_disk_group_name','CRS')
+  $data_disk_group_name = hiera('ora_rac::params::data_disk_group_name','DATA')
 
 
 
-  $public_interfaces    = hiera('rac::params::public_network_interfaces')
-  $private_interfaces   = hiera('rac::params::private_network_interfaces')
-  $unused_interfaces    = hiera('rac::params::unused_network_interfaces')
+  $public_interfaces    = hiera('ora_rac::params::public_network_interfaces')
+  $private_interfaces   = hiera('ora_rac::params::private_network_interfaces')
+  $unused_interfaces    = hiera('ora_rac::params::unused_network_interfaces')
 
   #
   # Build the string needed by oracle grid installer
@@ -106,8 +106,8 @@ class rac::params
   #
   # The names for the asm base packages
   #
-  $asm_package          = hiera("rac::params::asm_package",      "oracleasm-${::kernelrelease}")
-  $asm_package_name     = hiera("rac::params::asm_package_name", "${asm_package}-2.0.5-1.el5.x86_64.rpm")
+  $asm_package          = hiera("ora_rac::params::asm_package",      "oracleasm-${::kernelrelease}")
+  $asm_package_name     = hiera("ora_rac::params::asm_package_name", "${asm_package}-2.0.5-1.el5.x86_64.rpm")
   #
   # Deduct variables from known information
   #
@@ -117,7 +117,7 @@ class rac::params
 
 
   $master_instance      = "${db_name}1"
-  $db_machines          = hiera('rac::params::machines')
+  $db_machines          = hiera('ora_rac::params::machines')
 
   $cluster_nodes        = sort(keys($db_machines))
 

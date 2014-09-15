@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-define rac::oratab_entry(
+define ora_rac::oratab_entry(
 	$home,
 	$start,
 	$comment = '',

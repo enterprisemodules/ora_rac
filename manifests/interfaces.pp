@@ -7,14 +7,14 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::interfaces( 
-  $private_ipaddress   = hiera('rac::params::private_ipaddress')
+class ora_rac::interfaces( 
+  $private_ipaddress   = hiera('ora_rac::params::private_ipaddress')
 ){
 
 #
@@ -37,12 +37,13 @@ class rac::interfaces(
     hotplug   => 'true',
     ipaddress => $private_ipaddress,
     netmask   => $netmask,
+    options   => {},
   } ~>
 
   service{'network':
     ensure  => 'running',
   } 
   
-  Class[Rac::Interfaces] -> Class[Rac::Params]
+  Class[Ora_rac::Interfaces] -> Class[Ora_rac::Params]
 
 }

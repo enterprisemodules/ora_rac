@@ -1,4 +1,4 @@
-# == Class: rac::install
+# == Class: ora_rac::install
 #
 # This class ensures installation of RPM's needed for the
 # Oracle database product.
@@ -60,7 +60,7 @@
 # list. Some are installed via dependencies, others are not
 # needed.
 #
-class rac::install (
+class ora_rac::install (
   $packages        = [
       'binutils',
       # 'compat-libcap1',
@@ -110,4 +110,4 @@ class rac::install (
       ensure    => 'installed',
     }
   }
-} # end rac::install
+} # end ora_rac::install

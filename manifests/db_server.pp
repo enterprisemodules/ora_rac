@@ -7,19 +7,19 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::db_server inherits rac::params {
-  contain rac::hosts
-  contain rac::os
-  contain rac::install
-  contain rac::directories
-  contain rac::base
-  contain rac::scandisks
+class ora_rac::db_server inherits ora_rac::params {
+  contain ora_rac::hosts
+  contain ora_rac::os
+  contain ora_rac::install
+  contain ora_rac::directories
+  contain ora_rac::base
+  contain ora_rac::scandisks
 
 
   exec{'add_grid_node':
@@ -29,8 +29,8 @@ class rac::db_server inherits rac::params {
     logoutput   => on_failure,
     creates     => "/opt/oracle/app/${grid_version}/grid/root.sh",
     require     => [
-      Class['rac::base'],
-      Class['rac::scandisks'],
+      Class['ora_rac::base'],
+      Class['ora_rac::scandisks'],
     ]
   }
 
@@ -69,7 +69,7 @@ class rac::db_server inherits rac::params {
     require     => Exec['add_oracle_node'],
   }
 
-  rac::oratab_entry{$current_instance:
+  ora_rac::oratab_entry{$current_instance:
     home      => "/opt/oracle/app/${db_version}/db_1",
     start     => 'N',
     comment   => 'Added by puppet',
@@ -83,7 +83,7 @@ class rac::db_server inherits rac::params {
     command       => "/opt/oracle/app/${db_version}/db_1/bin/srvctl add instance -d ${db_name} -i ${current_instance} -n ${::hostname}",
     unless        => "/opt/oracle/app/${db_version}/db_1/bin/srvctl status instance -d ${db_name} -i ${current_instance}",
     logoutput     => on_failure,
-    require       => Rac::Oratab_entry[$current_instance],
+    require       => Ora_rac::Oratab_entry[$current_instance],
   }
 
   exec{'start_instance':

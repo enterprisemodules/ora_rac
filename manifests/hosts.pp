@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::hosts inherits rac::params
+class ora_rac::hosts inherits ora_rac::params
 {
 
   host{'localhost':

@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::directories inherits rac::params {
+class ora_rac::directories inherits ora_rac::params {
   $dirs1 = [
     # '/etc/prorail',
     # "/etc/prorail/${db_name}",

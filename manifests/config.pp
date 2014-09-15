@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::config inherits rac::params
+class ora_rac::config inherits ora_rac::params
 {
 
   $devices = [
@@ -40,37 +40,37 @@ class rac::config inherits rac::params
     require    => Partition_table[$devices],
   }
 
-  rac::asm_disk{'/dev/sda1':
+  ora_rac::asm_disk{'/dev/sda1':
     volume  => 'CRSVOL1',
     require => Partition[$partitions],
   }
 
-  rac::asm_disk{'/dev/sdb1':
+  ora_rac::asm_disk{'/dev/sdb1':
     volume  => 'CRSVOL2',
     require => Partition[$partitions],
   }
 
-  rac::asm_disk{'/dev/sdc1':
+  ora_rac::asm_disk{'/dev/sdc1':
     volume  => 'CRSVOL3',
     require => Partition[$partitions],
   }
 
-  rac::asm_disk{'/dev/sdd1':
+  ora_rac::asm_disk{'/dev/sdd1':
     volume  => 'REDOVOL1',
     require => Partition[$partitions],
   }
 
-  rac::asm_disk{'/dev/sde1':
+  ora_rac::asm_disk{'/dev/sde1':
     volume  => 'REDOVOL2',
     require => Partition[$partitions],
   }
 
-  rac::asm_disk{'/dev/sdf1':
+  ora_rac::asm_disk{'/dev/sdf1':
     volume  => 'DATAVOL1',
     require => Partition[$partitions],
   }
 
-  rac::asm_disk{'/dev/sdg1':
+  ora_rac::asm_disk{'/dev/sdg1':
     volume  => 'DATAVOL2',
     require => Partition[$partitions],
   }

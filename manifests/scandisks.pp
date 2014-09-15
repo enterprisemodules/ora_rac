@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::scandisks
+class ora_rac::scandisks
 {
   exec{"/usr/sbin/oracleasm scandisks":
     unless    => "/usr/sbin/oracleasm querydisk -v ${name}",

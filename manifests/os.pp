@@ -1,4 +1,4 @@
-# == Class: rac::os
+# == Class: ora_rac::os
 #
 # This class takes care of installing and configuring the OS
 # layer as a prerequisite for creating the DB generic
@@ -32,12 +32,12 @@
 # * set /etc/sysconfig/iptables
 # * set /etc/sysctl.conf
 #
-class rac::os (
+class ora_rac::os (
   $etc_profile    = '/etc/profile',
   $config_limits  = '/etc/security/limits.conf',
-) inherits rac::params {
+) inherits ora_rac::params {
 
-  require rac::params
+  require ora_rac::params
   # TODO: Fix the devices 
   #   'title'   => 'net.ipv4.conf.eth2.rp_filter',
   #   'comment' => '# Disable rp_filtering on interconnects',
@@ -209,8 +209,8 @@ class rac::os (
   }
 
 
-  rac::user_equivalence{$oracledb_user:
-    nodes => $rac::params::all_nodes,
+  ora_rac::user_equivalence{$oracledb_user:
+    nodes => $ora_rac::params::all_nodes,
   }
 
   file {"/home/${$oracledb_user}/.bash_profile":
@@ -218,7 +218,7 @@ class rac::os (
     owner     => $oracledb_user,
     group     => $osdba_group,
     mode      => '0644',
-    source    => 'puppet:///modules/rac/bash_profile',
+    source    => 'puppet:///modules/ora_rac/bash_profile',
     require   => User[$oracledb_user],
   }
 
@@ -251,12 +251,12 @@ class rac::os (
     owner     => $grid_user,
     group     => $asm_group,
     mode      => '0644',
-    source    => 'puppet:///modules/rac/bash_profile',
+    source    => 'puppet:///modules/ora_rac/bash_profile',
     require   => User[$grid_user],
   }
 
-  rac::user_equivalence{$grid_user:
-    nodes => $rac::params::all_nodes,
+  ora_rac::user_equivalence{$grid_user:
+    nodes => $ora_rac::params::all_nodes,
   }
 
   file {$config_limits:
@@ -264,7 +264,7 @@ class rac::os (
     owner     => 'root',
     group     => 'root',
     mode      => '0644',
-    source    => 'puppet:///modules/rac/limits'
+    source    => 'puppet:///modules/ora_rac/limits'
   }
 
   file {$etc_profile:
@@ -272,7 +272,7 @@ class rac::os (
     owner     => 'root',
     group     => 'root',
     mode      => '0644',
-    source    => 'puppet:///modules/rac/etc_profile'
+    source    => 'puppet:///modules/ora_rac/etc_profile'
   }
 
 
@@ -295,9 +295,9 @@ class rac::os (
     unless => "/bin/grep '^/var/swap.1' /etc/fstab 2>/dev/null",
   }
 
-  # # TODO: FIX THIS
-  service{'iptables':
-    ensure  => 'stopped',
-  }
+  # # # TODO: FIX THIS
+  # service{'iptables':
+  #   ensure  => 'stopped',
+  # }
 
-} # end rac::os
+} # end ora_rac::os

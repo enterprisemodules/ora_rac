@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-define rac::asm_disk( $volume)
+define ora_rac::asm_disk( $volume)
 {
 
   exec{"/usr/sbin/oracleasm createdisk ${volume} ${name}":

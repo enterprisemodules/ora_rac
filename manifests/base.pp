@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::base inherits rac::params {
+class ora_rac::base inherits ora_rac::params {
 
 
   package {'oracleasm-support':
@@ -42,7 +42,7 @@ class rac::base inherits rac::params {
     owner     => root,
     group     => root,
     mode      => '0775',
-    content   => template('rac/oracleasm.erb'),
+    content   => template('ora_rac/oracleasm.erb'),
   }
 
   file{'/etc/sysconfig/oracleasm':

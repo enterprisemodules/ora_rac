@@ -7,18 +7,18 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-class rac::db_master inherits rac::params {
-  contain rac::hosts
-  contain rac::os
-  contain rac::base
-  contain rac::install
-  contain rac::config
+class ora_rac::db_master inherits ora_rac::params {
+  contain ora_rac::hosts
+  contain ora_rac::os
+  contain ora_rac::base
+  contain ora_rac::install
+  contain ora_rac::config
   contain obtain::ora_files
 
   $dirs = [
@@ -59,8 +59,8 @@ class rac::db_master inherits rac::params {
     network_interface_list => $nw_interface_list,
     storage_option         => 'ASM_STORAGE',
     require                => [
-        Class['rac::config'],
-        Class['rac::hosts'],
+        Class['ora_rac::config'],
+        Class['ora_rac::hosts'],
         File[$dirs],
         Class['obtain::ora_files'],
       ]
@@ -70,7 +70,7 @@ class rac::db_master inherits rac::params {
     ensure    => file,
     owner     => $oracledb_user,
     group     => $oracledb_group,
-    content   => template('rac/create_disk_groups.sh.erb'),
+    content   => template('ora_rac/create_disk_groups.sh.erb'),
     mode      => '0775',
   }
 
@@ -136,7 +136,7 @@ class rac::db_master inherits rac::params {
     $thread           = $instance_number
     $instance_name    = "${db_name}${instance_number}"
 
-    rac::oratab_entry{$instance_name:
+    ora_rac::oratab_entry{$instance_name:
       home      => "/opt/oracle/app/${db_version}/db_1",
       start     => 'N',
       comment   => 'Added by puppet',
@@ -144,13 +144,13 @@ class rac::db_master inherits rac::params {
     }    
 
     if ($instance_number > 1) { # Not a master node
-      rac::ora_instance{$instance_name:
+      ora_rac::ora_instance{$instance_name:
         on        => $master_instance,
         number    => $instance_number,
         thread    => $thread,
         require   => [
-          Rac::Oratab_entry[$instance_name],
-          Rac::Oratab_entry[$master_instance],
+          Ora_rac::Oratab_entry[$instance_name],
+          Ora_rac::Oratab_entry[$master_instance],
         ]
       }
     }

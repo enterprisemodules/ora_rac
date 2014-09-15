@@ -7,13 +7,13 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moiretIA.com>
+# Bert Hajee <hajee@moretIA.com>
 #
 # === Copyright
 #
 # Copyright 2014 Bert Hajee
 #
-define rac::user_equivalence(
+define ora_rac::user_equivalence(
   $nodes = ['localhost'],
 )
 {
@@ -29,7 +29,7 @@ define rac::user_equivalence(
 
   file{"/home/${name}/.ssh/id_rsa":
     ensure  => 'file',
-    source  => "puppet:///modules/rac/${name}.key",
+    source  => "puppet:///modules/ora_rac/${name}.key",
     require => File["/home/${name}/.ssh"],
   }
 
