@@ -36,8 +36,6 @@ class ora_rac::os (
   $etc_profile    = '/etc/profile',
   $config_limits  = '/etc/security/limits.conf',
 ) inherits ora_rac::params {
-
-  require ora_rac::params
   # TODO: Fix the devices 
   #   'title'   => 'net.ipv4.conf.eth2.rp_filter',
   #   'comment' => '# Disable rp_filtering on interconnects',
@@ -155,68 +153,43 @@ class ora_rac::os (
     require    => Augeas['ensure_tmpfs_size'],
   }
 
-  group {$oracledb_group:
-    ensure     => present,
-    gid        => $oracledb_gid,
+
+  ['install','dba','oper', 'grid','grid_oper', 'grid_admin'].each |$group| {
+    $variable_name  = "${group}_group"
+    $group_name     = getvar($variable_name)
+    $group_id_name  = "${variable_name}_id"
+    $gid            = getvar($group_id_name)
+    group {$group_name:
+      ensure => 'present',
+      gid    => $gid,
+    }
   }
 
-  group {$dba_group:
-    ensure     => present,
-    gid        => $dba_gid,
-  }
-
-  group {$osdba_group:
-    ensure     => present,
-    gid        => $osdba_gid,
-  }
-
-  group {$asm_group:
-    ensure     => present,
-    gid        => $asm_gid,
-  }
-
-  group {$oper_group:
-    ensure     => present,
-    gid        => $oper_gid,
-  }
-
-  group {$asm_oper_group:
-    ensure     => present,
-    gid        => $asm_oper_gid,
-  }
-
-  user {$oracledb_user:
+  user {$oracle_user:
     ensure     => present,
     comment    => 'Oracle user',
-    gid        => $oracledb_gid,
+    gid        => $install_group_id,
     groups     => [
                     $dba_group,
-                    $osdba_group,
-                    $asm_group,
-                    $oper_group
+                    $grid_group,
+                    $oper_group,
                   ],
-    uid        => $oracledb_uid,
+    uid        => $install_group_id,
     shell      => '/bin/bash',
-    home       => "/home/${oracledb_user}",
+    home       => "/home/${oracle_user}",
     managehome => true,
-    require    => Group[
-                    $oracledb_group,
-                    $dba_group,
-                    $osdba_group,
-                    $asm_group,
-                    $oper_group
-                  ],
+    require    => Group[$dba_group, $oper_group, $install_group],
   }
 
 
-  ora_rac::user_equivalence{$oracledb_user:
+  ora_rac::user_equivalence{$oracle_user:
     nodes => $ora_rac::params::all_nodes,
   }
 
-  file {"/home/${$oracledb_user}/.bash_profile":
+  file {"/home/${$oracle_user}/.bash_profile":
     ensure    => file,
-    owner     => $oracledb_user,
-    group     => $osdba_group,
+    owner     => $oracle_user,
+    group     => $dba_group,
     mode      => '0644',
     source    => 'puppet:///modules/ora_rac/bash_profile',
     require   => User[$oracledb_user],
@@ -226,24 +199,18 @@ class ora_rac::os (
   user {$grid_user:
     ensure     => present,
     comment    => 'Oracle Grid user',
-    gid        => $oracledb_gid,
+    gid        => $install_group_id,
     groups     => [
                     $dba_group,
-                    $osdba_group,
-                    $asm_group,
-                    $asm_oper_group
+                    $grid_group,
+                    $grid_admin_group,
+                    $grid_oper_group,
                   ],
     uid        => $grid_uid,
     shell      => '/bin/bash',
     home       => "/home/${grid_user}",
     managehome => true,
-    require    => Group[
-                    $oracledb_group,
-                    $dba_group,
-                    $osdba_group,
-                    $asm_group,
-                    $asm_oper_group
-                  ],
+    require    => Group[$install_group,$dba_group, $grid_group, $grid_admin_group, $grid_oper_group],
   }
 
   file {"/home/${grid_user}/.bash_profile":
@@ -295,19 +262,45 @@ class ora_rac::os (
     unless => "/bin/grep '^/var/swap.1' /etc/fstab 2>/dev/null",
   }
 
-  firewall { '10 DB listner':
+
+
+  $all_ip_addresses.each |$ipadress| {
+    firewall{"200 RAC communication for ${ipadress}":
+      chain   => 'RH-Firewall-1-INPUT',
+      source  => $ipadress,
+      action  => 'accept',
+    }
+  }
+
+  firewall { '200 DB listner':
+    chain   => 'RH-Firewall-1-INPUT',
     port   => 1521,
     proto  => tcp,
-    action => accept,
+    action => 'accept',
   }
-  firewall { '20 DB gridcontrol':
+  firewall { '200 DB gridcontrol':
+    chain   => 'RH-Firewall-1-INPUT',
     port   => 3872,
     proto  => tcp,
-    action => accept,
+    action => 'accept',
   }
-  firewall {'30 DB multicast':
-    pkttype   => 'multicast',
-    action    => accept,
+
+  firewall { '200 RAC Multicast':
+    chain   => 'RH-Firewall-1-INPUT',
+    pkttype => 'multicast',
+    action => 'accept',
   }
+
+
+  $private_interfaces.each | $interface| {
+    firewall {'200 Oracle Cluster Interconnect':
+      chain   => 'RH-Firewall-1-INPUT',
+      proto   => 'all',
+      iniface => $interface,
+      action  => 'accept',
+    }    
+  }
+
+
 
 } # end ora_rac::os

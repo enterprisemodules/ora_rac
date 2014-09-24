@@ -14,107 +14,119 @@
 # Copyright 2014 Bert Hajee
 #
 class ora_rac::db_master(
-  $downloadDir             = '/install',
-  $zipExtract              = true,
-  $puppetDownloadMntPoint  = undef,
-  $remoteFile              = true,
-) inherits ora_rac::params {
-  contain ora_rac::hosts
-  contain ora_rac::os
-  contain ora_rac::base
-  contain ora_rac::install
-  contain ora_rac::config
+  $db_name                    = $ora_rac::params::db_name,
+  $domain_name                = $ora_rac::params::domain_name,
+  $scan_adresses              = $ora_rac::params::scan_adresses,
+  $db_machines                = $ora_rac::params::db_machines,
+  $public_network_interfaces  = $ora_rac::params::public_network_interfaces,
+  $private_network_interfaces = $ora_rac::params::private_network_interfaces,
+  $unused_network_interfaces  = $ora_rac::params::unused_network_interfaces,
+  $cluster_name               = $ora_rac::params::cluster_name,             # name of the cluster
+  $version                    = $ora_rac::params::version,                  # Oracle version to install
+  $file                       = $ora_rac::params::file,                     # file names base of installation files
+  $oracle_base                = $ora_rac::params::oracle_base,              # Base for Oracle
+  $grid_base                  = $ora_rac::params::grid_base,                # Base for grid
+  $oracle_home                = $ora_rac::params::oracle_home,              # Oracle home
+  $grid_home                  = $ora_rac::params::grid_home,                # Grid home
+  $ora_inventory_dir          = $ora_rac::params::ora_inventory_dir,
+  $puppet_download_mnt_point  = $ora_rac::params::puppet_download_mnt_point,
+  $zip_extract                = $ora_rac::params::zip_extract,
+  $remote_file                = $ora_rac::params::remote_file,
+  $oracle_user                = $ora_rac::params::oracle_user,
+  $oracle_user_id             = $ora_rac::params::oracle_user_id,
+  $grid_user                  = $ora_rac::params::grid_user,
+  $grid_user_id               = $ora_rac::params::grid_user_id,
+  $dba_group                  = $ora_rac::params::dba_group,
+  $dba_group_id               = $ora_rac::params::dba_group_id,
+  $grid_group                 = $ora_rac::params::grid_group,
+  $grid_group_id              = $ora_rac::params::grid_group_id,
+  $install_group              = $ora_rac::params::install_group,
+  $install_group_id           = $ora_rac::params::group_install_id,
+  $grid_oper_group            = $ora_rac::params::grid_oper_group,
+  $grid_oper_group_id         = $ora_rac::params::grid_oper_group_id,
+  $grid_admin_group           = $ora_rac::params::grid_admin_group,
+  $grid_admin_group_id        = $ora_rac::params::grid_admin_group_id,
+  $password                   = $ora_rac::params::password,
+  $scan_name                  = $ora_rac::params::scan_name,
+  $scan_port                  = $ora_rac::params::scan_port,
+  $crs_disk_group_name        = $ora_rac::params::crs_disk_group_name,
+  $data_disk_group_name       = $ora_rac::params::data_disk_group_name,
+  $disk_redundancy            = $ora_rac::params::disk_redundancy,
+  ) inherits ora_rac::params {
 
-  $dirs = [
-    '/opt/oracle',
-    '/opt/stage/tmp',
-    '/opt/oracle/app',
-    "/opt/oracle/app/${grid_version}",
-  ]
-
-  file {$dirs:
-    ensure    => directory,
-    owner     => $oracledb_user,
-    group     => $oracledb_group,
-    mode      => '0775',
-  }
-
-  oradb::installasm{ '11.2_linux-x64':
-    version                => $grid_version,
-    file                   => 'p13390677_112040_Linux-x86-64_3of7.zip',
+  oradb::installasm{ $file:
+    version                => $version,
+    file                   => "${file}_3of7.zip",
     gridType               => 'CRS_CONFIG',
-    gridBase               => '/opt/oracle/grid',
-    gridHome               => "/opt/oracle/app/${grid_version}/grid",
-    oraInventoryDir        => '/opt/oracle',
+    gridBase               => $grid_base,
+    gridHome               => $grid_home,
+    oraInventoryDir        => $ora_inventory_dir,
     user                   => $grid_user,
-    group                  => $osdba_group,
-    group_install          => $oracledb_group,
-    group_oper             => $asm_oper_group,
-    group_asm              => $asm_group,
+    group                  => $grid_group,
+    group_install          => $install_group,
+    group_oper             => $grid_oper_group,
+    group_asm              => $grid_admin_group,
     asm_diskgroup          => $data_disk_group_name,
     disks                  => "ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3",
     disk_redundancy        => 'NORMAL',
-    puppetDownloadMntPoint => $puppetDownloadMntPoint, #'/opt/stage',
-    zipExtract             => $zipExtract,
-    remoteFile             => $remoteFile, #false,
+    puppetDownloadMntPoint => $puppet_download_mnt_point, #'/opt/stage',
+    # downloadDir            => $puppet_download_mnt_point,
+    zipExtract             => $zip_extract,
+    remoteFile             => $remote_file, #false,
     cluster_name           => $cluster_name,
     scan_name              => $scan_name,
     scan_port              => $scan_port,
     cluster_nodes          => "${::hostname}:${::hostname}-vip",
-    network_interface_list => $nw_interface_list,
+    network_interface_list => $ora_rac::params::nw_interface_list,
     storage_option         => 'ASM_STORAGE',
-    require                => [
-        Class['ora_rac::config'],
-        Class['ora_rac::hosts'],
-        File[$dirs],
-      ]
-  }
+  } ~>
 
-  file{"/opt/stage/tmp/create_disk_groups.sh":,
+  file{'/opt/stage/create_disk_groups.sh':,
     ensure    => file,
-    owner     => $oracledb_user,
-    group     => $oracledb_group,
+    owner     => $oracle_user,
+    group     => $install_group,
     content   => template('ora_rac/create_disk_groups.sh.erb'),
     mode      => '0775',
-  }
+  } ~>
 
   exec {'create_disk_groups':
     timeout   => 0, # This might take a long time
-    command   => "/bin/su - ${grid_user} -c \"/opt/stage/tmp/create_disk_groups.sh\"",
+    command   => "/bin/su - ${grid_user} -c \"/opt/stage/create_disk_groups.sh\"",
     logoutput => on_failure,
-    require   => [
-      Oradb::Installasm['11.2_linux-x64'],
-      File["/opt/stage/tmp/create_disk_groups.sh"],
-    ]
-  }
+    require   => File['/opt/stage/create_disk_groups.sh'],
+  } ->
 
-  exec{'set_ownership': # is a hack. Somehow Oracle 
-    command   => "/bin/chown ${oracledb_user}:${oracledb_group} /opt/oracle /opt/oracle/app /opt/oracle/app/${db_version}",
-    require   => Oradb::Installasm['11.2_linux-x64'],
-  }
 
-  oradb::installdb{ '112040_Linux-x86-64':
-    version                => "${db_version}",
-    file                   => 'p13390677_112040_Linux-x86-64',
+  exec{'set_ownership': # is a hack. Somehow Oracle
+    command   => "/bin/chown ${oracle_user}:${install_group} /opt/oracle /opt/oracle/app /opt/oracle/app/${version}",
+  } ->
+
+  oradb::installdb{ $file:
+    version                => "${version}",
+    file                   => $file,
+    user                   => $oracle_user,
+    group                  => $dba_group,
+    group_oper             => $oper_group,
+    group_install          => $install_group,
+    oraInventoryDir        => $ora_inventory_dir,
     databaseType           => 'EE',
-    oracleBase             => '/opt/oracle',
-    oracleHome             => "/opt/oracle/app/${db_version}/db_1",
-    puppetDownloadMntPoint => '/opt/stage',
+    oracleBase             => $oracle_base,
+    createUser             => false,
+    oracleHome             => $oracle_home,
+    puppetDownloadMntPoint => $puppet_download_mnt_point,
+    # downloadDir            => $puppet_download_mnt_point,
     cluster_nodes          => "${::hostname}",
-    remoteFile             => false,
-    require                => [
-        Exec['set_ownership'],
-         # Exec['create_disk_groups'],
-      ]
-  }
+    remoteFile             => $remote_file,
+    require                => Oradb::Installasm[$file],
+  } ->
 
   oradb::database{ $db_name:
-    oracleBase              => '/opt/oracle',
-    oracleHome              => "/opt/oracle/app/${db_version}/db_1",
-    version                 => '11.2',
-    user                    => $oracledb_user,
-    group                   => $oracledb_group,
-    downloadDir             => '/install',
+    oracleBase              => $oracle_base,
+    oracleHome              => $oracle_home,
+    version                 => $db_version,
+    user                    => $oracle_user,
+    group                   => $dba_group,
+    # downloadDir             => $puppet_download_mnt_point,
     action                  => 'create',
     dbName                  => $db_name,
     dbDomain                => $domain_name,
@@ -129,25 +141,25 @@ class ora_rac::db_master(
     databaseType            => "MULTIPURPOSE",
     emConfiguration         => "NONE",
     asmDiskgroup            => 'DATA',
-    require                 => Oradb::Installdb['112040_Linux-x86-64'],
     cluster_nodes           => "${::hostname}",
   }
 
-  
   $cluster_nodes.each | $index, $instance| {
+
 
     $instance_number  = $index + 1
     $thread           = $instance_number
     $instance_name    = "${db_name}${instance_number}"
 
     ora_rac::oratab_entry{$instance_name:
-      home      => "/opt/oracle/app/${db_version}/db_1",
+      home      => $oracle_home,
       start     => 'N',
       comment   => 'Added by puppet',
       require   => Oradb::Database[$db_name],
-    }    
+    }
 
     if ($instance_number > 1) { # Not a master node
+
       ora_rac::ora_instance{$instance_name:
         on        => $master_instance,
         number    => $instance_number,

@@ -21,4 +21,6 @@ define ora_rac::asm_disk( $volume)
     logoutput => true,
     require   => Service['oracleasm'],
   }
+
+
 }

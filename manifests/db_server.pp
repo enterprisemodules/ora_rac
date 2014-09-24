@@ -1,5 +1,4 @@
-# == Class: cluster::config
-#
+# == Class: ora_rac::db_server
 #
 # === Parameters
 #
@@ -13,86 +12,108 @@
 #
 # Copyright 2014 Bert Hajee
 #
-class ora_rac::db_server inherits ora_rac::params {
-  contain ora_rac::hosts
-  contain ora_rac::os
-  contain ora_rac::install
-  contain ora_rac::directories
-  contain ora_rac::base
-  contain ora_rac::scandisks
+class ora_rac::db_server(
+  $db_machines                = $ora_rac::params::db_machines,
+  $version                    = $ora_rac::params::version,                  # Oracle version to install
+  $oracle_base                = $ora_rac::params::oracle_base,              # Base for Oracle
+  $grid_base                  = $ora_rac::params::grid_base,                # Base for grid
+  $oracle_home                = $ora_rac::params::oracle_home,              # Oracle home
+  $grid_home                  = $ora_rac::params::grid_home,                # Grid home
+  $ora_inventory_dir          = $ora_rac::params::ora_inventory_dir,
+  $oracle_user                = $ora_rac::params::oracle_user,
+  $oracle_user_id             = $ora_rac::params::oracle_user_id,
+  $grid_user                  = $ora_rac::params::grid_user,
+  $grid_user_id               = $ora_rac::params::grid_user_id,
+  $dba_group                  = $ora_rac::params::dba_group,
+  $dba_group_id               = $ora_rac::params::dba_group_id,
+  $grid_group                 = $ora_rac::params::grid_group,
+  $grid_group_id              = $ora_rac::params::grid_group_id,
+  $install_group              = $ora_rac::params::install_group,
+  $install_group_id           = $ora_rac::params::group_install_id,
+  $grid_oper_group            = $ora_rac::params::grid_oper_group,
+  $grid_oper_group_id         = $ora_rac::params::grid_oper_group_id,
+  $grid_admin_group           = $ora_rac::params::grid_admin_group,
+  $grid_admin_group_id        = $ora_rac::params::grid_admin_group_id,
+) inherits ora_rac::params {
 
 
   exec{'add_grid_node':
     timeout     => 0,
-    user        => 'grid',
-    command     => "/usr/bin/ssh grid@${master_node} \"/opt/oracle/app/${grid_version}/grid/\"oui/bin/./addNode.sh \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
-    logoutput   => on_failure,
-    creates     => "/opt/oracle/app/${grid_version}/grid/root.sh",
-    require     => [
-      Class['ora_rac::base'],
-      Class['ora_rac::scandisks'],
-    ]
-  }
+    user        => $grid_user,
+    command     => "/usr/bin/ssh ${grid_user}@${master_node} \"${grid_home}/\"oui/bin/./addNode.sh \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    creates     => "${grid_home}/root.sh",
+  } ->
 
   exec{'register_grid_node':
     timeout     => 0,
     user        => 'root',
-    creates     => "/opt/oracle/grid/db1",
-    command     => "/bin/sh /opt/oracle/oraInventory/orainstRoot.sh;/bin/sh /opt/oracle/app/${grid_version}/grid/root.sh",
-    logoutput   => on_failure,
-    require     => Exec['add_grid_node'],
+    creates     => "${grid_base}/grid/${::hostname}",
+    command     => "/bin/sh ${ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${grid_home}/root.sh",
   }
 
-  exec{'set_ownership_2': # is a hack. Somehow Oracle 
-    command   => "/bin/chown ${oracledb_user}:${oracledb_group} /opt/oracle /opt/oracle/app /opt/oracle/app/${grid_version}",
-    before    => Exec['add_oracle_node'],
-    require   => Exec['register_grid_node'],
+
+  $difference  = regsubst($oracle_home,$oracle_base,'')
+  $directories = split($difference,'/')
+  $non_empty_directories = $directories.filter |$element| { $element != ''}
+
+  $non_empty_directories.reduce($oracle_base) |$base_path, $relative_path| {
+    $path = "${base_path}/${relative_path}"
+    file{ $path:
+      ensure    => 'directory',
+      owner     => $oracle_user,
+      group     => $install_group,
+      before    => Exec['add_oracle_node'],
+      require   => Exec['register_grid_node'],
+    }
+    $path
   }
+
 
   exec{'add_oracle_node':
     timeout     => 0,
-    user        => 'grid',
-    command     => "/usr/bin/ssh oracle@${master_node} \"/opt/oracle/app/${db_version}/db_1/\"oui/bin/./addNode.sh \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    user        => $grid_user,
+    command     => "/usr/bin/ssh ${oracle_user}@${master_node} \"${oracle_home}/\"oui/bin/./addNode.sh \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
     logoutput   => on_failure,
-    creates     => "/opt/oracle/app/${db_version}/db_1/root.sh",
+    creates     => "${oracle_home}/root.sh",
     require     => [
       Exec['register_grid_node']
     ]
-  }
+  }->
+
 
   exec{'register_oracle_node':
     timeout     => 0,
     user        => 'root',
-    creates     => "/opt/oracle/app/${db_version}/db_1",
-    command     => "/bin/sh /opt/oracle/oraInventory/orainstRoot.sh;/bin/sh /opt/oracle/app/${db_version}/db_1/root.sh",
+    # creates     => $oracle_home,
+    command     => "/bin/sh ${ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${oracle_home}/root.sh",
     logoutput   => on_failure,
-    require     => Exec['add_oracle_node'],
-  }
+  }->
+
+  exec{'change ownership':
+    command   => "/bin/chown ${oracle_user}:${install_group} ${oracle_base}"
+  } ->
 
   ora_rac::oratab_entry{$current_instance:
-    home      => "/opt/oracle/app/${db_version}/db_1",
+    home      => $oracle_home,
     start     => 'N',
     comment   => 'Added by puppet',
-    require   => Exec['register_oracle_node'],
-  }    
+  } ->
 
 
   exec{'add_instance':
-    user          => 'oracle',
-    environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=/opt/oracle/app/${db_version}/db_1"],
-    command       => "/opt/oracle/app/${db_version}/db_1/bin/srvctl add instance -d ${db_name} -i ${current_instance} -n ${::hostname}",
-    unless        => "/opt/oracle/app/${db_version}/db_1/bin/srvctl status instance -d ${db_name} -i ${current_instance}",
+    user          => $oracle_user,
+    environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=${oracle_home}"],
+    command       => "${oracle_home}/bin/srvctl add instance -d ${db_name} -i ${current_instance} -n ${::hostname}",
+    unless        => "${oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance}",
     logoutput     => on_failure,
-    require       => Ora_rac::Oratab_entry[$current_instance],
-  }
+  } ->
 
   exec{'start_instance':
-    user          => 'oracle',
+    user          => $oracle_user,
     environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO","ORACLE_HOME=/opt/oracle/app/${version}/db_1"],
-    command       => "/opt/oracle/app/${db_version}/db_1/bin/srvctl start instance -d ${db_name} -i ${current_instance}",
-    onlyif        => "/opt/oracle/app/${db_version}/db_1/bin/srvctl status instance -d ${db_name} -i ${current_instance} | grep not",
+    command       => "${oracle_home}/bin/srvctl start instance -d ${db_name} -i ${current_instance}",
+    onlyif        => "${oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance} | grep not",
     logoutput     => on_failure,
-    require       => Exec['add_instance']
   }
 
 }
