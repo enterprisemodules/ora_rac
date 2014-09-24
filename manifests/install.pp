@@ -11,54 +11,14 @@
 #
 # === Authors
 #
-# Allard Berends <allard.berends@prorail.nl>
+# Bert Hajee hajee@moretIA.com
 #
 # === Copyright
 #
-# Copyright 2013 Allard Berends
+# Copyright 2014 Bert Hajee
 #
 # === Design
 #
-# In this class, only software channels may be subscribed to
-# and only RPM's may be installed. No other side effects are
-# allowed.
-# The list of required RPM's to install for the Oracle DB
-# comes from the oracle-validated RPM, obtained from
-# http://public-yum.oracle.com/repo/OracleLinux/OL5/8/base/x86_64
-# bc
-# compat-libstdc++
-# elfutils-libelf-devel
-# gcc
-# gcc.i386
-# gcc-c++
-# gdbm
-# glibc
-# glibc-common
-# glibc-devel
-# glibc-headers
-# irqbalance
-# ksh
-# libaio
-# libaio-devel
-# libgcc
-# libICE
-# libSM
-# libstdc++
-# libstdc++-devel
-# libXp
-# libXt
-# libXtst
-# make
-# smartmontools
-# unixODBC64-devel
-# unixODBC-devel
-# unixODBC-libs
-# xorg-x11-utils
-# xorg-x11-xinit
-#
-# Note that not all of the above RPM's show up in the actual
-# list. Some are installed via dependencies, others are not
-# needed.
 #
 class ora_rac::install (
   $packages        = [

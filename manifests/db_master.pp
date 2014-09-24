@@ -69,8 +69,8 @@ class ora_rac::db_master(
     asm_diskgroup          => $data_disk_group_name,
     disks                  => "ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3",
     disk_redundancy        => 'NORMAL',
-    puppetDownloadMntPoint => $puppet_download_mnt_point, #'/opt/stage',
-    # downloadDir            => $puppet_download_mnt_point,
+    puppetDownloadMntPoint => $puppet_download_mnt_point,
+    downloadDir            => $download_dir,
     zipExtract             => $zip_extract,
     remoteFile             => $remote_file, #false,
     cluster_name           => $cluster_name,
@@ -81,7 +81,7 @@ class ora_rac::db_master(
     storage_option         => 'ASM_STORAGE',
   } ~>
 
-  file{'/opt/stage/create_disk_groups.sh':,
+  file{"${$download_dir}/create_disk_groups.sh":,
     ensure    => file,
     owner     => $oracle_user,
     group     => $install_group,
@@ -91,18 +91,29 @@ class ora_rac::db_master(
 
   exec {'create_disk_groups':
     timeout   => 0, # This might take a long time
-    command   => "/bin/su - ${grid_user} -c \"/opt/stage/create_disk_groups.sh\"",
+    user      => $grid_user,
+    command   => "/bin/sh ${$download_dir}/create_disk_groups.sh",
     logoutput => on_failure,
-    require   => File['/opt/stage/create_disk_groups.sh'],
-  } ->
+    require   => File["${$download_dir}/create_disk_groups.sh"],
+  }
 
+  $difference  = regsubst($oracle_home,$oracle_base,'')
+  $directories = split($difference,'/')
+  $non_empty_directories = $directories.filter |$element| { $element != ''}
+  $selected_directories = delete_at($non_empty_directories, size($non_empty_directories) - 1)
 
-  exec{'set_ownership': # is a hack. Somehow Oracle
-    command   => "/bin/chown ${oracle_user}:${install_group} /opt/oracle /opt/oracle/app /opt/oracle/app/${version}",
-  } ->
+  $selected_directories.reduce($oracle_base) |$base_path, $relative_path| {
+    $path = "${base_path}/${relative_path}"
+    exec{"set_ownership ${path}": # is a hack. Somehow Oracle
+      command  => "/bin/chown  ${oracle_user}:${install_group} ${path}",
+      before   => Oradb::Installdb[$file],
+      require  => Oradb::Installasm[$file],
+    }
+    $path
+  }
 
   oradb::installdb{ $file:
-    version                => "${version}",
+    version                => $version,
     file                   => $file,
     user                   => $oracle_user,
     group                  => $dba_group,
@@ -114,7 +125,7 @@ class ora_rac::db_master(
     createUser             => false,
     oracleHome             => $oracle_home,
     puppetDownloadMntPoint => $puppet_download_mnt_point,
-    # downloadDir            => $puppet_download_mnt_point,
+    downloadDir            => $download_dir,
     cluster_nodes          => "${::hostname}",
     remoteFile             => $remote_file,
     require                => Oradb::Installasm[$file],
@@ -126,7 +137,7 @@ class ora_rac::db_master(
     version                 => $db_version,
     user                    => $oracle_user,
     group                   => $dba_group,
-    # downloadDir             => $puppet_download_mnt_point,
+    downloadDir             => $download_dir,
     action                  => 'create',
     dbName                  => $db_name,
     dbDomain                => $domain_name,
@@ -136,7 +147,7 @@ class ora_rac::db_master(
     storageType             => 'ASM',
     characterSet            => "AL32UTF8",
     nationalCharacterSet    => "UTF8",
-    initParams              => "open_cursors=1000,processes=600,job_queue_processes=4",
+    initParams              => 'open_cursors=1000,processes=600,job_queue_processes=4',
     sampleSchema            => 'FALSE',
     databaseType            => "MULTIPURPOSE",
     emConfiguration         => "NONE",

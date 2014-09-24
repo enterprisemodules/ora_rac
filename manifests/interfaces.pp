@@ -50,7 +50,7 @@ class ora_rac::interfaces(){
     hotplug   => 'true',
     ipaddress => $private_ipaddress,
     netmask   => $netmask,
-    options   => {},
+    # options   => {},
   } ~>
 
   service{'network':
