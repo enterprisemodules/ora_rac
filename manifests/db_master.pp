@@ -24,6 +24,8 @@ class ora_rac::db_master(
   $cluster_name               = $ora_rac::params::cluster_name,             # name of the cluster
   $version                    = $ora_rac::params::version,                  # Oracle version to install
   $file                       = $ora_rac::params::file,                     # file names base of installation files
+  $grid_file                  = $ora_rac::params::grid_file,                # file names base of installation files
+  $oracle_file                = $ora_rac::params::grid_file,                # file names base of installation files
   $oracle_base                = $ora_rac::params::oracle_base,              # Base for Oracle
   $grid_base                  = $ora_rac::params::grid_base,                # Base for grid
   $oracle_home                = $ora_rac::params::oracle_home,              # Oracle home
@@ -54,7 +56,7 @@ class ora_rac::db_master(
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
   ) inherits ora_rac::params {
 
-  oradb::installasm{ $file:
+  oradb::installasm{ $grid_file:
     version                => $version,
     file                   => "${file}_3of7.zip",
     gridType               => 'CRS_CONFIG',
@@ -99,9 +101,9 @@ class ora_rac::db_master(
 
   class{ 'ora_rac::set_ownership':} ->
 
-  oradb::installdb{ $file:
+  oradb::installdb{ $oracle_file:
     version                => $version,
-    file                   => $file,
+    file                   => $oracle_file,
     user                   => $oracle_user,
     group                  => $dba_group,
     group_oper             => $oper_group,
@@ -115,7 +117,7 @@ class ora_rac::db_master(
     downloadDir            => $download_dir,
     cluster_nodes          => "${::hostname}",
     remoteFile             => $remote_file,
-    require                => Oradb::Installasm[$file],
+    require                => Oradb::Installasm[$grid_file],
   } ->
 
   oradb::database{ $db_name:

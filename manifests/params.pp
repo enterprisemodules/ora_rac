@@ -26,7 +26,9 @@ class ora_rac::params(
   $unused_network_interfaces  = [],
   $cluster_name               = 'cluster',
   $version                    = '11.2.0.4',
-  $file                       = 'p13390677_112040_Linux-x86-64',
+  $file                       = 'p13390677_112040_Linux-x86-64',   # For backwards compatibility
+  $grid_file                  =  $file,
+  $oracle_file                =  $file,
   $oracle_base                = '/opt/oracle',
   $grid_base                  = '/opt/oracle/grid',
   $oracle_home                = '/opt/oracle/app/11.2.0.4/db_1',
