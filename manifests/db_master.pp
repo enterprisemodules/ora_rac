@@ -95,22 +95,9 @@ class ora_rac::db_master(
     command   => "/bin/sh ${$download_dir}/create_disk_groups.sh",
     logoutput => on_failure,
     require   => File["${$download_dir}/create_disk_groups.sh"],
-  }
+  } ->
 
-  $difference  = regsubst($oracle_home,$oracle_base,'')
-  $directories = split($difference,'/')
-  $non_empty_directories = $directories.filter |$element| { $element != ''}
-  $selected_directories = delete_at($non_empty_directories, size($non_empty_directories) - 1)
-
-  $selected_directories.reduce($oracle_base) |$base_path, $relative_path| {
-    $path = "${base_path}/${relative_path}"
-    exec{"set_ownership ${path}": # is a hack. Somehow Oracle
-      command  => "/bin/chown  ${oracle_user}:${install_group} ${path}",
-      before   => Oradb::Installdb[$file],
-      require  => Oradb::Installasm[$file],
-    }
-    $path
-  }
+  class{ 'ora_rac::set_ownership':} ->
 
   oradb::installdb{ $file:
     version                => $version,
