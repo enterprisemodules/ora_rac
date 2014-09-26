@@ -31,8 +31,9 @@ class ora_rac::interfaces(){
   }
 
   #
-  # After we added the network adapter eth2, the facts are not yet updated. We need the network fact set
-  # for the rac options so we use a hack of setting a toplevel variable
+  # After we added the network adapter eth2, the facts are not yet updated. We
+  # need the network fact set for the rac options so we use a hack of setting
+  # a toplevel variable
   #
   # First calculate the network adress
   #
@@ -46,11 +47,11 @@ class ora_rac::interfaces(){
     ensure    => 'present',
     family    => 'inet',
     method    => 'static',
-    onboot    => 'true',
-    hotplug   => 'true',
+    onboot    => true,
+    hotplug   => true,
     ipaddress => $private_ipaddress,
     netmask   => $netmask,
-    # options   => {},
+    options   => {},
   } ~>
 
   service{'network':
