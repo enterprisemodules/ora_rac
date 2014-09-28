@@ -57,9 +57,9 @@ class ora_rac::db_master(
   ) inherits ora_rac::params {
 
 
-  oradb::installasm{ $grid_file:
+  oradb::installasm{ $_grid_file:
     version                => $version,
-    file                   => "${grid_file}",
+    file                   => "${_grid_file}",
     gridType               => 'CRS_CONFIG',
     gridBase               => $grid_base,
     gridHome               => $grid_home,
@@ -102,9 +102,9 @@ class ora_rac::db_master(
 
   class{'ora_rac::ensure_oracle_ownership':} ->
 
-  oradb::installdb{ $oracle_file:
+  oradb::installdb{ $_oracle_file:
     version                => $version,
-    file                   => $oracle_file,
+    file                   => $_oracle_file,
     user                   => $oracle_user,
     group                  => $dba_group,
     group_oper             => $oper_group,
@@ -118,7 +118,7 @@ class ora_rac::db_master(
     downloadDir            => $download_dir,
     cluster_nodes          => "${::hostname}",
     remoteFile             => $remote_file,
-    require                => Oradb::Installasm[$grid_file],
+    require                => Oradb::Installasm[$_grid_file],
   } ->
 
   oradb::database{ $db_name:

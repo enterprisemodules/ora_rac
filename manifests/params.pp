@@ -27,8 +27,8 @@ class ora_rac::params(
   $cluster_name               = 'cluster',
   $version                    = '11.2.0.4',
   $file                       = 'p13390677_112040_Linux-x86-64',   # For backwards compatibility
-  $grid_file                  =  $file,
-  $oracle_file                =  $file,
+  $grid_file                  =  undef,
+  $oracle_file                =  undef,
   $oracle_base                = '/opt/oracle',
   $grid_base                  = '/opt/oracle/grid',
   $oracle_home                = '/opt/oracle/app/11.2.0.4/db_1',
@@ -72,18 +72,47 @@ class ora_rac::params(
   $db_version           = "${db_major_version}.${db_minor_version}"
 
   if $db_major_version == 12 {
-    $add_node_path ="/addnode/addnode.sh -silent -ignorePrereq"
+    $add_node_path ='/addnode/addnode.sh -silent -ignorePrereq'
   } else {
-    $add_node_path = "/oui/bin/addNode.sh"
+    $add_node_path = '/oui/bin/addNode.sh'
   }
+
+  if $oracle_file == undef and $file != undef {
+    $_oracle_file = $file
+  } else {
+    $_oracle_file = $oracle_file
+  }
+
+  unless $_oracle_file {
+    fail( 'You mest specify either the file or an oracle_file for db_master')
+  }
+
+  if $grid_file == undef and $file != undef {
+    $_grid_basic_file = $file
+  } else {
+    $_grid_basic_file = $grid_file
+  }
+  unless $_grid_basic_file {
+    fail( 'You mest specify either the file or a grid_file for db_master')
+  }
+
+  if $db_major_version == 12 {
+    $_grid_file = $_grid_basic_file
+  } else {
+    $grid_file = "${_grid_basic_file}_3_of_7"
+  }
+
 
   #
   # Build the string needed by oracle grid installer
   #
-  # The value should be a comma separated strings where each string is as shown below
+  # The value should be a comma separated strings where each string is as shown
+  # below:
+  #
   # InterfaceName:SubnetAddress:InterfaceType
   # where InterfaceType can be either "1", "2", or "3"
-  # (1 indicates public, 2 indicates private, and 3 indicates the interface is not used)
+  # (1 indicates public, 2 indicates private, and 3 indicates the interface is
+  # not used)
   #
   # For example: eth0:140.87.24.0:1,eth1:10.2.1.0:2,eth2:140.87.52.0:3
   #
@@ -98,7 +127,7 @@ class ora_rac::params(
       }
   }
 
-  $_private_list = $private_network_interfaces.reduce('') | $list, $interface | {
+  $_private_list = $private_network_interfaces.reduce('') | $list, $interface| {
     $network = getvar("::network_${interface}")
     unless $network { fail "network for interface ${interface} not defined"}
     if $list == ''{
