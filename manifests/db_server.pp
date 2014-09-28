@@ -40,7 +40,7 @@ class ora_rac::db_server(
   exec{'add_grid_node':
     timeout     => 0,
     user        => $grid_user,
-    command     => "/usr/bin/ssh ${grid_user}@${master_node} \"${grid_home}/\"oui/bin/./addNode.sh \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    command     => "/usr/bin/ssh ${grid_user}@${master_node} \"${grid_home}/\"${add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
     creates     => "${grid_home}/root.sh",
   } ->
 
@@ -72,7 +72,7 @@ class ora_rac::db_server(
   exec{'add_oracle_node':
     timeout     => 0,
     user        => $grid_user,
-    command     => "/usr/bin/ssh ${oracle_user}@${master_node} \"${oracle_home}/\"oui/bin/./addNode.sh \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    command     => "/usr/bin/ssh ${oracle_user}@${master_node} \"${oracle_home}/\"${add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
     logoutput   => on_failure,
     creates     => "${oracle_home}/root.sh",
     require     => [
@@ -89,9 +89,7 @@ class ora_rac::db_server(
     logoutput   => on_failure,
   }->
 
-  exec{'change ownership':
-    command   => "/bin/chown ${oracle_user}:${install_group} ${oracle_base}"
-  } ->
+  class{'ora_rac::ensure_oracle_ownership':} ->
 
   ora_rac::oratab_entry{$current_instance:
     home      => $oracle_home,

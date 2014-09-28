@@ -26,7 +26,9 @@ class ora_rac::params(
   $unused_network_interfaces  = [],
   $cluster_name               = 'cluster',
   $version                    = '11.2.0.4',
-  $file                       = 'p13390677_112040_Linux-x86-64',
+  $file                       = 'p13390677_112040_Linux-x86-64',   # For backwards compatibility
+  $grid_file                  =  $file,
+  $oracle_file                =  $file,
   $oracle_base                = '/opt/oracle',
   $grid_base                  = '/opt/oracle/grid',
   $oracle_home                = '/opt/oracle/app/11.2.0.4/db_1',
@@ -69,6 +71,11 @@ class ora_rac::params(
   $db_minor_version     = $_version_array[1]
   $db_version           = "${db_major_version}.${db_minor_version}"
 
+  if $db_major_version == 12 {
+    $add_node_path ="/addnode/addnode.sh -silent -ignorePrereq"
+  } else {
+    $add_node_path = "/oui/bin/addNode.sh"
+  }
 
   #
   # Build the string needed by oracle grid installer
