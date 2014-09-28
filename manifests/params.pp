@@ -71,6 +71,11 @@ class ora_rac::params(
   $db_minor_version     = $_version_array[1]
   $db_version           = "${db_major_version}.${db_minor_version}"
 
+  if $db_major_version == 12 {
+    $add_node_path ="/addnode/addnode.sh -silent -ignorePrereq"
+  } else {
+    $add_node_path = "/oui/bin/addNode.sh"
+  }
 
   #
   # Build the string needed by oracle grid installer
