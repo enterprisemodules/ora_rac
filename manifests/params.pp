@@ -21,6 +21,7 @@ class ora_rac::params(
   $scan_adresses,
   $domain_name,
   $db_machines,
+  $init_params                = 'open_cursors=1000,processes=600,job_queue_processes=4',
   $public_network_interfaces  = ['eth1'],
   $private_network_interfaces = ['eth2'],
   $unused_network_interfaces  = [],
