@@ -51,7 +51,6 @@ class ora_rac::interfaces(){
     hotplug   => true,
     ipaddress => $private_ipaddress,
     netmask   => $netmask,
-    options   => {},
   } ~>
 
   service{'network':
