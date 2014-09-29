@@ -93,7 +93,7 @@ class ora_rac::params(
   if $db_major_version == 12 {
     $_grid_file = $_grid_basic_file
   } else {
-    $_grid_file = "${_grid_basic_file}_3_of_7"
+    $_grid_file = "${_grid_basic_file}_3of7"
   }
 
 
