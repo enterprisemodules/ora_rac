@@ -1,5 +1,5 @@
 name    'hajee-ora_rac'
-version '0.0.1'
+version '0.0.2'
 source 'http:/www.github.com/hajee/ora_rac'
 author 'Bert Hajee'
 license 'Apache License, Version 2.0'

@@ -27,7 +27,7 @@ class ora_rac::base inherits ora_rac::params {
 
   package {$asm_package:
     ensure   => 'installed',
-    source   => "${puppet_download_mnt_point}${asm_package_name}",
+    source   => "${puppet_download_mnt_point}/${asm_package_name}",
     provider => 'rpm',
     require  => Package['oracleasm-support'],
   }
