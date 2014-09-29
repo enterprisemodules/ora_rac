@@ -1,9 +1,16 @@
-# == Class: cluster::config
+# == Class: ora_rac::interfaces
 #
+# This class takes care of defining the private network interface for Oracle RAC
+# This is mostly used for Vagrant systems and probably not needed if you have configured
+# your system correct before you install the RAC classes
 #
 # === Parameters
 #
+# None
+#
 # === Variables
+#
+# $db_machines
 #
 # === Authors
 #

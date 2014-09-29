@@ -43,21 +43,18 @@ class ora_rac::params(
   $oracle_user_id             = 7000,
   $grid_user                  = 'grid',
   $grid_user_id               =  7001,
-
   $install_group              = 'oinstall',
   $dba_group                  = 'dba',
   $oper_group                 = 'oper',
   $grid_group                 = 'asmdba',
   $grid_oper_group            = 'asmoper',
   $grid_admin_group           = 'asmadmin',
-
   $install_group_id           = 7000,
   $dba_group_id               = 7001,
   $oper_group_id              = 7002,
   $grid_group_id              = 7003,
   $grid_oper_group_id         = 7004,
   $grid_admin_group_id        = 7005,
-
   $password                   = 'manager123',
   $scan_name                  = 'scan',
   $scan_port                  = 1521,

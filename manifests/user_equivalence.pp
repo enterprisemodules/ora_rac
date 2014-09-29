@@ -1,9 +1,15 @@
-# == Class: cluster::config
+# == Class: ora_rac::user_equivalence
 #
+# Create user equavalance for oracle user. This means registering public and private ssh keys so a user
+# on node 1 can access like homeself on node 2
 #
 # === Parameters
+# name  - User name
+# nodes - Nodes where equivalance should work
 #
 # === Variables
+#
+# none
 #
 # === Authors
 #

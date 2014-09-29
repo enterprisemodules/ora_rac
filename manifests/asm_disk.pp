@@ -1,7 +1,9 @@
-# == Class: cluster::config
-#
+# == Class: ora_rac::asm_disk
 #
 # === Parameters
+#
+# name      device name
+# voldume   asm volume name
 #
 # === Variables
 #

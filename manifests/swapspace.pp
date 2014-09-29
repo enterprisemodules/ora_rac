@@ -1,3 +1,24 @@
+# == Class: ora_rac::swapspace
+#
+# Create swapspace for Oracle. This is probably only needed for Vagrant boxes
+# REAL nodes should define their own swapspace.
+#
+# === Parameters
+#
+#  none
+#
+# === Variables
+#
+# none
+#
+# === Authors
+#
+# Bert Hajee <hajee@moretIA.com>
+#
+# === Copyright
+#
+# Copyright 2014 Bert Hajee
+#
 class ora_rac::swapspace
 {
   exec { "create swap file":
