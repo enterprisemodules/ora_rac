@@ -1,17 +1,20 @@
-# == Class: cluster::config
+# == Class: ora_rac::db_master
 #
+# This class installes the master database node. A master database node is
+# the first machine to be installed. All db_server machines (see class ora_rac::db_server)
+# take their configuration of this master node.
 #
 # === Parameters
 #
+# Check ora_rac::params for all the parameters
+#
 # === Variables
+#
+# Check ora_rac::params for all the variables
 #
 # === Authors
 #
 # Bert Hajee <hajee@moretIA.com>
-#
-# === Copyright
-#
-# Copyright 2014 Bert Hajee
 #
 class ora_rac::db_master(
   $db_name                    = $ora_rac::params::db_name,
@@ -60,7 +63,7 @@ class ora_rac::db_master(
 
   oradb::installasm{ $_grid_file:
     version                => $version,
-    file                   => "${_grid_file}",
+    file                   => $_grid_file,
     gridType               => 'CRS_CONFIG',
     gridBase               => $grid_base,
     gridHome               => $grid_home,
@@ -71,7 +74,7 @@ class ora_rac::db_master(
     group_oper             => $grid_oper_group,
     group_asm              => $grid_admin_group,
     asm_diskgroup          => $data_disk_group_name,
-    disks                  => "ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3",
+    disks                  => 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
     disk_redundancy        => 'NORMAL',
     puppetDownloadMntPoint => $puppet_download_mnt_point,
     downloadDir            => $download_dir,
@@ -86,11 +89,11 @@ class ora_rac::db_master(
   } ~>
 
   file{"${download_dir}/create_disk_groups.sh":,
-    ensure    => file,
-    owner     => $oracle_user,
-    group     => $install_group,
-    content   => template('ora_rac/create_disk_groups.sh.erb'),
-    mode      => '0775',
+    ensure  => file,
+    owner   => $oracle_user,
+    group   => $install_group,
+    content => template('ora_rac/create_disk_groups.sh.erb'),
+    mode    => '0775',
   } ~>
 
   exec {'create_disk_groups':
@@ -117,33 +120,33 @@ class ora_rac::db_master(
     oracleHome             => $oracle_home,
     puppetDownloadMntPoint => $puppet_download_mnt_point,
     downloadDir            => $download_dir,
-    cluster_nodes          => "${::hostname}",
+    cluster_nodes          => $::hostname,
     remoteFile             => $remote_file,
     require                => Oradb::Installasm[$_grid_file],
   } ->
 
   oradb::database{ $db_name:
-    oracleBase              => $oracle_base,
-    oracleHome              => $oracle_home,
-    version                 => $db_version,
-    user                    => $oracle_user,
-    group                   => $dba_group,
-    downloadDir             => $download_dir,
-    action                  => 'create',
-    dbName                  => $db_name,
-    dbDomain                => $domain_name,
-    sysPassword             => $db_password,
-    systemPassword          => $db_password,
-    dataFileDestination     => "+DATA",
-    storageType             => 'ASM',
-    characterSet            => "AL32UTF8",
-    nationalCharacterSet    => "UTF8",
-    initParams              => $init_params,
-    sampleSchema            => 'FALSE',
-    databaseType            => "MULTIPURPOSE",
-    emConfiguration         => "NONE",
-    asmDiskgroup            => 'DATA',
-    cluster_nodes           => "${::hostname}",
+    oracleBase           => $oracle_base,
+    oracleHome           => $oracle_home,
+    version              => $db_version,
+    user                 => $oracle_user,
+    group                => $dba_group,
+    downloadDir          => $download_dir,
+    action               => 'create',
+    dbName               => $db_name,
+    dbDomain             => $domain_name,
+    sysPassword          => $db_password,
+    systemPassword       => $db_password,
+    dataFileDestination  => '+DATA',
+    storageType          => 'ASM',
+    characterSet         => 'AL32UTF8',
+    nationalCharacterSet => 'UTF8',
+    initParams           => $init_params,
+    sampleSchema         => 'FALSE',
+    databaseType         => 'MULTIPURPOSE',
+    emConfiguration      => 'NONE',
+    asmDiskgroup         => 'DATA',
+    cluster_nodes        => $::hostname,
   }
 
   $cluster_nodes.each | $index, $instance| {
@@ -154,19 +157,19 @@ class ora_rac::db_master(
     $instance_name    = "${db_name}${instance_number}"
 
     ora_rac::oratab_entry{$instance_name:
-      home      => $oracle_home,
-      start     => 'N',
-      comment   => 'Added by puppet',
-      require   => Oradb::Database[$db_name],
+      home    => $oracle_home,
+      start   => 'N',
+      comment => 'Added by puppet',
+      require => Oradb::Database[$db_name],
     }
 
     if ($instance_number > 1) { # Not a master node
 
       ora_rac::ora_instance{$instance_name:
-        on        => $master_instance,
-        number    => $instance_number,
-        thread    => $thread,
-        require   => [
+        on      => $master_instance,
+        number  => $instance_number,
+        thread  => $thread,
+        require => [
           Ora_rac::Oratab_entry[$instance_name],
           Ora_rac::Oratab_entry[$master_instance],
         ]

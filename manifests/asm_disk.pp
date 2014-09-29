@@ -1,7 +1,9 @@
-# == Class: cluster::config
-#
+# == Class: ora_rac::asm_disk
 #
 # === Parameters
+#
+# name      device name
+# voldume   asm volume name
 #
 # === Variables
 #
@@ -9,9 +11,6 @@
 #
 # Bert Hajee <hajee@moretIA.com>
 #
-# === Copyright
-#
-# Copyright 2014 Bert Hajee
 #
 define ora_rac::asm_disk( $volume)
 {

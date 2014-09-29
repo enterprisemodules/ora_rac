@@ -1,3 +1,23 @@
+# == Class: ora_rac::ensure_oracle_ownership
+#
+# This class makes sure all the directories fro oracle_base to oracle_home
+# exist and are owned by the oracle user and oracle_install group.
+#
+# === Parameters
+#
+#  none
+#
+# === Variables
+#
+#   $oracle_base
+#   $oracle_home
+#   $oracle_user
+#   $install_group
+#
+# === Authors
+#
+# Bert Hajee <hajee@moretIA.com>
+#
 class ora_rac::ensure_oracle_ownership inherits ora_rac::params{
   exec{"change ownership ${oracle_base}":
     command   => "/bin/chown ${oracle_user}:${install_group} ${oracle_base}"

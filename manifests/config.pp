@@ -1,17 +1,19 @@
-# == Class: cluster::config
+# == Class: ora_rac::config
 #
+# The purpose of this class is to configure the basic storage requirements
+# for RAC. It creates the partitions and formats them according to needs. This
+# is just an example class for getting it running in Vagrant. You need to make
+# your own config class..
 #
 # === Parameters
+#
+#   none
 #
 # === Variables
 #
 # === Authors
 #
 # Bert Hajee <hajee@moretIA.com>
-#
-# === Copyright
-#
-# Copyright 2014 Bert Hajee
 #
 class ora_rac::config inherits ora_rac::params
 {

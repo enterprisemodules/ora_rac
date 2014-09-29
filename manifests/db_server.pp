@@ -1,16 +1,19 @@
 # == Class: ora_rac::db_server
 #
+# This class installs a second or third or... RAC node. It clone's all information 
+# from the db_master node and add's the node to the RAC cluster
+#
 # === Parameters
 #
+# Check ora_rac::params for all the parameters
+#
 # === Variables
+#
+# Check ora_rac::params for all the variables
 #
 # === Authors
 #
 # Bert Hajee <hajee@moretIA.com>
-#
-# === Copyright
-#
-# Copyright 2014 Bert Hajee
 #
 class ora_rac::db_server(
   $db_machines                = $ora_rac::params::db_machines,

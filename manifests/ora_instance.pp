@@ -1,46 +1,51 @@
-# == Class: cluster::config
+# == Class: ora_rac::ora_instance
+#
+# Do all the stuff needed to register a new oracle inntance in a running (single node)
+# RAC cluster
 #
 #
 # === Parameters
 #
+# name    - The instance name
+# on      - The oracle instance (probably the master instance) on which to run the sql commands
+# number  - The instance number
+# thread  - The instancd thread
+#
 # === Variables
+#
+#  none
 #
 # === Authors
 #
 # Bert Hajee <hajee@moretIA.com>
 #
-# === Copyright
-#
-# Copyright 2014 Bert Hajee
-#
 define ora_rac::ora_instance(
-	$on,
-	$number,
-	$thread,
+  $on,
+  $number,
+  $thread,
 ){
 
-
   tablespace{"${on}/UNDOTBS${number}":
-    contents  => 'undo',
-    datafile  => '+DATA',
+    contents => 'undo',
+    datafile => '+DATA',
   }
 
   init_param{"${on}/${name}/instance_number":
-    ensure    => present,
-    scope     => 'spfile',
-    value     => $number,
+    ensure => present,
+    scope  => 'spfile',
+    value  => $number,
   }
 
   init_param{"${on}/${name}/instance_name":
-    ensure    => present,
-    scope     => 'spfile',
-    value     => $name,
+    ensure => present,
+    scope  => 'spfile',
+    value  => $name,
   }
 
   init_param{"${on}/${name}/thread":
-    ensure    => present,
-    scope     => 'spfile',
-    value     => $thread,
+    ensure => present,
+    scope  => 'spfile',
+    value  => $thread,
   }
 
   init_param{"${on}/${name}/undo_tablespace":

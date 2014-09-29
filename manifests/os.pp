@@ -6,37 +6,17 @@
 #
 # === Parameters
 #
-# *iptables_lines*
-#   Array of hashes of iptables entries
-#
-# *sysctl_lines*
-#   Array of hashes of sysctl entries
-#
 # === Variables
 #
 # === Authors
 #
-# Allard Berends <allard.berends@prorail.nl>
-#
-# === Copyright
-#
-# Copyright 2013 Allard Berends
-#
-# ==== Design
-#
-# To make the generic Oracle database installation possible,
-# we need to conduct the following steps:
-# * adapt /etc/fstab
-# * create Oracle groups and accounts
-# * set /etc/security/limits.conf
-# * set /etc/sysconfig/iptables
-# * set /etc/sysctl.conf
+# Bert Hajee <hajee@moretIA.com>
 #
 class ora_rac::os (
   $etc_profile    = '/etc/profile',
   $config_limits  = '/etc/security/limits.conf',
 ) inherits ora_rac::params {
-  # TODO: Fix the devices 
+  # TODO: Fix the devices
   #   'title'   => 'net.ipv4.conf.eth2.rp_filter',
   #   'comment' => '# Disable rp_filtering on interconnects',
   #   'setting' => 'net.ipv4.conf.eth2.rp_filter = 2',
@@ -54,103 +34,103 @@ class ora_rac::os (
   # Sysctl{ permanent => 'yes'}
 
   sysctl {'net.ipv4.ip_local_port_range':
-    ensure    => 'present',
-    value     => '9000 65500',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '9000 65500',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'kernel.shmall':
-    ensure    => 'present',
-    value     => '65536000',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '65536000',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'kernel.shmmax':
-    ensure    => 'present',
-    value     => '4294967296',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '4294967296',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'kernel.msgmni':
-    ensure    => 'present',
-    value     => '2878',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '2878',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'kernel.sem':
-    ensure    => 'present',
-    value     => '2510 356420 2510 142',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '2510 356420 2510 142',
+    comment => 'TODO: Add comment',
   }
 
   sysctl { 'kernel.shmmni':
-    ensure    => 'present',
-    value     => '4096',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '4096',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'fs.file-max':
-    ensure    => 'present',
-    value     => '6815744',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '6815744',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'fs.aio-max-nr':
-    ensure    => 'present',
-    value     => '1572864',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '1572864',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'net.core.rmem_default':
-    ensure    => 'present',
-    value     => '262144',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '262144',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'net.core.rmem_max':
-    ensure    => 'present',
-    value     => '4194304',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '4194304',
+    comment => 'TODO: Add comment',
   }
 
- sysctl {'net.core.wmem_default':
-    ensure    => 'present',
-    value     => '262144',
-    comment   => 'TODO: Add comment',
+  sysctl {'net.core.wmem_default':
+    ensure  =>  'present',
+    value   => '262144',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'net.core.wmem_max':
-    ensure    => 'present',
-    value     => '1048576',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '1048576',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'sunrpc.tcp_slot_table_entries':
-    ensure    => 'present',
-    value     => '128',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '128',
+    comment => 'TODO: Add comment',
   }
 
   sysctl {'vm.max_map_count':
-    ensure    => 'present',
-    value     => '100000',
-    comment   => 'TODO: Add comment',
+    ensure  => 'present',
+    value   => '100000',
+    comment => 'TODO: Add comment',
   }
 
   augeas {'ensure_tmpfs_size':
-    context    => '/files/etc/fstab',
-    changes    => [
+    context => '/files/etc/fstab',
+    changes => [
       "ins opt after *[spec = 'tmpfs'][file = '/dev/shm']/opt[last()]",
       "set *[spec = 'tmpfs']/opt[last()] size",
       "set *[spec = 'tmpfs']/opt[last()]/value ${orashm}m",
     ],
-    onlyif     => "match *[spec='tmpfs'][file = '/dev/shm']/opt[. = 'size'] size == 0",
+    onlyif  => "match *[spec='tmpfs'][file = '/dev/shm']/opt[. = 'size'] size == 0",
   }
 
   exec {'remount_tmpfs':
-    command    => '/bin/mount -o remount /dev/shm',
-    onlyif     => "/usr/bin/test -z $(/bin/mount | /bin/grep /dev/shm | /bin/grep -o size=${orashm}m)",
-    require    => Augeas['ensure_tmpfs_size'],
+    command => '/bin/mount -o remount /dev/shm',
+    onlyif  => "/usr/bin/test -z $(/bin/mount | /bin/grep /dev/shm | /bin/grep -o size=${orashm}m)",
+    require => Augeas['ensure_tmpfs_size'],
   }
 
 
@@ -165,7 +145,7 @@ class ora_rac::os (
     }
   }
 
-  user {$oracle_user:
+  user{ $oracle_user:
     ensure     => present,
     comment    => 'Oracle user',
     gid        => $install_group_id,
@@ -181,20 +161,18 @@ class ora_rac::os (
     require    => Group[$dba_group, $oper_group, $install_group],
   }
 
-
   ora_rac::user_equivalence{$oracle_user:
     nodes => $ora_rac::params::all_nodes,
   }
 
   file {"/home/${$oracle_user}/.bash_profile":
-    ensure    => file,
-    owner     => $oracle_user,
-    group     => $dba_group,
-    mode      => '0644',
-    source    => 'puppet:///modules/ora_rac/bash_profile',
-    require   => User[$oracledb_user],
+    ensure  => file,
+    owner   => $oracle_user,
+    group   => $dba_group,
+    mode    => '0644',
+    source  => 'puppet:///modules/ora_rac/bash_profile',
+    require => User[$oracledb_user],
   }
-
 
   user {$grid_user:
     ensure     => present,
@@ -278,7 +256,7 @@ class ora_rac::os (
       proto   => 'all',
       iniface => $interface,
       action  => 'accept',
-    }    
+    }
   }
 
 

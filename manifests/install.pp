@@ -13,12 +13,6 @@
 #
 # Bert Hajee hajee@moretIA.com
 #
-# === Copyright
-#
-# Copyright 2014 Bert Hajee
-#
-# === Design
-#
 #
 class ora_rac::install (
   $packages        = [
