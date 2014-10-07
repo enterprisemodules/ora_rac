@@ -87,14 +87,6 @@ class ora_rac::db_master(
     storage_option         => 'ASM_STORAGE',
   } ~>
 
-  file{"${download_dir}/create_disk_groups.sh":,
-    ensure  => file,
-    owner   => $oracle_user,
-    group   => $install_group,
-    content => template('ora_rac/create_disk_groups.sh.erb'),
-    mode    => '0775',
-  } ~>
-
   class{'ora_rac::ensure_oracle_ownership':} ->
 
   oradb::installdb{ $_oracle_file:
