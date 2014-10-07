@@ -60,7 +60,6 @@ class ora_rac::db_master(
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
   ) inherits ora_rac::params {
 
-
   oradb::installasm{ $_grid_file:
     version                => $version,
     file                   => $_grid_file,
@@ -73,7 +72,7 @@ class ora_rac::db_master(
     group_install          => $install_group,
     group_oper             => $grid_oper_group,
     group_asm              => $grid_admin_group,
-    asm_diskgroup          => $data_disk_group_name,
+    asm_diskgroup          => $crs_disk_group_name,
     disks                  => 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
     disk_redundancy        => 'NORMAL',
     puppetDownloadMntPoint => $puppet_download_mnt_point,
@@ -95,14 +94,6 @@ class ora_rac::db_master(
     content => template('ora_rac/create_disk_groups.sh.erb'),
     mode    => '0775',
   } ~>
-
-  exec {'create_disk_groups':
-    timeout   => 0, # This might take a long time
-    user      => $grid_user,
-    command   => "/bin/sh ${$download_dir}/create_disk_groups.sh",
-    logoutput => on_failure,
-    require   => File["${$download_dir}/create_disk_groups.sh"],
-  } ->
 
   class{'ora_rac::ensure_oracle_ownership':} ->
 

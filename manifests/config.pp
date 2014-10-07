@@ -35,11 +35,11 @@ class ora_rac::config inherits ora_rac::params
   $partitions = $devices.map |$d| {"${d}:1"}
 
   partition{$partitions:
-    ensure     => present,
-    part_name  => 'primary',
-    start      => '17.4kB',
-    end        => '4096MB',
-    require    => Partition_table[$devices],
+    ensure    => present,
+    part_name => 'primary',
+    start     => '17.4kB',
+    end       => '4096MB',
+    require   => Partition_table[$devices],
   }
 
   ora_rac::asm_disk{'/dev/sda1':

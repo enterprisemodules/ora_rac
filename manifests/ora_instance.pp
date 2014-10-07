@@ -27,7 +27,7 @@ define ora_rac::ora_instance(
 
   tablespace{"${on}/UNDOTBS${number}":
     contents => 'undo',
-    datafile => '+DATA',
+    datafile => "+${data_disk_group_name}",
   }
 
   init_param{"${on}/${name}/instance_number":

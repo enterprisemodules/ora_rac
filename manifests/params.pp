@@ -170,5 +170,4 @@ class ora_rac::params(
   $all_ip_addresses     = $public_ip_addresses + $private_ip_addresses + $vip_ip_addresses
 
   $cluster_vip_names    = suffix($cluster_nodes, '-vip')
-  $all_nodes            = concat($cluster_nodes, $cluster_vip_names)
 }
