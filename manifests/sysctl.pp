@@ -1,3 +1,19 @@
+# == Class: ora_rac::sysctl
+#
+# set all required sysctl paramaters for a RAC node
+#
+# === Parameters
+#
+#  none
+#
+# === Variables
+#
+# none
+#
+# === Authors
+#
+# Bert Hajee <hajee@moretIA.com>
+#
 class ora_rac::sysctl inherits ora_rac::params
 {
   # TODO: Fix the devices

@@ -61,14 +61,14 @@ define ora_rac::ora_instance(
   }
 
   oracle_exec{"${on}/@/tmp/add_logfiles_${thread}.sql":
-    require   => [
+    require => [
       File["/tmp/add_logfiles_${thread}.sql"],
     ]
   }
 
   oracle_thread{"${on}/${thread}":
     ensure  => 'enabled',
-    require   => [
+    require  => [
       Init_param["${on}/${name}/undo_tablespace"],
       Oracle_exec["${on}/@/tmp/add_logfiles_${thread}.sql"],
       ]

@@ -41,17 +41,17 @@ class ora_rac::db_server(
 
 
   exec{'add_grid_node':
-    timeout     => 0,
-    user        => $grid_user,
-    command     => "/usr/bin/ssh ${grid_user}@${master_node} \"${grid_home}/\"${add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
-    creates     => "${grid_home}/root.sh",
+    timeout => 0,
+    user    => $grid_user,
+    command => "/usr/bin/ssh ${grid_user}@${master_node} \"${grid_home}/\"${add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    creates => "${grid_home}/root.sh",
   } ->
 
   exec{'register_grid_node':
-    timeout     => 0,
-    user        => 'root',
-    creates     => "${grid_base}/grid/${::hostname}",
-    command     => "/bin/sh ${ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${grid_home}/root.sh",
+    timeout => 0,
+    user    => 'root',
+    creates => "${grid_base}/grid/${::hostname}",
+    command => "/bin/sh ${ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${grid_home}/root.sh",
   }
 
 
@@ -62,59 +62,59 @@ class ora_rac::db_server(
   $non_empty_directories.reduce($oracle_base) |$base_path, $relative_path| {
     $path = "${base_path}/${relative_path}"
     file{ $path:
-      ensure    => 'directory',
-      owner     => $oracle_user,
-      group     => $install_group,
-      before    => Exec['add_oracle_node'],
-      require   => Exec['register_grid_node'],
+      ensure  => 'directory',
+      owner   => $oracle_user,
+      group   => $install_group,
+      before  => Exec['add_oracle_node'],
+      require => Exec['register_grid_node'],
     }
     $path
   }
 
 
   exec{'add_oracle_node':
-    timeout     => 0,
-    user        => $grid_user,
-    command     => "/usr/bin/ssh ${oracle_user}@${master_node} \"${oracle_home}/\"${add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
-    logoutput   => on_failure,
-    creates     => "${oracle_home}/root.sh",
-    require     => [
+    timeout   => 0,
+    user      => $grid_user,
+    command   => "/usr/bin/ssh ${oracle_user}@${master_node} \"${oracle_home}/\"${add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    logoutput => on_failure,
+    creates   => "${oracle_home}/root.sh",
+    require   => [
       Exec['register_grid_node']
     ]
   }->
 
 
   exec{'register_oracle_node':
-    timeout     => 0,
-    user        => 'root',
-    # creates     => $oracle_home,
-    command     => "/bin/sh ${ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${oracle_home}/root.sh",
-    logoutput   => on_failure,
+    timeout   => 0,
+    user      => 'root',
+    # creates   => $oracle_home,
+    command   => "/bin/sh ${ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${oracle_home}/root.sh",
+    logoutput => on_failure,
   }->
 
   class{'ora_rac::ensure_oracle_ownership':} ->
 
   ora_rac::oratab_entry{$current_instance:
-    home      => $oracle_home,
-    start     => 'N',
-    comment   => 'Added by puppet',
+    home    => $oracle_home,
+    start   => 'N',
+    comment => 'Added by puppet',
   } ->
 
 
   exec{'add_instance':
-    user          => $oracle_user,
-    environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=${oracle_home}"],
-    command       => "${oracle_home}/bin/srvctl add instance -d ${db_name} -i ${current_instance} -n ${::hostname}",
-    unless        => "${oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance}",
-    logoutput     => on_failure,
+    user        => $oracle_user,
+    environment => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=${oracle_home}"],
+    command     => "${oracle_home}/bin/srvctl add instance -d ${db_name} -i ${current_instance} -n ${::hostname}",
+    unless      => "${oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance}",
+    logoutput   => on_failure,
   } ->
 
   exec{'start_instance':
-    user          => $oracle_user,
-    environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO","ORACLE_HOME=/opt/oracle/app/${version}/db_1"],
-    command       => "${oracle_home}/bin/srvctl start instance -d ${db_name} -i ${current_instance}",
-    onlyif        => "${oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance} | grep not",
-    logoutput     => on_failure,
+    user        => $oracle_user,
+    environment => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO","ORACLE_HOME=/opt/oracle/app/${version}/db_1"],
+    command     => "${oracle_home}/bin/srvctl start instance -d ${db_name} -i ${current_instance}",
+    onlyif      => "${oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance} | grep not",
+    logoutput   => on_failure,
   }
 
 }

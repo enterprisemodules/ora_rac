@@ -92,12 +92,12 @@ class ora_rac::os (
   }
 
   file {"/home/${grid_user}/.bash_profile":
-    ensure    => file,
-    owner     => $grid_user,
-    group     => $asm_group,
-    mode      => '0644',
-    source    => 'puppet:///modules/ora_rac/bash_profile',
-    require   => User[$grid_user],
+    ensure  => file,
+    owner   => $grid_user,
+    group   => $asm_group,
+    mode    => '0644',
+    source  => 'puppet:///modules/ora_rac/bash_profile',
+    require => User[$grid_user],
   }
 
   ora_rac::user_equivalence{$grid_user:
@@ -105,19 +105,19 @@ class ora_rac::os (
   }
 
   file {$config_limits:
-    ensure    => file,
-    owner     => 'root',
-    group     => 'root',
-    mode      => '0644',
-    source    => 'puppet:///modules/ora_rac/limits'
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => 'puppet:///modules/ora_rac/limits'
   }
 
   file {$etc_profile:
-    ensure    => file,
-    owner     => 'root',
-    group     => 'root',
-    mode      => '0644',
-    source    => 'puppet:///modules/ora_rac/etc_profile'
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => 'puppet:///modules/ora_rac/etc_profile'
   }
 
 
