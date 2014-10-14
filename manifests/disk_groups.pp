@@ -20,8 +20,8 @@ class ora_rac::disk_groups inherits ora_rac::params
   asm_diskgroup {'+ASM1/REDO':
     ensure          => 'present',
     redundancy_type => 'normal',
-    compat_asm      => '11.2.0.0.0',
-    compat_rdbms    => '11.2.0.0.0',
+    compat_asm      => $db_version,
+    compat_rdbms    => $db_version,
     failgroups      => {
       'CONTROLLER1' => { 'diskname' => 'REDOVOL1', 'path' => 'ORCL:REDOVOL1'},
       'CONTROLLER2' => { 'diskname' => 'REDOVOL2', 'path' => 'ORCL:REDOVOL2'},
@@ -31,8 +31,8 @@ class ora_rac::disk_groups inherits ora_rac::params
   asm_diskgroup {"+ASM1/${data_disk_group_name}":
     ensure          => 'present',
     redundancy_type => 'normal',
-    compat_asm      => '11.2.0.0.0',
-    compat_rdbms    => '11.2.0.0.0',
+    compat_asm      => $db_version,
+    compat_rdbms    => $db_version,
     failgroups      => {
       'CONTROLLER1' => { 'diskname' => 'DATAVOL1', 'path' => 'ORCL:DATAVOL1'},
       'CONTROLLER2' => { 'diskname' => 'DATAVOL2', 'path' => 'ORCL:DATAVOL2'},

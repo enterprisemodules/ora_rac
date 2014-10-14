@@ -60,7 +60,7 @@ class ora_rac::install (
   }
 
   unless defined(Package['libstdc++.x86_64']){
-    package{'libstdc++.x86_64':
+      package{'libstdc++.x86_64':
       ensure    => 'installed',
     }
   }
