@@ -37,8 +37,8 @@ class ora_rac::config inherits ora_rac::params
   partition{$partitions:
     ensure    => present,
     part_name => 'primary',
-    start     => '17.4kB',
-    end       => '4096MB',
+    start     => '1049kB',
+    end       => '4294MB',
     require   => Partition_table[$devices],
   }
 

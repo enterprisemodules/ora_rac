@@ -1,0 +1,35 @@
+# Configuration file for Cluster Verification Utility(CVU)
+# Version: 011405
+#
+# NOTE:
+# 1._ Any line without a '=' will be ignored
+# 2._ Since the fallback option will look into the environment variables,
+#     please have a component prefix(CV_) for each property to define a
+#     namespace.
+#
+
+
+#Nodes for the cluster. If CRS home is not installed, this list will be
+#picked up when -n all is mentioned in the commandline argument.
+#CV_NODE_ALL=
+
+#if enabled, cvuqdisk rpm is required on all nodes
+CV_RAW_CHECK_ENABLED=TRUE
+
+# Fallback to this distribution id
+CV_ASSUME_DISTID=OEL6
+
+# Whether X-Windows check should be performed for user equivalence with SSH
+#CV_XCHK_FOR_SSH_ENABLED=TRUE
+
+# To override SSH location
+#ORACLE_SRVM_REMOTESHELL=/usr/bin/ssh
+
+# To override SCP location
+#ORACLE_SRVM_REMOTECOPY=/usr/bin/scp
+
+# To override version used by command line parser
+#CV_ASSUME_CL_VERSION=10.2
+
+# Location of the browser to be used to display HTML report
+#CV_DEFAULT_BROWSER_LOCATION=/usr/bin/mozilla

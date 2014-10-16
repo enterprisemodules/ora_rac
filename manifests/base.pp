@@ -18,27 +18,49 @@
 #
 class ora_rac::base inherits ora_rac::params {
 
+  if $::operatingsystemmajrelease == 5 {
 
-  package {'oracleasm-support':
-    ensure   => 'installed',
-    provider => 'rpm',
-    source   => "${puppet_download_mnt_point}/oracleasm-support-2.1.8-1.el5.x86_64.rpm",
+    package {'oracleasm-support':
+      ensure   => 'installed',
+      provider => 'rpm',
+      source   => "${puppet_download_mnt_point}/oracleasm-support-2.1.8-1.el5.x86_64.rpm",
+    }->
+
+    package {$asm_package:
+      ensure   => 'installed',
+      source   => "${puppet_download_mnt_point}/${asm_package_name}",
+      provider => 'rpm',
+    } ->
+
+    package {'oracleasmlib':
+      ensure   => 'installed',
+      source   => "${puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el5.x86_64.rpm",
+      provider => 'rpm',
+    }
+
+  } else {
+    $packages = [
+      'kmod-oracleasm',
+      'oracleasm-support',
+    ]
+    yumrepo{'oracle':
+      baseurl  => "http://public-yum.oracle.com/repo/OracleLinux/OL6/latest/$architecture",
+      descr   => 'Oracle repo',
+      gpgcheck => 0,
+      enabled => 1,
+    } ->
+    package{$packages:
+      ensure => 'installed',
+    }
+
+    package {'oracleasmlib':
+      ensure   => 'installed',
+      source   => "${puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el6.x86_64.rpm",
+      provider => 'rpm',
+    }
+
+
   }
-
-  package {$asm_package:
-    ensure   => 'installed',
-    source   => "${puppet_download_mnt_point}/${asm_package_name}",
-    provider => 'rpm',
-    require  => Package['oracleasm-support'],
-  }
-
-  package {'oracleasmlib':
-    ensure   => 'installed',
-    source   => "${puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el5.x86_64.rpm",
-    provider => 'rpm',
-    require  => Package[$asm_package],
-  }
-
 
   file{'/etc/sysconfig/oracleasm-_dev_oracleasm':
     ensure  => file,

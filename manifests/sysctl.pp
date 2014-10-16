@@ -105,11 +105,12 @@ class ora_rac::sysctl inherits ora_rac::params
     comment => 'TODO: Add comment',
   }
 
-  sysctl {'sunrpc.tcp_slot_table_entries':
-    ensure  => 'present',
-    value   => '128',
-    comment => 'TODO: Add comment',
-  }
+  # TODO: Checkout why
+  # sysctl {'sunrpc.tcp_slot_table_entries':
+  #   ensure  => 'present',
+  #   value   => '128',
+  #   comment => 'TODO: Add comment',
+  # }
 
   sysctl {'vm.max_map_count':
     ensure  => 'present',

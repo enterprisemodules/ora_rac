@@ -71,7 +71,7 @@ class ora_rac::os (
     group   => $dba_group,
     mode    => '0644',
     source  => 'puppet:///modules/ora_rac/bash_profile',
-    require => User[$oracledb_user],
+    require => User[$oracle_user],
   }
 
   user {$grid_user:
