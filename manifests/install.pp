@@ -16,33 +16,6 @@
 #
 class ora_rac::install
 {
-  $packages = [
-    'binutils',
-    'compat-libstdc++-33',
-    'elfutils-libelf',
-    'elfutils-libelf-devel',
-    'gcc',
-    'gcc-c++',
-    'glibc',
-    'glibc-common',
-    'glibc-devel',
-    'glibc-headers',
-    'ksh',
-    'libaio',
-    'libaio-devel',
-    'libgcc',
-    'libstdc++',
-    'libstdc++-devel',
-    'make',
-    'sysstat',
-    'unixODBC',
-    'unixODBC-devel',
-    'coreutils',
-    'compat-libcap1',
-    ]
-
-  package{$packages:
-    ensure    => 'installed',
-  }
-
+  $packages = hiera('ora_rac::install::packages')
+  create_resources('package', $packages)
 } # end ora_rac::install

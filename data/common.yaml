@@ -1,0 +1,63 @@
+---
+
+ora_rac::yumrepos:  {}  # Default no extra yumrepo's
+
+ora_rac::disk_config::asm_disks:
+  CRSVOL1:
+    raw_device: /dev/sda:1
+    start:      '1049kB'
+    end:        '4294MB'
+  CRSVOL2:
+    raw_device: /dev/sdb:1
+    start:      '1049kB'
+    end:        '4294MB'
+  CRSVOL3:
+    raw_device: /dev/sdc:1
+    start:      '1049kB'
+    end:        '4294MB'
+  REDOVOL1:
+    raw_device: /dev/sdd:1
+    start:      '1049kB'
+    end:        '4294MB'
+  REDOVOL2:
+    raw_device: /dev/sde:1
+    start:      '1049kB'
+    end:        '4294MB'
+  DATAVOL1:
+    raw_device: /dev/sdf:1
+    start:      '1049kB'
+    end:        '4294MB'
+  DATAVOL2:
+    raw_device: /dev/sdg:1
+    start:      '1049kB'
+    end:        '4294MB'
+
+ora_rac::disk_groups:
+  '+ASM1/REDO':
+    ensure:          present
+    redundancy_type: normal
+    failgroups:
+      CONTROLLER1:
+        diskname:     REDOVOL1
+        path:         ORCL:REDOVOL1
+      CONTROLLER2:
+        diskname:     REDOVOL2
+        path:         ORCL:REDOVOL2
+    require:          
+      - Ora_rac::Asm_disk[REDOVOL1]
+      - Ora_Rac::Asm_disk[REDOVOL2]
+
+ora_rac::disk_groups:
+  '+ASM1/%{data_disk_group_name}':
+    ensure:          present
+    redundancy_type: normal
+    failgroups:
+      CONTROLLER1:
+        diskname:     DATAVOL1
+        path:         ORCL:DATAVOL1
+      CONTROLLER2:
+        diskname:     DATAVOL2
+        path:         ORCL:DATAVOL2
+    require:
+      - Ora_rac::Asm_disk[DATAVOL1]
+      - Ora_Rac::Asm_disk[DATAVOL2]
