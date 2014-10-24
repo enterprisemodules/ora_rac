@@ -60,3 +60,28 @@ ora_rac::sysctl_params:
   'vm.max_map_count':
     value:        '100000'
     comment:    'TODO: Add comment'
+
+ora_rac::install::packages:
+  'binutils':               {}
+  'compat-libstdc++-33':    {}
+  'elfutils-libelf':        {}
+  'elfutils-libelf-devel':  {}
+  'gcc':                    {}
+  'gcc-c++':                {}
+  'glibc':                  {}
+  'glibc-common':           {}
+  'glibc-devel':            {}
+  'glibc-headers':          {}
+  'ksh':                    {}
+  'libaio':                 {}
+  'libaio-devel':           {}
+  'libgcc':                 {}
+  'libstdc++':              {}
+  'libstdc++-devel':        {}
+  'make':                   {}
+  'sysstat':                {}
+  'unixODBC':               {}
+  'unixODBC-devel':         {}
+  'coreutils':              {}
+  'compat-libcap1':         {}
+
