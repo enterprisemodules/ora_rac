@@ -1,27 +1,27 @@
 ---
 
-ora_rac::asm_drivers::packages:
+ora_rac::internal::asm_packages:
   oracleasm-support:
     provider:          rpm
     install_options:  '--nosignature'
-    source:           %{puppet_download_mnt_point}/oracleasm-support-2.1.8-1.el5.x86_64.rpm
+    source:           %{ora_rac::settings::puppet_download_mnt_point}/oracleasm-support-2.1.8-1.el5.x86_64.rpm
 
   oracleasm-2.6.18-371.el5:
     provider:         rpm
     install_options:  '--nosignature'
-    source:           %{puppet_download_mnt_point}/oracleasm-2.6.18-371.el5-2.0.5-1.el5.x86_64.rpm
+    source:           %{ora_rac::settings::puppet_download_mnt_point}/oracleasm-2.6.18-371.el5-2.0.5-1.el5.x86_64.rpm
     require:          Package[oracleasm-support]
 
   oracleasmlib:
-    source:            %{puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el5.x86_64.rpm
+    source:            %{ora_rac::settings::puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el5.x86_64.rpm
     install_options:  '--nosignature'
     provider:         rpm
     require:          Package[oracleasm-2.6.18-371.el5]
 
 
-ora_rac::iptables::input_chain: RH-Firewall-1-INPUT
+ora_rac::internal::iptables::input_chain: RH-Firewall-1-INPUT
 
-ora_rac::sysctl_params:
+ora_rac::internal::sysctl_params:
   'net.ipv4.ip_local_port_range':
     value:     '9000 65500'
     comment:   'TODO: Add comment'
@@ -66,9 +66,8 @@ ora_rac::sysctl_params:
     comment:      'TODO: Add comment'
 
 
-
-ora_rac::install::packages:
-  'binutils' :                    {}
+ora_rac::internal::packages:
+  'binutils':                     {}
   'compat-libstdc++-33':          {}
   'compat-libstdc++-33.x86_64':   {}
   'pdksh':                        {}
@@ -77,14 +76,14 @@ ora_rac::install::packages:
   'glibc':                        {}
   'glibc-devel':                  {}
   'ksh':                          {}
-  'libgcc' :                      {}
+  'libgcc':                       {}
   'libstdc++':                    {}
   'libstdc++-devel':              {}
-  'libaio' :                      {}
-  'libaio-devel' :                {}
-  'make' :                        {}
+  'libaio':                       {}
+  'libaio-devel':                 {}
+  'make':                         {}
   'sysstat':                      {}
-  'compat-libstdc++-33.i386' :    {}
+  'compat-libstdc++-33.i386':     {}
   # 'glibc.i386' :                {}
   # 'glibc-devel.i386' :          {}
   'libgcc.i386':                  {}
@@ -93,9 +92,8 @@ ora_rac::install::packages:
   'libaio.i386':                  {}
   'libaio-devel.i386':            {}
   'nfs-utils':                    {}
-  'screen' :                      {}
-  'nscd' :                        {}
-  'elfutils' :                    {}
+  'nscd':                         {}
+  'elfutils':                     {}
   'elfutils-libs':                {}
   'elfutils-libelf':              {}
   'elfutils-libelf-devel':        {}

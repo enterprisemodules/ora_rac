@@ -17,6 +17,6 @@
 #
 class ora_rac::disk_config inherits ora_rac::params
 {
-  $asm_disks = hiera('ora_rac::disk_config::asm_disks')
-  create_resources('ora_rac::asm_disk', $asm_disks)
+  require ora_rac::settings
+  create_resources('ora_rac::asm_disk', $ora_rac::settings::asm_disks)
 }

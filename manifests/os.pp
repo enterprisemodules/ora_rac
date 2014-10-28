@@ -12,10 +12,9 @@
 #
 # Bert Hajee <hajee@moretIA.com>
 #
-class ora_rac::os (
-  $etc_profile    = '/etc/profile',
-  $config_limits  = '/etc/security/limits.conf',
-) inherits ora_rac::params {
+class ora_rac::os inherits ora_rac::params {
+
+  require ora_rac::settings
 
   augeas {'ensure_tmpfs_size':
     context => '/files/etc/fstab',
@@ -35,7 +34,7 @@ class ora_rac::os (
 
 
   ['install','dba','oper', 'grid','grid_oper', 'grid_admin'].each |$group| {
-    $variable_name  = "${group}_group"
+    $variable_name  = "ora_rac::settings::${group}_group"
     $group_name     = getvar($variable_name)
     $group_id_name  = "${variable_name}_id"
     $gid            = getvar($group_id_name)
@@ -45,66 +44,66 @@ class ora_rac::os (
     }
   }
 
-  user{ $oracle_user:
+  user{ $ora_rac::settings::oracle_user:
     ensure     => present,
     comment    => 'Oracle user',
-    gid        => $install_group_id,
+    gid        => $ora_rac::settings::install_group_id,
     groups     => [
-                    $dba_group,
-                    $grid_group,
-                    $oper_group,
+                    $ora_rac::settings::dba_group,
+                    $ora_rac::settings::grid_group,
+                    $ora_rac::settings::oper_group,
                   ],
-    uid        => $install_group_id,
+    uid        => $ora_rac::settings::install_group_id,
     shell      => '/bin/bash',
-    home       => "/home/${oracle_user}",
+    home       => "/home/${ora_rac::settings::oracle_user}",
     managehome => true,
-    require    => Group[$dba_group, $oper_group, $install_group],
+    require    => Group[$ora_rac::settings::dba_group, $ora_rac::settings::oper_group, $ora_rac::settings::install_group],
   }
 
-  ora_rac::user_equivalence{$oracle_user:
+  ora_rac::user_equivalence{$ora_rac::settings::oracle_user:
     nodes => $ora_rac::params::cluster_nodes,
   }
 
-  file {"/home/${$oracle_user}/.bash_profile":
+  file {"/home/${$ora_rac::settings::oracle_user}/.bash_profile":
     ensure  => file,
-    owner   => $oracle_user,
-    group   => $dba_group,
+    owner   => $ora_rac::settings::oracle_user,
+    group   => $ora_rac::settings::dba_group,
     mode    => '0644',
     source  => 'puppet:///modules/ora_rac/bash_profile',
-    require => User[$oracle_user],
+    require => User[$ora_rac::settings::oracle_user],
   }
 
-  user {$grid_user:
+  user {$ora_rac::settings::grid_user:
     ensure     => present,
     comment    => 'Oracle Grid user',
-    gid        => $install_group_id,
+    gid        => $ora_rac::settings::install_group_id,
     groups     => [
-                    $dba_group,
-                    $grid_group,
-                    $grid_admin_group,
-                    $grid_oper_group,
+                    $ora_rac::settings::dba_group,
+                    $ora_rac::settings::grid_group,
+                    $ora_rac::settings::grid_admin_group,
+                    $ora_rac::settings::grid_oper_group,
                   ],
-    uid        => $grid_uid,
+    uid        => $ora_rac::settings::grid_uid,
     shell      => '/bin/bash',
-    home       => "/home/${grid_user}",
+    home       => "/home/${ora_rac::settings::grid_user}",
     managehome => true,
-    require    => Group[$install_group,$dba_group, $grid_group, $grid_admin_group, $grid_oper_group],
+    require    => Group[$ora_rac::settings::install_group,$ora_rac::settings::dba_group, $ora_rac::settings::grid_group, $ora_rac::settings::grid_admin_group, $ora_rac::settings::grid_oper_group],
   }
 
-  file {"/home/${grid_user}/.bash_profile":
+  file {"/home/${ora_rac::settings::grid_user}/.bash_profile":
     ensure    => file,
-    owner     => $grid_user,
-    group     => $asm_group,
+    owner     => $ora_rac::settings::grid_user,
+    group     => $ora_rac::settings::asm_group,
     mode      => '0644',
     source    => 'puppet:///modules/ora_rac/bash_profile',
-    require   => User[$grid_user],
+    require   => User[$ora_rac::settings::grid_user],
   }
 
-  ora_rac::user_equivalence{$grid_user:
+  ora_rac::user_equivalence{$ora_rac::settings::grid_user:
     nodes => $ora_rac::params::cluster_nodes,
   }
 
-  file {$config_limits:
+  file {'/etc/security/limits.conf':
     ensure    => file,
     owner     => 'root',
     group     => 'root',
@@ -112,7 +111,7 @@ class ora_rac::os (
     source    => 'puppet:///modules/ora_rac/limits'
   }
 
-  file {$etc_profile:
+  file {'/etc/profile':
     ensure    => file,
     owner     => 'root',
     group     => 'root',

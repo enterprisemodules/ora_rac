@@ -9,8 +9,8 @@
 #
 # === Variables
 #
-# $asm_package_name - Use this to change the package to install. This package
-#                     is OS release specific
+# ora_rac::internal::yumrepos
+# ora_rac::internal::asm_packages
 #
 # === Authors
 #
@@ -18,11 +18,14 @@
 #
 class ora_rac::asm_drivers inherits ora_rac::params {
 
-  $yumrepos = hiera('ora_rac::yumrepos')
-  $packages = hiera('ora_rac::asm_drivers::packages')
+  require ora_rac::internal
+  require ora_rac::settings
 
-  create_resources('yumrepo', $yumrepos)
-  create_resources('package', $packages)
+  create_resources('yumrepo', $ora_rac::internal::yumrepos)
+  create_resources('package', $ora_rac::internal::asm_packages)
+
+  $grid_user  = $ora_rac::settings::grid_user 
+  $grid_group = $ora_rac::settings::grid_group
 
   file{'/etc/sysconfig/oracleasm-_dev_oracleasm':
     ensure  => file,

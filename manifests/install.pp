@@ -9,6 +9,8 @@
 #
 # === Variables
 #
+# ora_rac::internal::packages - Hash of packages to install
+#
 # === Authors
 #
 # Bert Hajee hajee@moretIA.com
@@ -16,6 +18,6 @@
 #
 class ora_rac::install
 {
-  $packages = hiera('ora_rac::install::packages')
-  create_resources('package', $packages)
+  require ora_rac::internal
+  create_resources('package', $ora_rac::internal::packages)
 } # end ora_rac::install

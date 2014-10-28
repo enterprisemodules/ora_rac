@@ -17,13 +17,14 @@
 #
 class ora_rac::disk_groups inherits ora_rac::params
 {
-  $asm_disk_groups = hiera('ora_rac::disk_groups')
+  require ora_rac::settings
+
   $defaults = {
     ensure        => 'present',
-    compat_asm    => $db_version,
-    compat_rdbms  => $db_version,
+    compat_asm    => $ora_rac::settings::db_version,
+    compat_rdbms  => $ora_rac::settings::db_version,
   }
-  create_resources('asm_diskgroup', $asm_disk_groups, $defaults)
+  create_resources('asm_diskgroup', $ora_rac::settings::asm_disk_groups, $defaults)
   #
   # Define all required relations
   #

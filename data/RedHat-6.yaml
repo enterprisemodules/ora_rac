@@ -1,26 +1,26 @@
 ---
 
-ora_rac::yumrepos:
+ora_rac::internal::yumrepos:
   oracle:
     baseurl:  http://public-yum.oracle.com/repo/OracleLinux/OL6/latest/x86_64
     descr:    Oracle repo
     gpgcheck: 0
     enabled:  1
 
-ora_rac::asm_drivers::packages:
+ora_rac::internal::asm_packages:
   kmod-oracleasm:
     ensure:   installed
   oracleasm-support:
     ensure:   installed
   oracleasmlib:
     ensure:   installed
-    source:   %{puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el6.x86_64.rpm
+    source:   %{ora_rac::settings::puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el6.x86_64.rpm
     provider: rpm
 
 
-ora_rac::iptables::input_chain: INPUT
+ora_rac::internal::iptables::input_chain: INPUT
 
-ora_rac::sysctl_params:
+ora_rac::internal::sysctl_params:
   'net.ipv4.ip_local_port_range':
     value:     '9000 65500'
     comment:   'TODO: Add comment'
@@ -61,7 +61,7 @@ ora_rac::sysctl_params:
     value:        '100000'
     comment:    'TODO: Add comment'
 
-ora_rac::install::packages:
+ora_rac::internal::packages:
   'binutils':               {}
   'compat-libstdc++-33':    {}
   'elfutils-libelf':        {}

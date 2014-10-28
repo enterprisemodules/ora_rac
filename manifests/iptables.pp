@@ -30,7 +30,7 @@ class ora_rac::iptables inherits ora_rac::params
   }
 
   $private_network_interfaces.each | $interface| {
-    firewall {'200 Oracle Cluster Interconnect':
+    firewall {"200 Oracle Cluster Interconnect on interface ${interface}":
       chain   => $input_chain,
       proto   => 'all',
       iniface => $interface,

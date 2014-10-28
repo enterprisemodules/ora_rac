@@ -26,84 +26,58 @@ class ora_rac::db_master(
   $private_network_interfaces = $ora_rac::params::private_network_interfaces,
   $unused_network_interfaces  = $ora_rac::params::unused_network_interfaces,
   $cluster_name               = $ora_rac::params::cluster_name,             # name of the cluster
-  $version                    = $ora_rac::params::version,                  # Oracle version to install
-  $file                       = $ora_rac::params::file,                     # file names base of installation files
-  $grid_file                  = $ora_rac::params::grid_file,                # file names base of installation files
-  $oracle_file                = $ora_rac::params::oracle_file,              # file names base of installation files
-  $oracle_base                = $ora_rac::params::oracle_base,              # Base for Oracle
-  $grid_base                  = $ora_rac::params::grid_base,                # Base for grid
-  $oracle_home                = $ora_rac::params::oracle_home,              # Oracle home
-  $grid_home                  = $ora_rac::params::grid_home,                # Grid home
-  $ora_inventory_dir          = $ora_rac::params::ora_inventory_dir,
-  $puppet_download_mnt_point  = $ora_rac::params::puppet_download_mnt_point,
-  $zip_extract                = $ora_rac::params::zip_extract,
-  $remote_file                = $ora_rac::params::remote_file,
-  $oracle_user                = $ora_rac::params::oracle_user,
-  $oracle_user_id             = $ora_rac::params::oracle_user_id,
-  $grid_user                  = $ora_rac::params::grid_user,
-  $grid_user_id               = $ora_rac::params::grid_user_id,
-  $dba_group                  = $ora_rac::params::dba_group,
-  $dba_group_id               = $ora_rac::params::dba_group_id,
-  $grid_group                 = $ora_rac::params::grid_group,
-  $grid_group_id              = $ora_rac::params::grid_group_id,
-  $install_group              = $ora_rac::params::install_group,
-  $install_group_id           = $ora_rac::params::group_install_id,
-  $grid_oper_group            = $ora_rac::params::grid_oper_group,
-  $grid_oper_group_id         = $ora_rac::params::grid_oper_group_id,
-  $grid_admin_group           = $ora_rac::params::grid_admin_group,
-  $grid_admin_group_id        = $ora_rac::params::grid_admin_group_id,
   $password                   = $ora_rac::params::password,
   $scan_name                  = $ora_rac::params::scan_name,
   $scan_port                  = $ora_rac::params::scan_port,
   $crs_disk_group_name        = $ora_rac::params::crs_disk_group_name,
   $data_disk_group_name       = $ora_rac::params::data_disk_group_name,
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
-  ) inherits ora_rac::params {
+) inherits ora_rac::params {
 
+  require ora_rac::settings
 
- if $::operatingsystemmajrelease == 6 {
+  if $::operatingsystemmajrelease == 6 {
     #
     # Replace cvu_config CV_ASSUME_DISTID=OEL4 for V_ASSUME_DISTID=OEL6
     #
-    file{"${oracle_home}/cv/admin/cvu_config":
+    file{"${ora_rac::settings::oracle_home}/cv/admin/cvu_config":
       ensure  => 'file',
-      owner   => $oracle_user,
-      group   => $install_group,
+      owner   => $ora_rac::settings::oracle_user,
+      group   => $ora_rac::settings::install_group,
       source  => 'puppet:///modules/ora_rac/cvu_config',
-      require => Oradb::Installdb[$_oracle_file],
+      require => Oradb::Installdb[$ora_rac::settings::_oracle_file],
       before  => Oradb::Database[$db_name],
     }
 
-    file{"${grid_home}/cv/admin/cvu_config":
+    file{"${ora_rac::settings::grid_home}/cv/admin/cvu_config":
       ensure  => 'file',
-      owner   => $grid_user,
-      group   => $install_group,
+      owner   => $ora_rac::settings::grid_user,
+      group   => $ora_rac::settings::install_group,
       source  => 'puppet:///modules/ora_rac/cvu_config',
-      require => Oradb::Installasm[$_grid_file],
+      require => Oradb::Installasm[$ora_rac::settings::_grid_file],
       before  => Oradb::Database[$db_name],
     }
   }
 
-
-  oradb::installasm{ $_grid_file:
-    version                => $version,
-    file                   => $_grid_file,
+  oradb::installasm{ $ora_rac::settings::_grid_file:
+    version                => $ora_rac::settings::version,
+    file                   => $ora_rac::settings::_grid_file,
     gridType               => 'CRS_CONFIG',
-    gridBase               => $grid_base,
-    gridHome               => $grid_home,
-    oraInventoryDir        => $ora_inventory_dir,
-    user                   => $grid_user,
-    group                  => $grid_group,
-    group_install          => $install_group,
-    group_oper             => $grid_oper_group,
-    group_asm              => $grid_admin_group,
+    gridBase               => $ora_rac::settings::grid_base,
+    gridHome               => $ora_rac::settings::grid_home,
+    oraInventoryDir        => $ora_rac::settings::ora_inventory_dir,
+    user                   => $ora_rac::settings::grid_user,
+    group                  => $ora_rac::settings::grid_group,
+    group_install          => $ora_rac::settings::install_group,
+    group_oper             => $ora_rac::settings::grid_oper_group,
+    group_asm              => $ora_rac::settings::grid_admin_group,
     asm_diskgroup          => $crs_disk_group_name,
     disks                  => 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
     disk_redundancy        => 'NORMAL',
-    puppetDownloadMntPoint => $puppet_download_mnt_point,
-    downloadDir            => $download_dir,
-    zipExtract             => $zip_extract,
-    remoteFile             => $remote_file, #false,
+    puppetDownloadMntPoint => $ora_rac::settings::puppet_download_mnt_point,
+    downloadDir            => $ora_rac::settings::download_dir,
+    zipExtract             => $ora_rac::settings::zip_extract,
+    remoteFile             => $ora_rac::settings::remote_file, #false,
     cluster_name           => $cluster_name,
     scan_name              => $scan_name,
     scan_port              => $scan_port,
@@ -114,46 +88,46 @@ class ora_rac::db_master(
 
   class{'ora_rac::ensure_oracle_ownership':} ->
 
-  oradb::installdb{ $_oracle_file:
-    version                => $version,
-    file                   => $_oracle_file,
-    user                   => $oracle_user,
-    group                  => $dba_group,
-    group_oper             => $oper_group,
-    group_install          => $install_group,
-    oraInventoryDir        => $ora_inventory_dir,
+  oradb::installdb{ $ora_rac::settings::_oracle_file:
+    version                => $ora_rac::settings::version,
+    file                   => $ora_rac::settings::_oracle_file,
+    user                   => $ora_rac::settings::oracle_user,
+    group                  => $ora_rac::settings::dba_group,
+    group_oper             => $ora_rac::settings::oper_group,
+    group_install          => $ora_rac::settings::install_group,
+    oraInventoryDir        => $ora_rac::settings::ora_inventory_dir,
     databaseType           => 'EE',
-    oracleBase             => $oracle_base,
+    oracleBase             => $ora_rac::settings::oracle_base,
     createUser             => false,
-    oracleHome             => $oracle_home,
-    puppetDownloadMntPoint => $puppet_download_mnt_point,
-    downloadDir            => $download_dir,
+    oracleHome             => $ora_rac::settings::oracle_home,
+    puppetDownloadMntPoint => $ora_rac::settings::puppet_download_mnt_point,
+    downloadDir            => $ora_rac::settings::download_dir,
     cluster_nodes          => $::hostname,
-    remoteFile             => $remote_file,
-    require                => Oradb::Installasm[$_grid_file],
+    remoteFile             => $ora_rac::settings::remote_file,
+    require                => Oradb::Installasm[$ora_rac::settings::_grid_file],
   } ->
 
   oradb::database{ $db_name:
-    oracleBase           => $oracle_base,
-    oracleHome           => $oracle_home,
-    version              => $db_version,
-    user                 => $oracle_user,
-    group                => $dba_group,
-    downloadDir          => $download_dir,
+    oracleBase           => $ora_rac::settings::oracle_base,
+    oracleHome           => $ora_rac::settings::oracle_home,
+    version              => $ora_rac::settings::db_version,
+    user                 => $ora_rac::settings::oracle_user,
+    group                => $ora_rac::settings::dba_group,
+    downloadDir          => $ora_rac::settings::download_dir,
     action               => 'create',
     dbName               => $db_name,
     dbDomain             => $domain_name,
     sysPassword          => $db_password,
     systemPassword       => $db_password,
-    dataFileDestination  => '+DATA',
+    dataFileDestination  => $ora_rac::settings::data_file_destination,
     storageType          => 'ASM',
-    characterSet         => 'AL32UTF8',
-    nationalCharacterSet => 'UTF8',
+    characterSet         => $ora_rac::settings::character_set,
+    nationalCharacterSet => $ora_rac::settings::national_character_set,
     initParams           => $init_params,
     sampleSchema         => 'FALSE',
-    databaseType         => 'MULTIPURPOSE',
+    databaseType         => $ora_rac::settings::database_type,
     emConfiguration      => 'NONE',
-    asmDiskgroup         => 'DATA',
+    asmDiskgroup         => $ora_rac::settings::asm_disk_group,
     cluster_nodes        => $::hostname,
   }
 
@@ -165,7 +139,7 @@ class ora_rac::db_master(
     $instance_name    = "${db_name}${instance_number}"
 
     ora_rac::oratab_entry{$instance_name:
-      home    => $oracle_home,
+      home    => $ora_rac::settings::oracle_home,
       start   => 'N',
       comment => 'Added by puppet',
       require => Oradb::Database[$db_name],

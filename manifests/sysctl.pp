@@ -16,7 +16,7 @@
 #
 class ora_rac::sysctl inherits ora_rac::params
 {
-  $sysctl_params = hiera('ora_rac::sysctl_params')
+  $sysctl_params = hiera('ora_rac::internal::sysctl_params')
   create_resources('sysctl', $sysctl_params)
 
   # TODO: Fix the devices
