@@ -1,4 +1,4 @@
-# == Class: ora_rac::base
+# == Class: ora_rac::asm_drivers
 #
 # Install the base ASM packges and ocnfigure the ASM driver and service for 
 # Linux
@@ -16,29 +16,13 @@
 #
 # Bert Hajee <hajee@moretIA.com>
 #
-class ora_rac::base inherits ora_rac::params {
+class ora_rac::asm_drivers inherits ora_rac::params {
 
+  $yumrepos = hiera('ora_rac::yumrepos')
+  $packages = hiera('ora_rac::asm_drivers::packages')
 
-  package {'oracleasm-support':
-    ensure   => 'installed',
-    provider => 'rpm',
-    source   => "${puppet_download_mnt_point}/oracleasm-support-2.1.8-1.el5.x86_64.rpm",
-  }
-
-  package {$asm_package:
-    ensure   => 'installed',
-    source   => "${puppet_download_mnt_point}/${asm_package_name}",
-    provider => 'rpm',
-    require  => Package['oracleasm-support'],
-  }
-
-  package {'oracleasmlib':
-    ensure   => 'installed',
-    source   => "${puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el5.x86_64.rpm",
-    provider => 'rpm',
-    require  => Package[$asm_package],
-  }
-
+  create_resources('yumrepo', $yumrepos)
+  create_resources('package', $packages)
 
   file{'/etc/sysconfig/oracleasm-_dev_oracleasm':
     ensure  => file,

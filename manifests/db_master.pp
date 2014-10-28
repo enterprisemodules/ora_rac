@@ -60,6 +60,31 @@ class ora_rac::db_master(
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
   ) inherits ora_rac::params {
 
+
+ if $::operatingsystemmajrelease == 6 {
+    #
+    # Replace cvu_config CV_ASSUME_DISTID=OEL4 for V_ASSUME_DISTID=OEL6
+    #
+    file{"${oracle_home}/cv/admin/cvu_config":
+      ensure  => 'file',
+      owner   => $oracle_user,
+      group   => $install_group,
+      source  => 'puppet:///modules/ora_rac/cvu_config',
+      require => Oradb::Installdb[$_oracle_file],
+      before  => Oradb::Database[$db_name],
+    }
+
+    file{"${grid_home}/cv/admin/cvu_config":
+      ensure  => 'file',
+      owner   => $grid_user,
+      group   => $install_group,
+      source  => 'puppet:///modules/ora_rac/cvu_config',
+      require => Oradb::Installasm[$_grid_file],
+      before  => Oradb::Database[$db_name],
+    }
+  }
+
+
   oradb::installasm{ $_grid_file:
     version                => $version,
     file                   => $_grid_file,
