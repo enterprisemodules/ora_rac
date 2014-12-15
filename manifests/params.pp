@@ -30,6 +30,7 @@ class ora_rac::params(
   $disk_redundancy            = 'NORMAL',
 )
 {
+  validate_re($::puppetversion, '^[2,3,4].[6-9]\..*$', 'Ora_Rac required Pupet version 2.6 or higher')
   #
   # Build the string needed by oracle grid installer
   #
