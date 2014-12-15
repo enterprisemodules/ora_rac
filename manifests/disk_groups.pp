@@ -24,11 +24,11 @@ class ora_rac::disk_groups inherits ora_rac::params
     compat_asm    => $ora_rac::settings::db_version,
     compat_rdbms  => $ora_rac::settings::db_version,
   }
-  create_resources('asm_diskgroup', $ora_rac::settings::asm_disk_groups, $defaults)
+  create_resources('ora_asm_diskgroup', $ora_rac::settings::asm_disk_groups, $defaults)
   #
   # Define all required relations
   #
-  Oradb::Installasm<||> -> Asm_diskgroup<||>
-  Asm_diskgroup<||> -> Oradb::Installdb<||>
-  Asm_diskgroup<||> -> Oradb::Database<||>
+  Oradb::Installasm<||> -> Ora_asm_diskgroup<||>
+  Ora_asm_diskgroup<||> -> Oradb::Installdb<||>
+  Ora_asm_diskgroup<||> -> Oradb::Database<||>
 }

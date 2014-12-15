@@ -2,7 +2,7 @@
 
 ora_rac::internal::yumrepos:  {}  # Default no extra yumrepo's
 
-ora_rac::internal::disk_config::asm_disks:
+ora_rac::settings::asm_disks:
   CRSVOL1:
     raw_device: /dev/sda:1
     start:      '1049kB'
@@ -32,8 +32,8 @@ ora_rac::internal::disk_config::asm_disks:
     start:      '1049kB'
     end:        '4294MB'
 
-ora_rac::internal::disk_groups:
-  '+ASM1/REDO':
+ora_rac::settings::asm_disk_groups:
+  'REDO@+ASM1':
     ensure:          present
     redundancy_type: normal
     failgroups:
@@ -46,7 +46,7 @@ ora_rac::internal::disk_groups:
     require:          
       - Ora_rac::Asm_disk[REDOVOL1]
       - Ora_Rac::Asm_disk[REDOVOL2]
-  '+ASM1/%{ora_rac::params::data_disk_group_name}':
+  '%{ora_rac::params::data_disk_group_name}@+ASM1':
     ensure:          present
     redundancy_type: normal
     failgroups:

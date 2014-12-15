@@ -25,34 +25,30 @@ define ora_rac::ora_instance(
   $thread,
 ){
 
-  tablespace{"${on}/UNDOTBS${number}":
+  ora_tablespace{"UNDOTBS${number}@${on}":
     contents => 'undo',
     datafile => "+${data_disk_group_name}",
   }
 
-  init_param{"${on}/${name}/instance_number":
+  ora_init_param{"SPFILE/instance_number:${name}@${on}":
     ensure => present,
-    scope  => 'spfile',
     value  => $number,
   }
 
-  init_param{"${on}/${name}/instance_name":
+  ora_init_param{"SPFILE/instance_name:${name}@${on}":
     ensure => present,
-    scope  => 'spfile',
     value  => $name,
   }
 
-  init_param{"${on}/${name}/thread":
+  ora_init_param{"SPFILE/thread:${name}@${on}":
     ensure => present,
-    scope  => 'spfile',
     value  => $thread,
   }
 
-  init_param{"${on}/${name}/undo_tablespace":
+  ora_init_param{"SPFILE/undo_tablespace:${name}@${on}":
     ensure  => present,
-    scope   => 'spfile',
     value   => "UNDOTBS${number}",
-    require => Tablespace["${on}/UNDOTBS${number}"],
+    require => Ora_tablespace["UNDOTBS${number}@${on}"],
   }
 
   file{"/tmp/add_logfiles_${thread}.sql":
@@ -60,17 +56,17 @@ define ora_rac::ora_instance(
     content => template('ora_rac/add_logfiles.sql.erb'),
   }
 
-  oracle_exec{"${on}/@/tmp/add_logfiles_${thread}.sql":
+  ora_exec{"@/tmp/add_logfiles_${thread}.sql@${on}":
     require   => [
       File["/tmp/add_logfiles_${thread}.sql"],
     ]
   }
 
-  oracle_thread{"${on}/${thread}":
+  ora_thread{"${thread}@${on}":
     ensure  => 'enabled',
     require   => [
-      Init_param["${on}/${name}/undo_tablespace"],
-      Oracle_exec["${on}/@/tmp/add_logfiles_${thread}.sql"],
+      Ora_init_param["SPFILE/undo_tablespace:${name}@${on}"],
+      Ora_exec["@/tmp/add_logfiles_${thread}.sql@${on}"],
       ]
   }
 

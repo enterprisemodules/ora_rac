@@ -30,6 +30,7 @@ class ora_rac::db_master(
   $scan_name                  = $ora_rac::params::scan_name,
   $scan_port                  = $ora_rac::params::scan_port,
   $crs_disk_group_name        = $ora_rac::params::crs_disk_group_name,
+  $crs_disk                   = $ora_rac::params::crs_disk,
   $data_disk_group_name       = $ora_rac::params::data_disk_group_name,
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
 ) inherits ora_rac::params {
@@ -72,7 +73,7 @@ class ora_rac::db_master(
     group_oper             => $ora_rac::settings::grid_oper_group,
     group_asm              => $ora_rac::settings::grid_admin_group,
     asm_diskgroup          => $crs_disk_group_name,
-    disks                  => 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
+    disks                  => $crs_disk,
     disk_redundancy        => 'NORMAL',
     puppetDownloadMntPoint => $ora_rac::settings::puppet_download_mnt_point,
     downloadDir            => $ora_rac::settings::download_dir,
@@ -107,6 +108,12 @@ class ora_rac::db_master(
     require                => Oradb::Installasm[$ora_rac::settings::_grid_file],
   } ->
 
+  ora_rac::oratab_entry{$master_instance:
+    home    => $ora_rac::settings::oracle_home,
+    start   => 'N',
+    comment => 'Added by puppet',
+  } ->
+
   oradb::database{ $db_name:
     oracleBase           => $ora_rac::settings::oracle_base,
     oracleHome           => $ora_rac::settings::oracle_home,
@@ -131,19 +138,11 @@ class ora_rac::db_master(
     cluster_nodes        => $::hostname,
   }
 
+
   $cluster_nodes.each | $index, $instance| {
-
-
     $instance_number  = $index + 1
     $thread           = $instance_number
     $instance_name    = "${db_name}${instance_number}"
-
-    ora_rac::oratab_entry{$instance_name:
-      home    => $ora_rac::settings::oracle_home,
-      start   => 'N',
-      comment => 'Added by puppet',
-      require => Oradb::Database[$db_name],
-    }
 
     if ($instance_number > 1) { # Not a master node
 
@@ -152,8 +151,7 @@ class ora_rac::db_master(
         number  => $instance_number,
         thread  => $thread,
         require => [
-          Ora_rac::Oratab_entry[$instance_name],
-          Ora_rac::Oratab_entry[$master_instance],
+          Oradb::Database[$db_name],
         ]
       }
     }

@@ -4,4 +4,3 @@
 - %{::osfamily}-%{::operatingsystemmajrelease}
 - %{::osfamily}
 - common
-- common

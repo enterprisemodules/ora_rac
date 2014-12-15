@@ -1,6 +1,6 @@
 class ora_rac::iptables inherits ora_rac::params
 {
-  $input_chain = hiera('ora_rac::iptables::input_chain')
+  $input_chain = hiera('ora_rac::internal::iptables::input_chain')
 
   $all_ip_addresses.each |$ipadress| {
     firewall{"200 RAC communication for ${ipadress}":

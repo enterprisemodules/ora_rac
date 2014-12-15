@@ -26,6 +26,7 @@ class ora_rac::params(
   $scan_name                  = 'scan',
   $scan_port                  = 1521,
   $crs_disk_group_name        = 'CRS',
+  $crs_disk                   = 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
   $data_disk_group_name       = 'DATA',
   $disk_redundancy            = 'NORMAL',
 )
