@@ -1,6 +1,10 @@
 History
 ========
 
+15-12-2014  version 0.5.0
+--------------------------
+- Added settings block an check for Puppet version
+
 07-10-2014  version 0.0.3
 --------------------------
 - Using more custom types to make installation better repeatable.
