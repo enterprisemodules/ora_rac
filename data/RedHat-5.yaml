@@ -82,7 +82,7 @@ ora_rac::internal::packages:
   'libaio':                       {}
   'libaio-devel':                 {}
   'make':                         {}
-  # 'sysstat':                      {}
+  'sysstat':                      {}
   'compat-libstdc++-33.i386':     {}
   # 'glibc.i386' :                {}
   # 'glibc-devel.i386' :          {}
