@@ -31,7 +31,29 @@ class ora_rac::params(
   $disk_redundancy            = 'NORMAL',
 )
 {
+  #
+  # Validate input
+  #
   validate_re($::puppetversion, '^[2,3,4].[6-9]\..*$', 'Ora_Rac required Pupet version 2.6 or higher')
+  assert_type(String[1,8], $db_name)              |$e, $a| { fail "dbname is ${a}, but must be between 1 and 8 character length string" }
+  assert_type(Array, $scan_adresses)              |$e, $a| { fail "scan_addresses is ${a}, but must be an array of IP adresses" }
+  assert_type(String[1], $domain_name)            |$e, $a| { fail "domain_name is ${a}, but must be a non empty string"}
+  assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
+
+  # validate_string(init_params) Can also be a Hash
+  assert_type(Array, $public_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
+  assert_type(Array, $private_network_interfaces) |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
+  assert_type(Array, $unused_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
+
+  assert_type(String[1], $cluster_name)           |$e, $a| { fail "cluster_name is ${a}, but should be a non empty string"}
+  assert_type(String[1], $password)               |$e, $a| { fail "password is ${a}, but should be a non empty string"}
+  assert_type(String[1], $scan_name)              |$e, $a| { fail "scan_name is ${a}, but should be a non empty string"}
+  assert_type(Integer, $scan_port)                |$e, $a| { fail "scan_port is ${a}, but should be an integer number"}
+  assert_type(String[1], $crs_disk_group_name)    |$e, $a| { fail "crs_disk_group_name is ${a}, but should be a non empty string"}
+  assert_type(String[1], $crs_disk)               |$e, $a| { fail "crs_disk is ${a}, but should be a non empty string"}
+  assert_type(String[1], $data_disk_group_name)   |$e, $a| { fail "data_disk_group_name is ${a}, but should be a non empty string"}
+  assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
+                                                  |$e, $a| { fail "disk_redundancy is ${a}, but should be either EXTERNAL or NORMAL"}
   #
   # Build the string needed by oracle grid installer
   #

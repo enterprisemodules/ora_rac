@@ -19,6 +19,12 @@ define ora_rac::user_equivalence(
   $nodes = ['localhost'],
 )
 {
+  #
+  # Validate input
+  #
+  assert_type(Array[String[1]], $nodes)   |$e, $a| { fail "nodes is ${a}, expected an array of non empty strings"}
+  assert_type(String[1], $name)           |$e, $a| { fail "name is ${a}, expect a non empty string"}
+
   include ssh
 
   file{"/home/${name}/.ssh":

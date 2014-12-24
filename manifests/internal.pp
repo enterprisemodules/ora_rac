@@ -18,5 +18,8 @@ class ora_rac::internal(
   $asm_packages,
 )
 {
+  assert_type(Hash, $yumrepos )          |$e, $a| { fail "yumrepos is ${a}, expected a Hash"}
+  assert_type(Hash, $packages )          |$e, $a| { fail "packages is ${a}, expected a Hash"}
+  assert_type(Hash, $asm_packages )      |$e, $a| { fail "asm_packages is ${a}, expected a Hash"}
   
 }

@@ -18,6 +18,13 @@
 class ora_rac::db_server(
   $db_machines                = $ora_rac::params::db_machines,
 ) inherits ora_rac::params {
+  assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
+
+
+  #
+  # Validate parameters
+  #
+  validate_hash($db_machines)
 
   exec{'add_grid_node':
     timeout     => 0,

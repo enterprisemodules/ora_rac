@@ -24,6 +24,12 @@ define ora_rac::ora_instance(
   $number,
   $thread,
 ){
+  #
+  # Validate the inputs
+  #
+  assert_type(String[1], $on)       |$e, $a| { fail "on is ${a}, but expected a non empty string"}
+  assert_type(Integer, $number)     |$e, $a| { fail "number is ${a}, but expected an integer"}
+  assert_type(Integer, $thread)     |$e, $a| { fail "thread is ${a}, but expected an integer"}
 
   ora_tablespace{"UNDOTBS${number}@${on}":
     contents => 'undo',

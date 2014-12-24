@@ -16,6 +16,8 @@ class ora_rac::os inherits ora_rac::params {
 
   require ora_rac::settings
 
+  $orashm = floor( ($::memorysize_mb * 1024 * 1024) / 2 )
+
   augeas {'ensure_tmpfs_size':
     context => '/files/etc/fstab',
     changes => [
@@ -31,7 +33,6 @@ class ora_rac::os inherits ora_rac::params {
     onlyif  => "/usr/bin/test -z $(/bin/mount | /bin/grep /dev/shm | /bin/grep -o size=${orashm}m)",
     require => Augeas['ensure_tmpfs_size'],
   }
-
 
   ['install','dba','oper', 'grid','grid_oper', 'grid_admin'].each |$group| {
     $variable_name  = "ora_rac::settings::${group}_group"

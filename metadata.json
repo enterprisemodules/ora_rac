@@ -1,6 +1,6 @@
 {
   "name": "hajee-ora_rac",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "author": "Bert Hajee",
   "summary": "the custom types needed to manage the basic setup of an Oracle database",
   "license": "Apache License, Version 2.0",
@@ -12,8 +12,12 @@
   "issues_url": "https://github.com/hajee/ora_rac/issues",
   "dependencies": [
     {
+      "name": "hajee/backport",
+      "version_requirement": "0.x.x"
+    },
+    {
       "name": "hajee/hacks",
-      "version_requirement": ">= 0.0.1"
+      "version_requirement": "0.x.x"
     },
     {
       "name": "hajee/oracle",

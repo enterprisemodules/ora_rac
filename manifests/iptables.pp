@@ -2,6 +2,8 @@ class ora_rac::iptables inherits ora_rac::params
 {
   $input_chain = hiera('ora_rac::internal::iptables::input_chain')
 
+  assert_type(String[1], $input_chain)  |$e, $a| { fail "input_chain is ${a}, expected a non empty string"}
+
   $all_ip_addresses.each |$ipadress| {
     firewall{"200 RAC communication for ${ipadress}":
       chain   => $input_chain,

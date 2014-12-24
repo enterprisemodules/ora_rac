@@ -35,6 +35,28 @@ class ora_rac::db_master(
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
 ) inherits ora_rac::params {
 
+  #
+  # Validation of parameters
+  #
+  assert_type(String[1,8], $db_name)              |$e, $a| { fail "dbname is ${a}, but must be between 1 and 8 character length string" }
+  assert_type(Array, $scan_adresses)              |$e, $a| { fail "scan_addresses is ${a}, but must be an array of IP adresses" }
+  assert_type(String[1], $domain_name)            |$e, $a| { fail "domain_name is ${a}, but must be a non empty string"}
+  assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
+
+  # validate_string(init_params) Can also be a Hash
+  assert_type(Array, $public_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
+  assert_type(Array, $private_network_interfaces) |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
+  assert_type(Array, $unused_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
+
+  assert_type(String[1], $cluster_name)           |$e, $a| { fail "cluster_name is ${a}, but should be a non empty string"}
+  assert_type(String[1], $password)               |$e, $a| { fail "password is ${a}, but should be a non empty string"}
+  assert_type(String[1], $scan_name)              |$e, $a| { fail "scan_name is ${a}, but should be a non empty string"}
+  assert_type(Integer, $scan_port)                |$e, $a| { fail "scan_port is ${a}, but should be an integer number"}
+  assert_type(String[1], $crs_disk_group_name)    |$e, $a| { fail "crs_disk_group_name is ${a}, but should be a non empty string"}
+  assert_type(String[1], $crs_disk)               |$e, $a| { fail "crs_disk is ${a}, but should be a non empty string"}
+  assert_type(String[1], $data_disk_group_name)   |$e, $a| { fail "data_disk_group_name is ${a}, but should be a non empty string"}
+  assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
+
   require ora_rac::settings
 
   if $::operatingsystemmajrelease == 6 {
@@ -60,6 +82,7 @@ class ora_rac::db_master(
     }
   }
 
+
   oradb::installasm{ $ora_rac::settings::_grid_file:
     version                => $ora_rac::settings::version,
     file                   => $ora_rac::settings::_grid_file,
@@ -74,7 +97,7 @@ class ora_rac::db_master(
     group_asm              => $ora_rac::settings::grid_admin_group,
     asm_diskgroup          => $crs_disk_group_name,
     disks                  => $crs_disk,
-    disk_redundancy        => 'NORMAL',
+    disk_redundancy        => $disk_redundancy,
     puppetDownloadMntPoint => $ora_rac::settings::puppet_download_mnt_point,
     downloadDir            => $ora_rac::settings::download_dir,
     zipExtract             => $ora_rac::settings::zip_extract,
@@ -114,30 +137,32 @@ class ora_rac::db_master(
     comment => 'Added by puppet',
   } ->
 
-  oradb::database{ $db_name:
-    oracleBase           => $ora_rac::settings::oracle_base,
-    oracleHome           => $ora_rac::settings::oracle_home,
-    version              => $ora_rac::settings::db_version,
-    user                 => $ora_rac::settings::oracle_user,
-    group                => $ora_rac::settings::dba_group,
-    downloadDir          => $ora_rac::settings::download_dir,
-    action               => 'create',
-    dbName               => $db_name,
-    dbDomain             => $domain_name,
-    sysPassword          => $db_password,
-    systemPassword       => $db_password,
-    dataFileDestination  => $ora_rac::settings::data_file_destination,
-    storageType          => 'ASM',
-    characterSet         => $ora_rac::settings::character_set,
-    nationalCharacterSet => $ora_rac::settings::national_character_set,
-    initParams           => $init_params,
-    sampleSchema         => 'FALSE',
-    databaseType         => $ora_rac::settings::database_type,
-    emConfiguration      => 'NONE',
-    asmDiskgroup         => $ora_rac::settings::asm_disk_group,
-    cluster_nodes        => $::hostname,
-  }
 
+
+  oradb::database{ $db_name:
+    oracleBase              => $ora_rac::settings::oracle_base,
+    oracleHome              => $ora_rac::settings::oracle_home,
+    version                 => $ora_rac::settings::db_version,
+    user                    => $ora_rac::settings::oracle_user,
+    group                   => $ora_rac::settings::dba_group,
+    downloadDir             => $ora_rac::settings::download_dir,
+    action                  => 'create',
+    dbName                  => $db_name,
+    dbDomain                => $domain_name,
+    sysPassword             => $db_password,
+    systemPassword          => $db_password,
+    dataFileDestination     => $ora_rac::settings::data_file_destination,
+    recoveryAreaDestination => $ora_rac::settings::recovery_area_destination,
+    storageType             => 'ASM',
+    characterSet            => $ora_rac::settings::character_set,
+    nationalCharacterSet    => $ora_rac::settings::national_character_set,
+    initParams              => $init_params,
+    sampleSchema            => 'FALSE',
+    databaseType            => $ora_rac::settings::database_type,
+    emConfiguration         => 'NONE',
+    asmDiskgroup            => $ora_rac::settings::asm_disk_group,
+    cluster_nodes           => $::hostname,
+  }
 
   $cluster_nodes.each | $index, $instance| {
     $instance_number  = $index + 1

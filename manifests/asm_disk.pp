@@ -20,10 +20,25 @@ define ora_rac::asm_disk(
   $end      = '100%',
 )
 {
+  #
+  # Validation
+  #
+  assert_type(String[1],$raw_device)      |$e, $a| { fail "raw_device is ${a}, but must be a non empty string"}
+  validate_re($raw_device, '.*\:.*')    # You must specify a device with a partition number
+  validate_re($start,'\d.*\S?[%|k|K|m|M|g|G][b|B]?')
+  validate_re($end,'\d.*\S?[%|k|K|m|M|g|G][b|B]?')
+
+  #
+  # Manipulation and translation of parameters
+  #
   $_device_array    = split($raw_device,'[:]')
   $device_name      = $_device_array[0]
   $partition_number = $_device_array[1]
   $device           = "${device_name}${partition_number}"
+
+  #
+  #
+  #
 
   partition_table{$device_name:
     ensure  => 'gpt',
@@ -38,7 +53,6 @@ define ora_rac::asm_disk(
 
   exec{"/usr/sbin/oracleasm createdisk ${name} ${device}":
     unless    => "/usr/sbin/oracleasm querydisk -v ${device}",
-    logoutput => true,
     require   => Service['oracleasm'],
   }
 

@@ -45,11 +45,54 @@ class ora_rac::settings(
   $national_character_set     = 'UTF8',
   $database_type              = 'MULTIPURPOSE',
   $data_file_destination      = '+DATA',
-  $asm_disk_groups            = 'DATA', # TODO: Check the difference
+  $recovery_area_destination  = '+DATA',
+  $asm_disk_group             = 'DATA', # TODO: Check the difference
   $asm_disk_groups,
   $asm_disks,
 )
 {
+  $valid_id_re      = '^/d+$'
+  $valid_version_re = '^\d+\.\d+\.\d+\.\d+$'
+  #
+  # Validate input
+  #
+  assert_type(String[1], $oracle_base)              |$e, $a| { fail "oracle_base is ${a}, but expected a non empty string"}
+  assert_type(String[1], $grid_base)                |$e, $a| { fail "grid_base is ${a}, but expected a non empty string"}
+  validate_absolute_path($oracle_home)
+  validate_absolute_path($grid_home)
+  validate_absolute_path($ora_inventory_dir)
+  validate_absolute_path($puppet_download_mnt_point)
+  validate_absolute_path($download_dir)
+  assert_type(Boolean, $zip_extract)                |$e, $a| { fail "zip_extract is ${a}, but expected boolean"}
+  assert_type(Boolean, $remote_file)                |$e, $a| { fail "remote_file is ${a}, but expected a boolean"}
+  assert_type(String[1], $oracle_user)              |$e, $a| { fail "oracle_user is ${a}, but expected a non empty string"}
+  assert_type(Integer, $oracle_user_id)             |$e, $a| { fail "oracle_user_id is ${a}, but expected an integer"}
+  assert_type(String[1], $grid_user)                |$e, $a| { fail "grid_user is ${a}, but expected a non empty string"}
+  assert_type(Integer, $grid_user_id)               |$e, $a| { fail "grid_user_id is ${a}, but expected an integer"}
+  assert_type(String[1], $install_group)            |$e, $a| { fail "install_group is ${a}, but expected a non empty string"}
+  assert_type(String[1], $dba_group)                |$e, $a| { fail "dba_group is ${a}, but expected a non empty string"}
+  assert_type(String[1], $oper_group)               |$e, $a| { fail "oper_group is ${a}, but expected a non empty string"}
+  assert_type(String[1], $grid_group)               |$e, $a| { fail "grid_group is ${a}, but expected a non empty string"}
+  assert_type(String[1], $grid_oper_group)          |$e, $a| { fail "grid_oper_group is ${a}, but expected a non empty string"}
+  assert_type(String[1], $grid_admin_group)         |$e, $a| { fail "grid_admin_group is ${a}, but expected a non empty string"}
+  assert_type(Integer,$install_group_id)            |$e, $a| { fail "install_group_id is ${a}, but expected an integer"}
+  assert_type(Integer,$dba_group_id)                |$e, $a| { fail "dba_group_id is ${a}, but expected an integer"}
+  assert_type(Integer,$oper_group_id)               |$e, $a| { fail "oper_group_id is ${a}, but expected an integer"}
+  assert_type(Integer,$grid_group_id)               |$e, $a| { fail "grid_group_id is ${a}, but expected an integer"}
+  assert_type(Integer,$grid_oper_group_id)          |$e, $a| { fail "grid_oper_group_id is ${a}, but expected an integer"}
+  assert_type(Integer,$grid_admin_group_id)         |$e, $a| { fail "grid_admin_group_id is ${a}, but expected an integer"}
+  validate_re($version, $valid_version_re, "grid_base is ${a}, but expected a non empty string")
+  assert_type(String[1], $file)                     |$e, $a| { fail "grid_file is ${a}, but expected a non empty string"}
+  assert_type(String, $grid_file)                   |$e, $a| { fail "grid_file is ${a}, but expected a string"}
+  assert_type(String, $oracle_file)                 |$e, $a| { fail "oracle_file is ${a}, but expected a string"}
+  assert_type(String[1], $character_set)            |$e, $a| { fail "character_set is ${a}, but expected a non empty string"}
+  assert_type(String[1], $national_character_set)   |$e, $a| { fail "grid_base is ${a}, but expected a non empty string"}
+  assert_type(String[1], $database_type)            |$e, $a| { fail "database_type is ${a}, but expected a non empty string"}
+  assert_type(String[1],$data_file_destination)     |$e, $a| { fail "data_file_destination is ${a}, but expected a non empty string"}
+  assert_type(String[1],$recovery_area_destination) |$e, $a| { fail "gridrecovery_area_destination_base is ${a}, but expected a non empty string"}
+  assert_type(String[1],$asm_disk_group)            |$e, $a| { fail "asm_disk_group is ${a}, but expected a non empty string"}
+  assert_type(Hash, $asm_disk_groups)               |$e, $a| { fail "asm_disk_groups is ${a}, but expected a Hash"}
+  assert_type(Hash, $asm_disks)                     |$e, $a| { fail "asm_disks is ${a}, but expected a Hash"}
 
   $_version_array       = split($version,'[.]')
   $db_major_version     = $_version_array[0]
@@ -78,7 +121,7 @@ class ora_rac::settings(
     $_grid_basic_file = $grid_file
   }
   unless $_grid_basic_file {
-    fail( 'You mest specify either the file or a grid_file for db_master')
+    fail( 'You must specify either the file or a grid_file for db_master')
   }
 
   if $db_major_version == 12 {

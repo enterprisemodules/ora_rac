@@ -22,6 +22,7 @@ class ora_rac::interfaces(){
   # Borrow the db_machines parameter from ora_rac::params
   #
   $db_machines = hiera('ora_rac::params::db_machines')
+  assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
   #
   # Calculate the private ip adress of the current node
   #
