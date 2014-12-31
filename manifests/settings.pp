@@ -13,9 +13,9 @@
 #
 class ora_rac::settings(
   $oracle_base                = '/opt/oracle',
-  $grid_base                  = '/opt/oracle/grid',
   $oracle_home                = '/opt/oracle/app/11.2.0.4/db_1',
   $grid_home                  = '/opt/oracle/app/11.2.0.4/grid',
+  $grid_base                  = '/opt/oracle',
   $ora_inventory_dir          = '/opt/oracle',
   $puppet_download_mnt_point  = '/opt/software',
   $download_dir               = '/install',
@@ -85,6 +85,7 @@ class ora_rac::settings(
   assert_type(String[1], $file)                     |$e, $a| { fail "grid_file is ${a}, but expected a non empty string"}
   assert_type(String, $grid_file)                   |$e, $a| { fail "grid_file is ${a}, but expected a string"}
   assert_type(String, $oracle_file)                 |$e, $a| { fail "oracle_file is ${a}, but expected a string"}
+  assert_type(Variant[String,Undef], $opatch)       |$e, $a| { fail "opatch is ${a}, but expected a string or undefined"}
   assert_type(String[1], $character_set)            |$e, $a| { fail "character_set is ${a}, but expected a non empty string"}
   assert_type(String[1], $national_character_set)   |$e, $a| { fail "grid_base is ${a}, but expected a non empty string"}
   assert_type(String[1], $database_type)            |$e, $a| { fail "database_type is ${a}, but expected a non empty string"}

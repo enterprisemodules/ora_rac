@@ -108,9 +108,7 @@ class ora_rac::db_master(
     cluster_nodes          => "${::hostname}:${::hostname}-vip",
     network_interface_list => $ora_rac::params::nw_interface_list,
     storage_option         => 'ASM_STORAGE',
-  } ~>
-
-  class{'ora_rac::ensure_oracle_ownership':} ->
+  }
 
   oradb::installdb{ $ora_rac::settings::_oracle_file:
     version                => $ora_rac::settings::version,
@@ -122,7 +120,6 @@ class ora_rac::db_master(
     oraInventoryDir        => $ora_rac::settings::ora_inventory_dir,
     databaseType           => 'EE',
     oracleBase             => $ora_rac::settings::oracle_base,
-    createUser             => false,
     oracleHome             => $ora_rac::settings::oracle_home,
     puppetDownloadMntPoint => $ora_rac::settings::puppet_download_mnt_point,
     downloadDir            => $ora_rac::settings::download_dir,
@@ -136,8 +133,6 @@ class ora_rac::db_master(
     start   => 'N',
     comment => 'Added by puppet',
   } ->
-
-
 
   oradb::database{ $db_name:
     oracleBase              => $ora_rac::settings::oracle_base,
