@@ -1,0 +1,32 @@
+#######################################################################
+# Parameter file for Prorail : database $ORADB_DBNAME
+#######################################################################
+# Archive
+#
+log_archive_format=%t_%s_%r.arc
+ 
+###########################################
+# Database Identification
+#
+db_domain=<%= @domain -%>
+db_name=<%= @name -%>
+ 
+###########################################
+# Shared Server
+#
+dispatchers="(PROTOCOL=TCP) (SERVICE=${ORADB_DBNAME}XDB)"
+
+
+###########################################
+# Set instance, thread and undo tablespaces 
+#
+<%= @name -%>1.instance_number=1
+<%= @name -%>2.instance_number=2
+<%= @name -%>1.thread=1
+<%= @name -%>2.thread=2
+<%= @name -%>1.undo_tablespace=UNDOTBS1
+<%= @name -%>2.undo_tablespace=UNDOTBS2
+
+log_archive_dest_1='LOCATION=+RECODG'
+db_create_file_dest="+DATADG"
+db_recovery_file_dest="+RECODG"

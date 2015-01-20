@@ -2,3 +2,55 @@
 
 ora_rac::internal::yumrepos:  {}  # Default no extra yumrepo's
 
+ora_rac::internal::database_definition:
+  timeout:                         3000
+  ensure:                          present
+  instances:
+    "%{ora_rac::params::db_name}1": "%{hostname}"
+  oracle_base:                     "%{ora_rac::settings::oracle_base}"
+  oracle_home:                     "%{ora_rac::settings::oracle_home}"
+  oracle_user:                     "%{ora_rac::settings::oracle_user}"
+  character_set:                   AL32UTF8
+  national_character_set:          AL16UTF16
+  init_ora_content:                "%{ora_rac::db_master::init_ora_content}"
+  system_password:                 "%{ora_rac::params::password}"
+  sys_password:                    "%{ora_rac::params::password}"
+  maxinstances:                    32
+  maxloghistory:                   1
+  maxlogfiles:                     192
+  maxlogmembers:                   3
+  maxdatafiles:                    1024
+  autostart:                       true
+  extent_management:               local
+  datafiles:
+    size:                          700M
+    autoextend:
+      next:                        10M
+      maxsize:                     unlimited
+  sysaux_datafiles:
+    size:                          600M
+    autoextend:
+      next:                        10M
+      maxsize:                     unlimited
+  default_temporary_tablespace:
+    name:                        TEMP
+    type:                        smallfile
+    tempfile:
+      size:                      200M
+      autoextend:
+        next:                    100M
+        maxsize:                 12288M
+  undo_tablespace:
+    name:                        UNDOTBS1
+    type:                        smallfile
+    datafile:
+      size:                      200M
+      autoextend:
+        next:                    100M
+        maxsize:                 12288M
+  create_catalog:                'yes'
+  spfile_location:               '+RECODG'
+  scan_name:                     'SCAN'
+  logfile_groups:
+    - { size: 512M}
+    - { size: 512M}

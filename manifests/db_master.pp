@@ -21,7 +21,7 @@ class ora_rac::db_master(
   $domain_name                = $ora_rac::params::domain_name,
   $scan_adresses              = $ora_rac::params::scan_adresses,
   $db_machines                = $ora_rac::params::db_machines,
-  $init_params                = $ora_rac::params::init_params,
+  $init_ora_content           = $ora_rac::params::init_ora_content,
   $public_network_interfaces  = $ora_rac::params::public_network_interfaces,
   $private_network_interfaces = $ora_rac::params::private_network_interfaces,
   $unused_network_interfaces  = $ora_rac::params::unused_network_interfaces,
@@ -43,7 +43,7 @@ class ora_rac::db_master(
   assert_type(String[1], $domain_name)            |$e, $a| { fail "domain_name is ${a}, but must be a non empty string"}
   assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
 
-  # validate_string(init_params) Can also be a Hash
+  assert_type(String[1], $init_ora_content)       |$e, $a| { fail "init_ora_content is ${a}, but must be a non empty string"}
   assert_type(Array, $public_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
   assert_type(Array, $private_network_interfaces) |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
   assert_type(Array, $unused_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
@@ -58,6 +58,8 @@ class ora_rac::db_master(
   assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
 
   require ora_rac::settings
+
+  $database_definition = hiera('ora_rac::internal::database_definition')
 
   if $::operatingsystemmajrelease == 6 {
     #
@@ -81,7 +83,6 @@ class ora_rac::db_master(
       before  => Oradb::Database[$db_name],
     }
   }
-
 
   oradb::installasm{ $ora_rac::settings::_grid_file:
     version                => $ora_rac::settings::version,
@@ -108,7 +109,7 @@ class ora_rac::db_master(
     cluster_nodes          => "${::hostname}:${::hostname}-vip",
     network_interface_list => $ora_rac::params::nw_interface_list,
     storage_option         => 'ASM_STORAGE',
-  }
+  } ->
 
   oradb::installdb{ $ora_rac::settings::_oracle_file:
     version                => $ora_rac::settings::version,
@@ -120,49 +121,29 @@ class ora_rac::db_master(
     oraInventoryDir        => $ora_rac::settings::ora_inventory_dir,
     databaseType           => 'EE',
     oracleBase             => $ora_rac::settings::oracle_base,
+    createUser             => false,
     oracleHome             => $ora_rac::settings::oracle_home,
     puppetDownloadMntPoint => $ora_rac::settings::puppet_download_mnt_point,
     downloadDir            => $ora_rac::settings::download_dir,
     cluster_nodes          => $::hostname,
     remoteFile             => $ora_rac::settings::remote_file,
     require                => Oradb::Installasm[$ora_rac::settings::_grid_file],
-  } ->
-
-  ora_rac::oratab_entry{$master_instance:
-    home    => $ora_rac::settings::oracle_home,
-    start   => 'N',
-    comment => 'Added by puppet',
-  } ->
-
-  oradb::database{ $db_name:
-    oracleBase              => $ora_rac::settings::oracle_base,
-    oracleHome              => $ora_rac::settings::oracle_home,
-    version                 => $ora_rac::settings::db_version,
-    user                    => $ora_rac::settings::oracle_user,
-    group                   => $ora_rac::settings::dba_group,
-    downloadDir             => $ora_rac::settings::download_dir,
-    action                  => 'create',
-    dbName                  => $db_name,
-    dbDomain                => $domain_name,
-    sysPassword             => $db_password,
-    systemPassword          => $db_password,
-    dataFileDestination     => $ora_rac::settings::data_file_destination,
-    recoveryAreaDestination => $ora_rac::settings::recovery_area_destination,
-    storageType             => 'ASM',
-    characterSet            => $ora_rac::settings::character_set,
-    nationalCharacterSet    => $ora_rac::settings::national_character_set,
-    initParams              => $init_params,
-    sampleSchema            => 'FALSE',
-    databaseType            => $ora_rac::settings::database_type,
-    emConfiguration         => 'NONE',
-    asmDiskgroup            => $ora_rac::settings::asm_disk_group,
-    cluster_nodes           => $::hostname,
+    before                 => Ora_database[$db_name],
   }
+
+  ensure_resource(ora_database, $db_name, $database_definition)
 
   $cluster_nodes.each | $index, $instance| {
     $instance_number  = $index + 1
     $thread           = $instance_number
     $instance_name    = "${db_name}${instance_number}"
+
+    ora_rac::oratab_entry{$instance_name:
+      home    => $ora_rac::settings::oracle_home,
+      start   => 'N',
+      comment => 'Added by puppet',
+      require => Ora_database[$db_name],
+    }
 
     if ($instance_number > 1) { # Not a master node
 
@@ -171,7 +152,7 @@ class ora_rac::db_master(
         number  => $instance_number,
         thread  => $thread,
         require => [
-          Oradb::Database[$db_name],
+          Ora_rac::Oratab_entry[$instance_name],
         ]
       }
     }

@@ -17,7 +17,7 @@ class ora_rac::params(
   $scan_adresses,
   $domain_name,
   $db_machines,
-  $init_params                = 'open_cursors=1000,processes=600,job_queue_processes=4',
+  $init_ora_content           = template('ora_rac/init.ora.erb'),
   $public_network_interfaces  = ['eth1'],
   $private_network_interfaces = ['eth2'],
   $unused_network_interfaces  = [],
@@ -40,7 +40,7 @@ class ora_rac::params(
   assert_type(String[1], $domain_name)            |$e, $a| { fail "domain_name is ${a}, but must be a non empty string"}
   assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
 
-  # validate_string(init_params) Can also be a Hash
+  assert_type(String[1], $init_ora_content)       |$e, $a| { fail "init_ora_content is ${a}, but must be a non empty string"}
   assert_type(Array, $public_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
   assert_type(Array, $private_network_interfaces) |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
   assert_type(Array, $unused_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
