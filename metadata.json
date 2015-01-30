@@ -21,7 +21,7 @@
     },
     {
       "name": "hajee/oracle",
-      "version_requirement": "1.0.x"
+      "version_requirement": "1.5.1"
     },
     {
       "name": "biemond/oradb",

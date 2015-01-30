@@ -46,7 +46,11 @@ class ora_rac::settings(
   $database_type              = 'MULTIPURPOSE',
   $data_file_destination      = '+DATA',
   $recovery_area_destination  = '+DATA',
-  $asm_disk_group             = 'DATA', # TODO: Check the difference
+  $undo_initial_size          = '200M',
+  $undo_next                  = '100M',
+  $undo_autoextend            = 'ON',
+  $undo_max_size              = 'unlimited',
+  $asm_disk_group             = 'DATA',     # TODO: Check the difference
   $asm_disk_groups,
   $asm_disks,
 )
@@ -90,6 +94,10 @@ class ora_rac::settings(
   assert_type(String[1], $database_type)            |$e, $a| { fail "database_type is ${a}, but expected a non empty string"}
   assert_type(String[1],$data_file_destination)     |$e, $a| { fail "data_file_destination is ${a}, but expected a non empty string"}
   assert_type(String[1],$recovery_area_destination) |$e, $a| { fail "gridrecovery_area_destination_base is ${a}, but expected a non empty string"}
+  assert_type(String[1], $undo_initial_size)        |$e, $a| { fail "undo_initial_size is ${a}, but expected a non empty string"}
+  assert_type(String[1], $undo_next)                |$e, $a| { fail "undo_next is ${a}, but expected a non empty string"}
+  assert_type(String[1], $undo_max_size)            |$e, $a| { fail "undo_max_size is ${a}, but expected a non empty string"}
+  assert_type(Enum['on','off'], $undo_autoextend)|$e, $a| { fail "undo_autoextend is ${a}, but expected a value ON or OFF"}
   assert_type(String[1],$asm_disk_group)            |$e, $a| { fail "asm_disk_group is ${a}, but expected a non empty string"}
   assert_type(Hash, $asm_disk_groups)               |$e, $a| { fail "asm_disk_groups is ${a}, but expected a Hash"}
   assert_type(Hash, $asm_disks)                     |$e, $a| { fail "asm_disks is ${a}, but expected a Hash"}

@@ -148,9 +148,14 @@ class ora_rac::db_master(
     if ($instance_number > 1) { # Not a master node
 
       ora_rac::ora_instance{$instance_name:
-        on      => $master_instance,
-        number  => $instance_number,
-        thread  => $thread,
+        on                 => $master_instance,
+        number             => $instance_number,
+        thread             => $thread,
+        datafile           => $ora_rac::settings::recovery_area_destination,
+        undo_initial_size  => $ora_rac::settings::undo_initial_size,
+        undo_next          => $ora_rac::settings::undo_next,
+        undo_autoextend    => $ora_rac::settings::undo_autoextend,
+        undo_max_size      => $ora_rac::settings::undo_max_size,
         require => [
           Ora_rac::Oratab_entry[$instance_name],
         ]

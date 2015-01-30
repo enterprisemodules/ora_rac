@@ -44,10 +44,10 @@ ora_rac::internal::database_definition:
     name:                        UNDOTBS1
     type:                        smallfile
     datafile:
-      size:                      200M
+      size:                      "%{ora_rac::settings::undo_initial_size}"
       autoextend:
-        next:                    100M
-        maxsize:                 12288M
+        next:                    "%{ora_rac::settings::undo_next}"
+        maxsize:                 "%{ora_rac::settings::undo_max_size}"
   create_catalog:                'yes'
   spfile_location:               '+RECODG'
   scan_name:                     'SCAN'
