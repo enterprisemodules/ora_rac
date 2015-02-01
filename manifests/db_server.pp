@@ -77,8 +77,6 @@ class ora_rac::db_server(
     logoutput   => on_failure,
   }->
 
-  class{'ora_rac::ensure_oracle_ownership':} ->
-
   ora_rac::oratab_entry{$current_instance:
     home      => $ora_rac::settings::oracle_home,
     start     => 'N',
