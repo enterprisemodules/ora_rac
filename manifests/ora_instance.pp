@@ -77,6 +77,7 @@ define ora_rac::ora_instance(
   }
 
   ora_exec{"@/tmp/add_logfiles_${thread}.sql@${on}":
+    unless    => "select * from v\$log where THREAD#=${thread}",
     require   => [
       File["/tmp/add_logfiles_${thread}.sql"],
     ]
