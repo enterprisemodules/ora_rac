@@ -25,9 +25,9 @@ define ora_rac::asm_disk(
   #
   # Validation
   #
-  assert_type(Regexp[/.*\:.*/], $raw_device) |$e, $a| { fail "raw_device is ${a}, but you must specify a device with a partition number"}
-  assert_type(Optional[Regexp[/\d.*\S?[%|k|K|m|M|g|G][b|B]?/]],$start )  |$e, $a| { fail "start is ${a}, but you must be either undef or a valid size string"}
-  assert_type(Optional[Regexp[/\d.*\S?[%|k|K|m|M|g|G][b|B]?/]],$end ) |$e, $a| { fail "end is ${a}, but you must be either undef or a valid size string"}
+  assert_type(Pattern[/.*\:.*/], $raw_device) |$e, $a| { fail "raw_device is ${a}, but you must specify a device with a partition number"}
+  assert_type(Variant[String[0],Pattern[/\d.*\S?[%|k|K|m|M|g|G][b|B]?/]],$start )  |$e, $a| { fail "start is ${a}, but you must be either undef or a valid size string"}
+  assert_type(Variant[String[0],Pattern[/\d.*\S?[%|k|K|m|M|g|G][b|B]?/]],$end ) |$e, $a| { fail "end is ${a}, but you must be either undef or a valid size string"}
 
   #
   # Manipulation and translation of parameters
