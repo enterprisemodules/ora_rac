@@ -38,23 +38,52 @@ class ora_rac::db_master(
   #
   # Validation of parameters
   #
-  assert_type(String[1,8], $db_name)              |$e, $a| { fail "dbname is ${a}, but must be between 1 and 8 character length string" }
-  assert_type(Array, $scan_adresses)              |$e, $a| { fail "scan_addresses is ${a}, but must be an array of IP adresses" }
-  assert_type(String[1], $domain_name)            |$e, $a| { fail "domain_name is ${a}, but must be a non empty string"}
-  assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
+  assert_type(String[1,8], $db_name) |$e, $a| {
+    fail "dbname is ${a}, but must be between 1 and 8 character length string"
+  }
+  assert_type(Array, $scan_adresses) |$e, $a| {
+    fail "scan_addresses is ${a}, but must be an array of IP adresses" 
+  }
+  assert_type(String[1], $domain_name) |$e, $a| {
+    fail "domain_name is ${a}, but must be a non empty string"
+  }
+  assert_type(Hash, $db_machines) |$e, $a| {
+    fail "db_machines is ${a}, but should be a Hash of machines"
+  }
 
-  assert_type(String[1], $init_ora_content)       |$e, $a| { fail "init_ora_content is ${a}, but must be a non empty string"}
-  assert_type(Array, $public_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
-  assert_type(Array, $private_network_interfaces) |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
-  assert_type(Array, $unused_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
-
-  assert_type(String[1], $cluster_name)           |$e, $a| { fail "cluster_name is ${a}, but should be a non empty string"}
-  assert_type(String[1], $password)               |$e, $a| { fail "password is ${a}, but should be a non empty string"}
-  assert_type(String[1], $scan_name)              |$e, $a| { fail "scan_name is ${a}, but should be a non empty string"}
-  assert_type(Integer, $scan_port)                |$e, $a| { fail "scan_port is ${a}, but should be an integer number"}
-  assert_type(String[1], $crs_disk_group_name)    |$e, $a| { fail "crs_disk_group_name is ${a}, but should be a non empty string"}
-  assert_type(String[1], $crs_disk)               |$e, $a| { fail "crs_disk is ${a}, but should be a non empty string"}
-  assert_type(String[1], $data_disk_group_name)   |$e, $a| { fail "data_disk_group_name is ${a}, but should be a non empty string"}
+  assert_type(String[1], $init_ora_content) |$e, $a| {
+    fail "init_ora_content is ${a}, but must be a non empty string"
+  }
+  assert_type(Array, $public_network_interfaces) |$e, $a| {
+    fail "public_network_interfaces is a ${a}, but must be an array of interfaces"
+  }
+  assert_type(Array, $private_network_interfaces) |$e, $a| {
+    fail "private_network_interfaces is a ${a}, but must be an array of interfaces"
+  }
+  assert_type(Array, $unused_network_interfaces) |$e, $a| {
+    fail "unused_network_interfaces is a ${a}, but must be an array of interfaces"
+  }
+  assert_type(String[1], $cluster_name) |$e, $a| {
+   fail "cluster_name is ${a}, but should be a non empty string"
+  }
+  assert_type(String[1], $password) |$e, $a| {
+   fail "password is ${a}, but should be a non empty string"
+  }
+  assert_type(String[1], $scan_name) |$e, $a| {
+   fail "scan_name is ${a}, but should be a non empty string"
+  }
+  assert_type(Integer, $scan_port) |$e, $a| {
+   fail "scan_port is ${a}, but should be an integer number"
+  }
+  assert_type(String[1], $crs_disk_group_name) |$e, $a| {
+   fail "crs_disk_group_name is ${a}, but should be a non empty string"
+  }
+  assert_type(String[1], $crs_disk)  |$e, $a| {
+   fail "crs_disk is ${a}, but should be a non empty string"
+  }
+  assert_type(String[1], $data_disk_group_name)   |$e, $a| {
+   fail "data_disk_group_name is ${a}, but should be a non empty string"
+  }
   assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
 
   require ora_rac::settings
@@ -133,17 +162,17 @@ class ora_rac::db_master(
 
   ensure_resource(ora_database, $db_name, $database_definition)
 
+  ora_rac::oratab_entry{"${db_name}1":
+    home    => $ora_rac::settings::oracle_home,
+    start   => 'N',
+    comment => 'Added by puppet',
+    require => Ora_database[$db_name],
+  }
+
   $cluster_nodes.each | $index, $instance| {
     $instance_number  = $index + 1
     $thread           = $instance_number
     $instance_name    = "${db_name}${instance_number}"
-
-    ora_rac::oratab_entry{$instance_name:
-      home    => $ora_rac::settings::oracle_home,
-      start   => 'N',
-      comment => 'Added by puppet',
-      require => Ora_database[$db_name],
-    }
 
     if ($instance_number > 1) { # Not a master node
 
@@ -157,7 +186,7 @@ class ora_rac::db_master(
         undo_autoextend    => $ora_rac::settings::undo_autoextend,
         undo_max_size      => $ora_rac::settings::undo_max_size,
         require => [
-          Ora_rac::Oratab_entry[$instance_name],
+          Ora_rac::Oratab_entry["${db_name}1"],
         ]
       }
     }
