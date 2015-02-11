@@ -1,6 +1,10 @@
 History
 ========
 
+15-12-2014  version 0.5.6
+--------------------------
+- Only add instance from current node to oratab file
+
 15-12-2014  version 0.5.0
 --------------------------
 - Added settings block an check for Puppet version
