@@ -1,6 +1,14 @@
 History
 ========
 
+23-02-2014  version 0.6.7
+--------------------------
+- Different implementation of user equivalance
+
+......
+some versions skipped
+......
+
 15-12-2014  version 0.5.6
 --------------------------
 - Only add instance from current node to oratab file
