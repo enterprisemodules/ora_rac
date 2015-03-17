@@ -1,7 +1,6 @@
 # == Class: ora_rac::swapspace
 #
-# Create swapspace for Oracle. This is probably only needed for Vagrant boxes
-# REAL nodes should define their own swapspace.
+# Create temporary swapspace for Oracle.
 #
 # === Parameters
 #
@@ -15,25 +14,13 @@
 #
 # Bert Hajee <hajee@moretIA.com>
 #
-class ora_rac::swapspace
+class ora_rac::swapspace(
+  $size = floor($::memorysize_mb * 2),
+)
 {
-  exec { "create swap file":
-    command => "/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=8192",
-    creates => "/var/swap.1",
+  exec{'oracle_temporary_swapspace':
+    timeout => 0,
+    command => "/bin/dd if=/dev/zero of=/tmp/ora_tmp_swap.1 bs=1M count=${size}; /bin/chmod 0600 /tmp/ora_tmp_swap.1; /sbin/mkswap /tmp/ora_tmp_swap.1; /sbin/swapon /tmp/ora_tmp_swap.1",
+    onlyif  => '/usr/bin/test ! -f /tmp/ora_tmp_swap.1',
   }
-
-  exec { "attach swap file":
-    command => "/sbin/mkswap /var/swap.1 && /sbin/swapon /var/swap.1",
-    require => Exec["create swap file"],
-    unless => "/sbin/swapon -s | grep /var/swap.1",
-  }
-
-  #add swap file entry to fstab
-  exec {"add swapfile entry to fstab":
-    command => "/bin/echo >>/etc/fstab /var/swap.1 swap swap defaults 0 0",
-    require => Exec["attach swap file"],
-    user => root,
-    unless => "/bin/grep '^/var/swap.1' /etc/fstab 2>/dev/null",
-  }
-
 }

@@ -37,6 +37,7 @@ class ora_rac::db_server(
     timeout     => 0,
     user        => 'root',
     creates     => "${ora_rac::settings::grid_base}/${::hostname}",
+    returns     => [0,25],
     command     => "/bin/sh ${ora_rac::settings::ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${ora_rac::settings::grid_home}/root.sh",
   }
 
@@ -83,6 +84,13 @@ class ora_rac::db_server(
     comment   => 'Added by puppet',
   } ->
 
+  # exec{'enable_database':
+  #   user          => $ora_rac::settings::oracle_user,
+  #   environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
+  #   command       => "${ora_rac::settings::oracle_home}/bin/srvctl enable database -d ${db_name}",
+  #   unless        => "${ora_rac::settings::oracle_home}/bin/srvctl status database -d ${db_name}",
+  #   logoutput     => on_failure,
+  # } ->
 
   exec{'add_instance':
     user          => $ora_rac::settings::oracle_user,

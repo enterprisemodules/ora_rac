@@ -59,7 +59,7 @@ class ora_rac::os inherits ora_rac::params {
     home       => "/home/${ora_rac::settings::oracle_user}",
     managehome => true,
     require    => Group[$ora_rac::settings::dba_group, $ora_rac::settings::oper_group, $ora_rac::settings::install_group],
-  }
+  } ->
 
   ora_rac::user_equivalence{$ora_rac::settings::oracle_user:
     nodes => $ora_rac::params::cluster_nodes,
@@ -89,6 +89,10 @@ class ora_rac::os inherits ora_rac::params {
     home       => "/home/${ora_rac::settings::grid_user}",
     managehome => true,
     require    => Group[$ora_rac::settings::install_group,$ora_rac::settings::dba_group, $ora_rac::settings::grid_group, $ora_rac::settings::grid_admin_group, $ora_rac::settings::grid_oper_group],
+  } ->
+
+  ora_rac::user_equivalence{$ora_rac::settings::grid_user:
+    nodes => $ora_rac::params::cluster_nodes,
   }
 
   file {"/home/${ora_rac::settings::grid_user}/.bash_profile":
@@ -100,9 +104,6 @@ class ora_rac::os inherits ora_rac::params {
     require   => User[$ora_rac::settings::grid_user],
   }
 
-  ora_rac::user_equivalence{$ora_rac::settings::grid_user:
-    nodes => $ora_rac::params::cluster_nodes,
-  }
 
   file {'/etc/security/limits.conf':
     ensure    => file,

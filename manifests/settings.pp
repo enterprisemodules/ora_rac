@@ -110,7 +110,7 @@ class ora_rac::settings(
   if $db_major_version == 12 {
     $add_node_path ='/addnode/addnode.sh -silent -ignorePrereq'
   } else {
-    $add_node_path = '/oui/bin/addNode.sh'
+    $add_node_path = '/oui/bin/addNode.sh -ignorePrereq'
   }
 
   if $oracle_file == undef and $file != undef {
@@ -120,7 +120,7 @@ class ora_rac::settings(
   }
 
   unless $_oracle_file {
-    fail( 'You mest specify either the file or an oracle_file for db_master')
+    fail( 'You must specify either the file or an oracle_file for db_master')
   }
 
   if $grid_file == undef and $file != undef {
@@ -137,5 +137,9 @@ class ora_rac::settings(
   } else {
     $_grid_file = "${_grid_basic_file}_3of7"
   }
+  #
+  # Extract the diskgroup names from the datastructure. We need this 
+  #
+  $disk_group_names = $asm_disk_groups.keys.map |$d| {$d.split('@')[0]}
 
 }

@@ -167,6 +167,13 @@ class ora_rac::db_master(
     start   => 'N',
     comment => 'Added by puppet',
     require => Ora_database[$db_name],
+  }->
+
+  exec{'register_diskgroups':
+    user          => $ora_rac::settings::oracle_user,
+    environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
+    command       => "${ora_rac::settings::oracle_home}/bin/srvctl modify database -d ${db_name} -a ${ora_rac::settings::disk_group_names.join(',')}",
+    logoutput     => on_failure,
   }
 
   $cluster_nodes.each | $index, $instance| {
@@ -191,4 +198,5 @@ class ora_rac::db_master(
       }
     }
   }
+
 }

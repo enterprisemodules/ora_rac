@@ -41,16 +41,14 @@ define ora_rac::user_equivalence(
     require => File["/home/${name}/.ssh"],
   }
 
-  #
-  # For the specfied user, disable StrictHostKeyChecking for all nodes in the cluster
-  #
-  #
-  file{"/home/${name}/.ssh/config":
-    ensure  => 'file',
-    mode    => '0700',
-    owner   => $name,
-    content => template('ora_rac/ssh_config.erb'),
-    require => File["/home/${name}/.ssh"],
+  $nodes.each |$node|{
+    exec{"authorize_node_${node}_for_${name}":
+      user    => $name,
+      command => "/usr/bin/scp -o StrictHostKeyChecking=no x ${name}@${node}:~",
+      unless  => "/bin/grep ${node}, /home/${name}/.ssh/known_hosts",
+      returns => [0,1],
+      require => File["/home/${name}/.ssh/id_rsa"],
+    }
   }
 
 }
