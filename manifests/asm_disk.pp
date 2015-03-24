@@ -35,7 +35,16 @@ define ora_rac::asm_disk(
   $_device_array    = split($raw_device,'[:]')
   $device_name      = $_device_array[0]
   $partition_number = $_device_array[1]
-  $device           = "${device_name}${partition_number}"
+  $mapped_device    = match($device_name,/\/dev\/mapper\/.*/) != undef
+  #
+  #
+  # Mapped devices use the 'p1' and 'p2' extensions for partitions
+  #
+  if $mapped_device {
+    $device         = "${device_name}${partition_number}"
+  } else {
+    $device         = "${device_name}p${partition_number}"
+  }
 
   partition_table{$device_name:
     ensure  => 'gpt',
