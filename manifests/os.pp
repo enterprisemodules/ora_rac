@@ -54,7 +54,7 @@ class ora_rac::os inherits ora_rac::params {
                     $ora_rac::settings::grid_group,
                     $ora_rac::settings::oper_group,
                   ],
-    uid        => $ora_rac::settings::install_group_id,
+    uid        => $ora_rac::settings::oracle_user_id,
     shell      => '/bin/bash',
     home       => "/home/${ora_rac::settings::oracle_user}",
     managehome => true,
