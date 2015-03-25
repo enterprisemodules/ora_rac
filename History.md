@@ -1,6 +1,16 @@
 History
 ========
 
+25-03-2014  version 0.7.1
+--------------------------
+- Added support for multipath devices
+
+
+17-04-2014  version 0.7.0
+--------------------------
+- Working with the latest version of the Oracle module
+
+
 23-02-2014  version 0.6.7
 --------------------------
 - Different implementation of user equivalance
