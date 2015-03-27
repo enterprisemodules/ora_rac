@@ -18,8 +18,9 @@
 #
 define ora_rac::asm_disk(
   $raw_device,
-  $start    = undef,
-  $end      = undef,
+  $start      = undef,
+  $end        = undef,
+  $table_type = 'msdos',
 )
 {
   #
@@ -28,6 +29,8 @@ define ora_rac::asm_disk(
   assert_type(Pattern[/.*\:.*/], $raw_device) |$e, $a| { fail "raw_device is ${a}, but you must specify a device with a partition number"}
   assert_type(Variant[String[0],Pattern[/\d.*\S?[%|k|K|m|M|g|G][b|B]?/]],$start )  |$e, $a| { fail "start is ${a}, but you must be either undef or a valid size string"}
   assert_type(Variant[String[0],Pattern[/\d.*\S?[%|k|K|m|M|g|G][b|B]?/]],$end ) |$e, $a| { fail "end is ${a}, but you must be either undef or a valid size string"}
+  assert_type(Enum['gpt', 'msdos'],$table_type ) |$e, $a| { fail "table_type is ${a}, but you must be either msdos or gpt"}
+
 
   #
   # Manipulation and translation of parameters
@@ -47,7 +50,7 @@ define ora_rac::asm_disk(
   }
 
   partition_table{$device_name:
-    ensure  => 'gpt',
+    ensure  => $table_type,
   }->
 
   partition{$raw_device:

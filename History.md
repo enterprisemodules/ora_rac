@@ -1,6 +1,11 @@
 History
 ========
 
+25-03-2014  version 0.7.3
+--------------------------
+- Create a default partition table with type msdos in stead of gpt. msdos partion types are better supported on older versions of redhat.
+
+
 25-03-2014  version 0.7.1
 --------------------------
 - Added support for multipath devices
