@@ -55,7 +55,7 @@ define ora_rac::asm_disk(
 
   partition{$raw_device:
     ensure    => 'present',
-    part_name => 'primary',
+    part_type => 'primary',
     start     => $start,
     end       => $end,
   }->
