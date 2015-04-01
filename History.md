@@ -1,6 +1,12 @@
 History
 ========
 
+01-05-2014  version 0.7.4
+--------------------------
+- Fixes for ASM restarts
+- added diskdiscoverystring to api
+- extractes creation of oracle and grid users
+
 25-03-2014  version 0.7.3
 --------------------------
 - Create a default partition table with type msdos in stead of gpt. msdos partion types are better supported on older versions of redhat.
