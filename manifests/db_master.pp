@@ -125,6 +125,7 @@ class ora_rac::db_master(
     group_install          => $ora_rac::settings::install_group,
     group_oper             => $ora_rac::settings::grid_oper_group,
     group_asm              => $ora_rac::settings::grid_admin_group,
+    disk_discovery_string  => $ora_rac::params::disk_discovery_string,
     asm_diskgroup          => $crs_disk_group_name,
     disks                  => $crs_disk,
     disk_redundancy        => $disk_redundancy,

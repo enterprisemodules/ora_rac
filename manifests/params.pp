@@ -28,6 +28,7 @@ class ora_rac::params(
   $crs_disk_group_name        = 'CRS',
   $crs_disk                   = 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
   $data_disk_group_name       = 'DATA',
+  $disk_discovery_string      =  '',
   $disk_redundancy            = 'NORMAL',
 )
 {
@@ -52,6 +53,7 @@ class ora_rac::params(
   assert_type(String[1], $crs_disk_group_name)    |$e, $a| { fail "crs_disk_group_name is ${a}, but should be a non empty string"}
   assert_type(String[1], $crs_disk)               |$e, $a| { fail "crs_disk is ${a}, but should be a non empty string"}
   assert_type(String[1], $data_disk_group_name)   |$e, $a| { fail "data_disk_group_name is ${a}, but should be a non empty string"}
+  assert_type(String[0], $disk_discovery_string)  |$e, $a| { fail "disk_discovery_string is ${a}, but should be a string"}
   assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
                                                   |$e, $a| { fail "disk_redundancy is ${a}, but should be either EXTERNAL or NORMAL"}
   #
