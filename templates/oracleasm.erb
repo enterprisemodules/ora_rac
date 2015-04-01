@@ -17,11 +17,12 @@ ORACLEASM_GID=<%= @grid_group %>
 # ORACLEASM_SCANBOOT: 'true' means scan for ASM disks on boot.
 ORACLEASM_SCANBOOT=true
 
+
 # ORACLEASM_SCANORDER: Matching patterns to order disk scanning
-ORACLEASM_SCANORDER=""
+ORACLEASM_SCANORDER="dm"
 
 # ORACLEASM_SCANEXCLUDE: Matching patterns to exclude disks from scan
-ORACLEASM_SCANEXCLUDE=""
+ORACLEASM_SCANEXCLUDE="sd"
 
 # ORACLEASM_USE_LOGICAL_BLOCK_SIZE: 'true' means use the logical block size
 # reported by the underlying disk instead of the physical. The default
