@@ -33,6 +33,7 @@ class ora_rac::db_master(
   $crs_disk                   = $ora_rac::params::crs_disk,
   $data_disk_group_name       = $ora_rac::params::data_disk_group_name,
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
+  $config_scripts             = $ora_rac::params::config_scripts,
 ) inherits ora_rac::params {
 
   #
@@ -85,6 +86,10 @@ class ora_rac::db_master(
    fail "data_disk_group_name is ${a}, but should be a non empty string"
   }
   assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
+  assert_type(Array[Hash], $config_scripts)   |$e, $a| {
+   fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
+  }
+
 
   require ora_rac::settings
 
@@ -161,7 +166,8 @@ class ora_rac::db_master(
     before                 => Ora_database[$db_name],
   }
 
-  ensure_resource(ora_database, $db_name, $database_definition)
+  $full_database_definition = merge($database_definition, {config_scripts => $config_scripts})
+  ensure_resource(ora_database, $db_name, $full_database_definition)
 
   ora_rac::oratab_entry{"${db_name}1":
     home    => $ora_rac::settings::oracle_home,

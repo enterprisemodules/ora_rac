@@ -30,6 +30,7 @@ class ora_rac::params(
   $data_disk_group_name       = 'DATA',
   $disk_discovery_string      =  '',
   $disk_redundancy            = 'NORMAL',
+  $config_scripts             = [],
 )
 {
   #
@@ -56,6 +57,9 @@ class ora_rac::params(
   assert_type(String[0], $disk_discovery_string)  |$e, $a| { fail "disk_discovery_string is ${a}, but should be a string"}
   assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
                                                   |$e, $a| { fail "disk_redundancy is ${a}, but should be either EXTERNAL or NORMAL"}
+  assert_type(Array[Hash], $config_scripts)   |$e, $a| {
+   fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
+  }
   #
   # Build the string needed by oracle grid installer
   #
