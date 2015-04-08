@@ -1,28 +1,32 @@
 History
 ========
 
-01-05-2014  version 0.7.4
+08-04-2015  version 0.8.0
+--------------------------
+- Added the parameter config_scripts to db_master. This is the extension of ora_database config_scripts
+
+01-04-2015  version 0.7.4
 --------------------------
 - Fixes for ASM restarts
 - added diskdiscoverystring to api
 - extractes creation of oracle and grid users
 
-25-03-2014  version 0.7.3
+25-03-2015  version 0.7.3
 --------------------------
 - Create a default partition table with type msdos in stead of gpt. msdos partion types are better supported on older versions of redhat.
 
 
-25-03-2014  version 0.7.1
+25-03-2015  version 0.7.1
 --------------------------
 - Added support for multipath devices
 
 
-17-04-2014  version 0.7.0
+17-04-2015  version 0.7.0
 --------------------------
 - Working with the latest version of the Oracle module
 
 
-23-02-2014  version 0.6.7
+23-02-2015  version 0.6.7
 --------------------------
 - Different implementation of user equivalance
 
