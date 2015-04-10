@@ -1,6 +1,6 @@
 {
   "name": "hajee-ora_rac",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "author": "Bert Hajee",
   "summary": "the custom types needed to manage the basic setup of an Oracle database",
   "license": "Apache License, Version 2.0",
@@ -30,6 +30,10 @@
     {
       "name": "biemond/oradb",
       "version_requirement": "1.0.x"
+    },
+    {
+      "name": "fiddyspence/puppet-sleep",
+      "version_requirement": "1.2.x"
     }
   ],
   "operatingsystem_support": [

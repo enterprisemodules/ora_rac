@@ -1,6 +1,10 @@
 History
 ========
 
+10-04-2015  version 0.8.1
+--------------------------
+- Added a sleep on createing the ASM disks. This waits maximum 120 seconds for any device mapper disks to come online.
+
 08-04-2015  version 0.8.0
 --------------------------
 - Added the parameter config_scripts to db_master. This is the extension of ora_database config_scripts
