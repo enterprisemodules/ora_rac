@@ -49,6 +49,14 @@ define ora_rac::asm_disk(
     $device         = "${device_name}${partition_number}"
   }
 
+  sleep { "until_${device_name}_available":
+    bedtime       => '120',                                     # how long to sleep for
+    wakeupfor     => "/usr/bin/test -b ${device_name}",         # an optional test, run in a shell
+    dozetime      => '5',                                       # dozetime for the test interval, defaults to 10s
+    failontimeout => true,                                      # whether to fail the resource if the test times out
+    refreshonly   => false,
+  } ->
+
   partition_table{$device_name:
     ensure  => $table_type,
   }->
@@ -64,5 +72,7 @@ define ora_rac::asm_disk(
     unless    => "/usr/sbin/oracleasm querydisk -v ${device}",
     require   => Service['oracleasm'],
   }
+
+
 
 }
