@@ -38,7 +38,7 @@ define ora_rac::asm_disk(
   $_device_array    = split($raw_device,'[:]')
   $device_name      = $_device_array[0]
   $partition_number = $_device_array[1]
-  $mapped_device    = regsubst($dev,'\/dev\/mapper\/.*', '') != $dev
+  $mapped_device    = regsubst($device_name,'\/dev\/mapper\/.*', '') != $device_name
   #
   #
   # Mapped devices use the 'p1' and 'p2' extensions for partitions

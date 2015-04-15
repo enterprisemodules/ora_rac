@@ -1,6 +1,15 @@
 History
 ========
 
+15-04-2015  version 0.8.3
+--------------------------
+- Small fixes to ASM disk.
+- Don't use fixed group numbers for loggroups
+
+15-04-2015  version 0.8.2
+--------------------------
+- Change instanc from 2 to 3 logfiles with a size of 512 
+
 10-04-2015  version 0.8.1
 --------------------------
 - Added a sleep on createing the ASM disks. This waits maximum 120 seconds for any device mapper disks to come online.
