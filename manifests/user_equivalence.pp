@@ -16,7 +16,8 @@
 # Bert Hajee <hajee@moretIA.com>
 #
 define ora_rac::user_equivalence(
-  $nodes = ['localhost'],
+  $nodes        = ['localhost'],
+  $private_key
 )
 {
   #
@@ -37,7 +38,7 @@ define ora_rac::user_equivalence(
 
   file{"/home/${name}/.ssh/id_rsa":
     ensure  => 'file',
-    source  => "puppet:///modules/ora_rac/${name}.key",
+    content => $private_key,
     require => File["/home/${name}/.ssh"],
   }
 

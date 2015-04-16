@@ -17,6 +17,8 @@ class ora_rac::params(
   $scan_adresses,
   $domain_name,
   $db_machines,
+  $oracle_private_key,
+  $grid_private_key,
   $init_ora_content           = template('ora_rac/init.ora.erb'),
   $public_network_interfaces  = ['eth1'],
   $private_network_interfaces = ['eth2'],
@@ -41,12 +43,12 @@ class ora_rac::params(
   assert_type(Array, $scan_adresses)              |$e, $a| { fail "scan_addresses is ${a}, but must be an array of IP adresses" }
   assert_type(String[1], $domain_name)            |$e, $a| { fail "domain_name is ${a}, but must be a non empty string"}
   assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
-
+  assert_type(String[1], $oracle_private_key)     |$e, $a| { fail "oracle_private_key is ${a}, but should be a non empty string"}
+  assert_type(String[1], $grid_private_key)       |$e, $a| { fail "grid_private_key is ${a}, but should be a non empty string"}
   assert_type(String[1], $init_ora_content)       |$e, $a| { fail "init_ora_content is ${a}, but must be a non empty string"}
   assert_type(Array, $public_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
   assert_type(Array, $private_network_interfaces) |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
   assert_type(Array, $unused_network_interfaces)  |$e, $a| { fail " is a ${a}, but must be an array of interfaces"}
-
   assert_type(String[1], $cluster_name)           |$e, $a| { fail "cluster_name is ${a}, but should be a non empty string"}
   assert_type(String[1], $password)               |$e, $a| { fail "password is ${a}, but should be a non empty string"}
   assert_type(String[1], $scan_name)              |$e, $a| { fail "scan_name is ${a}, but should be a non empty string"}
