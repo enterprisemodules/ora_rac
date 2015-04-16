@@ -1,6 +1,10 @@
 History
 ========
 
+16-04-2015  version 0.8.4
+--------------------------
+- Extracting grid and oracle keys
+
 15-04-2015  version 0.8.3
 --------------------------
 - Small fixes to ASM disk.
