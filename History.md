@@ -1,6 +1,10 @@
 History
 ========
 
+13-05-2015  version 0.8.5
+--------------------------
+- removed creating of bash profiles for Oracle and Grid users
+
 16-04-2015  version 0.8.4
 --------------------------
 - Extracting grid and oracle keys
