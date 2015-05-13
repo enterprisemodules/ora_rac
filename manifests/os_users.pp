@@ -46,15 +46,6 @@ class ora_rac::os_users inherits ora_rac::params {
     private_key => $ora_rac::params::oracle_private_key,
   }
 
-  file {"/home/${$ora_rac::settings::oracle_user}/.bash_profile":
-    ensure  => file,
-    owner   => $ora_rac::settings::oracle_user,
-    group   => $ora_rac::settings::dba_group,
-    mode    => '0644',
-    source  => 'puppet:///modules/ora_rac/bash_profile',
-    require => User[$ora_rac::settings::oracle_user],
-  }
-
   user {$ora_rac::settings::grid_user:
     ensure     => present,
     comment    => 'Oracle Grid user',
@@ -77,13 +68,5 @@ class ora_rac::os_users inherits ora_rac::params {
     private_key => $ora_rac::params::grid_private_key,
   }
 
-  file {"/home/${ora_rac::settings::grid_user}/.bash_profile":
-    ensure    => file,
-    owner     => $ora_rac::settings::grid_user,
-    group     => $ora_rac::settings::asm_group,
-    mode      => '0644',
-    source    => 'puppet:///modules/ora_rac/bash_profile',
-    require   => User[$ora_rac::settings::grid_user],
-  }
 }
 

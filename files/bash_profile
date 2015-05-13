@@ -1,3 +1,0 @@
-if [ -t 0 ]; then
-stty intr ^C
-fi
