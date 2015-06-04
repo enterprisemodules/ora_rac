@@ -194,7 +194,7 @@ class ora_rac::db_master(
         on                 => $master_instance,
         number             => $instance_number,
         thread             => $thread,
-        datafile           => $ora_rac::settings::recovery_area_destination,
+        datafile           => $ora_rac::settings::data_file_destination,
         undo_initial_size  => $ora_rac::settings::undo_initial_size,
         undo_next          => $ora_rac::settings::undo_next,
         undo_autoextend    => $ora_rac::settings::undo_autoextend,
