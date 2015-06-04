@@ -1,6 +1,10 @@
 History
 ========
 
+04-06-2015  version 0.8.6
+--------------------------
+- Move undotbs to right place
+
 13-05-2015  version 0.8.5
 --------------------------
 - removed creating of bash profiles for Oracle and Grid users
