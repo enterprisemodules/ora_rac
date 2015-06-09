@@ -23,7 +23,7 @@ class ora_rac::os inherits ora_rac::params {
     changes => [
       "ins opt after *[spec = 'tmpfs'][file = '/dev/shm']/opt[last()]",
       "set *[spec = 'tmpfs']/opt[last()] size",
-      "set *[spec = 'tmpfs']/opt[last()]/value ${orashm}m",
+      "set *[spec = 'tmpfs']/opt[last()]/value ${orashm}",
     ],
     onlyif  => "match *[spec='tmpfs'][file = '/dev/shm']/opt[. = 'size'] size == 0",
   }
