@@ -39,5 +39,7 @@ db_recovery_file_dest="+RECODG"
 <%= @db_name -%>2.instance_number=2
 <%= @db_name -%>1.thread=1
 <%= @db_name -%>2.thread=2
+<%= @db_name -%>1.instance_name=<%= @db_name -%>1
+<%= @db_name -%>2.instance_name=<%= @db_name -%>2
 <%= @db_name -%>1.undo_tablespace=UNDOTBS1
 <%= @db_name -%>2.undo_tablespace=UNDOTBS2
