@@ -1,6 +1,10 @@
 History
 ========
 
+09-06-2015  version 0.8.7
+--------------------------
+- Fix tmpfs size
+
 04-06-2015  version 0.8.6
 --------------------------
 - Move undotbs to right place
