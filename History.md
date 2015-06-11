@@ -1,6 +1,11 @@
 History
 ========
 
+11-06-2015  version 0.8.8
+--------------------------
+- Make tmpfs 60% of memory size
+- Add all instance names to init.ora
+
 09-06-2015  version 0.8.7
 --------------------------
 - Fix tmpfs size
