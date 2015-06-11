@@ -16,14 +16,14 @@ class ora_rac::os inherits ora_rac::params {
 
   require ora_rac::settings
 
-  $orashm = floor( ($::memorysize_mb * 1024 * 1024) / 2 )
+  $orashm = floor( (($::memorysize_mb) * 0.6 ))
 
   augeas {'ensure_tmpfs_size':
     context => '/files/etc/fstab',
     changes => [
       "ins opt after *[spec = 'tmpfs'][file = '/dev/shm']/opt[last()]",
       "set *[spec = 'tmpfs']/opt[last()] size",
-      "set *[spec = 'tmpfs']/opt[last()]/value ${orashm}",
+      "set *[spec = 'tmpfs']/opt[last()]/value ${orashm}m",
     ],
     onlyif  => "match *[spec='tmpfs'][file = '/dev/shm']/opt[. = 'size'] size == 0",
   }
