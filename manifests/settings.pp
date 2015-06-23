@@ -87,8 +87,8 @@ class ora_rac::settings(
   assert_type(Integer,$grid_admin_group_id)         |$e, $a| { fail "grid_admin_group_id is ${a}, but expected an integer"}
   validate_re($version, $valid_version_re, "grid_base is ${a}, but expected a non empty string")
   assert_type(String[1], $file)                     |$e, $a| { fail "grid_file is ${a}, but expected a non empty string"}
-  assert_type(String, $grid_file)                   |$e, $a| { fail "grid_file is ${a}, but expected a string"}
-  assert_type(String, $oracle_file)                 |$e, $a| { fail "oracle_file is ${a}, but expected a string"}
+  assert_type(Variant[String, Undef], $grid_file)   |$e, $a| { fail "grid_file is ${a}, but expected a string"}
+  assert_type(Variant[String, Undef], $oracle_file) |$e, $a| { fail "oracle_file is ${a}, but expected a string"}
   assert_type(String[1], $character_set)            |$e, $a| { fail "character_set is ${a}, but expected a non empty string"}
   assert_type(String[1], $national_character_set)   |$e, $a| { fail "grid_base is ${a}, but expected a non empty string"}
   assert_type(String[1], $database_type)            |$e, $a| { fail "database_type is ${a}, but expected a non empty string"}
