@@ -1,6 +1,10 @@
 History
 ========
 
+23-06-2015  version 0.8.9
+--------------------------
+- Make checks compatible with puppet 3.8 and higher
+
 11-06-2015  version 0.8.8
 --------------------------
 - Make tmpfs 60% of memory size
