@@ -1,6 +1,10 @@
 History
 ========
 
+24-06-2015  version 0.8.10
+--------------------------
+- Fix uid of grid user
+
 23-06-2015  version 0.8.9
 --------------------------
 - Make checks compatible with puppet 3.8 and higher
