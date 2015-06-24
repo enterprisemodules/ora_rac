@@ -56,7 +56,7 @@ class ora_rac::os_users inherits ora_rac::params {
                     $ora_rac::settings::grid_admin_group,
                     $ora_rac::settings::grid_oper_group,
                   ],
-    uid        => $ora_rac::settings::grid_uid,
+    uid        => $ora_rac::settings::grid_user_id,
     shell      => '/bin/bash',
     home       => "/home/${ora_rac::settings::grid_user}",
     managehome => true,
