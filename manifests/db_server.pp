@@ -100,6 +100,10 @@ class ora_rac::db_server(
     logoutput     => on_failure,
   } ->
 
+  exec{'chmod_oracle':
+    command => "/bin/chown ${ora_rac::settings::oracle_user} ${ora_rac::settings::oracle_base}"
+  } ->
+
   exec{'start_instance':
     user          => $ora_rac::settings::oracle_user,
     environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO","ORACLE_HOME=/opt/oracle/app/${ora_rac::settings::version}/db_1"],
