@@ -1,6 +1,11 @@
 History
 ========
 
+10-07-2015  version 0.8.11
+--------------------------
+- Fix ownership of Oracle directory on db_server when grid_home and oracle_home have common root paths
+
+
 24-06-2015  version 0.8.10
 --------------------------
 - Fix uid of grid user
