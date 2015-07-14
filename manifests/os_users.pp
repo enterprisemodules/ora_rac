@@ -39,12 +39,8 @@ class ora_rac::os_users inherits ora_rac::params {
     home       => "/home/${ora_rac::settings::oracle_user}",
     managehome => true,
     require    => Group[$ora_rac::settings::dba_group, $ora_rac::settings::oper_group, $ora_rac::settings::install_group],
-  } ->
+  } 
 
-  ora_rac::user_equivalence{$ora_rac::settings::oracle_user:
-    nodes       => $ora_rac::params::cluster_nodes,
-    private_key => $ora_rac::params::oracle_private_key,
-  }
 
   user {$ora_rac::settings::grid_user:
     ensure     => present,
@@ -61,12 +57,7 @@ class ora_rac::os_users inherits ora_rac::params {
     home       => "/home/${ora_rac::settings::grid_user}",
     managehome => true,
     require    => Group[$ora_rac::settings::install_group,$ora_rac::settings::dba_group, $ora_rac::settings::grid_group, $ora_rac::settings::grid_admin_group, $ora_rac::settings::grid_oper_group],
-  } ->
-
-  ora_rac::user_equivalence{$ora_rac::settings::grid_user:
-    nodes       => $ora_rac::params::cluster_nodes,
-    private_key => $ora_rac::params::grid_private_key,
-  }
+  } 
 
 }
 
