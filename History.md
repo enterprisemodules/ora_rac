@@ -1,6 +1,10 @@
 History
 ========
 
+14-07-2015  version 0.8.12
+--------------------------
+- Extracted the creation of authorized nodes from `os_users`. This means you have to include this modules extra `include ora_rac::authenticated_nodes`.
+
 10-07-2015  version 0.8.11
 --------------------------
 - Fix ownership of Oracle directory on db_server when grid_home and oracle_home have common root paths
