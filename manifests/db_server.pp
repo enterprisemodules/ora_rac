@@ -68,12 +68,12 @@ class ora_rac::db_server(
     require     => [
       Exec['register_grid_node']
     ]
-  }->
+  }~>
 
   exec{'register_oracle_node':
+    refreshonly => true,
     timeout     => 0,
     user        => 'root',
-    # creates     => $ora_rac::settings::oracle_home, # TODO: What does this action create
     command     => "/bin/sh ${ora_rac::settings::ora_inventory_dir}/oraInventory/orainstRoot.sh;/bin/sh ${ora_rac::settings::oracle_home}/root.sh",
     logoutput   => on_failure,
   }->
@@ -84,24 +84,17 @@ class ora_rac::db_server(
     comment   => 'Added by puppet',
   } ->
 
-  # exec{'enable_database':
-  #   user          => $ora_rac::settings::oracle_user,
-  #   environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
-  #   command       => "${ora_rac::settings::oracle_home}/bin/srvctl enable database -d ${db_name}",
-  #   unless        => "${ora_rac::settings::oracle_home}/bin/srvctl status database -d ${db_name}",
-  #   logoutput     => on_failure,
-  # } ->
-
   exec{'add_instance':
     user          => $ora_rac::settings::oracle_user,
     environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO", "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
     command       => "${ora_rac::settings::oracle_home}/bin/srvctl add instance -d ${db_name} -i ${current_instance} -n ${::hostname}",
     unless        => "${ora_rac::settings::oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance}",
     logoutput     => on_failure,
-  } ->
+  } ~>
 
   exec{'chmod_oracle':
-    command => "/bin/chown ${ora_rac::settings::oracle_user} ${ora_rac::settings::oracle_base}"
+    refrechonly => true,
+    command     => "/bin/chown ${ora_rac::settings::oracle_user} ${ora_rac::settings::oracle_base}"
   } ->
 
   exec{'start_instance':
