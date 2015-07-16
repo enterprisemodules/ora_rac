@@ -156,7 +156,6 @@ class ora_rac::db_master(
     oraInventoryDir        => $ora_rac::settings::ora_inventory_dir,
     databaseType           => 'EE',
     oracleBase             => $ora_rac::settings::oracle_base,
-    createUser             => false,
     oracleHome             => $ora_rac::settings::oracle_home,
     puppetDownloadMntPoint => $ora_rac::settings::puppet_download_mnt_point,
     downloadDir            => $ora_rac::settings::download_dir,
