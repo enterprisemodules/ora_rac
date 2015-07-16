@@ -1,6 +1,10 @@
 History
 ========
 
+16-07-2015  version 0.8.13
+--------------------------
+- Better idempotency of db_master
+
 14-07-2015  version 0.8.12
 --------------------------
 - Extracted the creation of authorized nodes from `os_users`. This means you have to include this modules extra `include ora_rac::authenticated_nodes`.
