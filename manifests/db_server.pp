@@ -93,7 +93,7 @@ class ora_rac::db_server(
   } ~>
 
   exec{'chmod_oracle':
-    refrechonly => true,
+    refreshonly => true,
     command     => "/bin/chown ${ora_rac::settings::oracle_user} ${ora_rac::settings::oracle_base}"
   } ->
 
