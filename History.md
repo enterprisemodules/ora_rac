@@ -1,6 +1,10 @@
 History
 ========
 
+18-08-2015  version 0.8.15
+--------------------------
+- Fix typo in db_server
+
 18-08-2015  version 0.8.14
 --------------------------
 - Allow HIGH as value for disk redundancy
