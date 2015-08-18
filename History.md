@@ -1,6 +1,10 @@
 History
 ========
 
+18-08-2015  version 0.8.14
+--------------------------
+- Allow HIGH as value for disk redundancy
+
 16-07-2015  version 0.8.13
 --------------------------
 - Better idempotency of db_master
