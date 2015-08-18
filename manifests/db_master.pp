@@ -85,7 +85,7 @@ class ora_rac::db_master(
   assert_type(String[1], $data_disk_group_name)   |$e, $a| {
    fail "data_disk_group_name is ${a}, but should be a non empty string"
   }
-  assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
+  assert_type(Enum['NORMAL','EXTERNAL', 'HIGH'], $disk_redundancy)
   assert_type(Array[Hash], $config_scripts)   |$e, $a| {
    fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
   }
@@ -117,6 +117,9 @@ class ora_rac::db_master(
       before  => Oradb::Database[$db_name],
     }
   }
+
+  # Create all ASM disks before staring the ASM installation
+  Ora_rac::Asm_disk<||> -> Oradb::Installasm<||> 
 
   oradb::installasm{ $ora_rac::settings::_grid_file:
     version                => $ora_rac::settings::version,
@@ -173,7 +176,7 @@ class ora_rac::db_master(
     start   => 'N',
     comment => 'Added by puppet',
     require => Ora_database[$db_name],
-  }
+  }->
 
   exec{'register_diskgroups':
     refreshonly   => true,
@@ -181,7 +184,7 @@ class ora_rac::db_master(
     environment   => ["ORACLE_SID=${db_name}1", "ORAENV_ASK=NO", "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
     command       => "${ora_rac::settings::grid_home}/bin/srvctl modify database -d ${db_name} -a ${ora_rac::settings::disk_group_names.join(',')}",
     logoutput     => on_failure,
-    subscribe     => Oradb::Installasm[$ora_rac::settings::_grid_file],
+    subscribe     => Ora_database[$db_name],
   }
 
   $cluster_nodes.each | $index, $instance| {

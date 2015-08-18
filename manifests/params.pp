@@ -57,7 +57,7 @@ class ora_rac::params(
   assert_type(String[1], $crs_disk)               |$e, $a| { fail "crs_disk is ${a}, but should be a non empty string"}
   assert_type(String[1], $data_disk_group_name)   |$e, $a| { fail "data_disk_group_name is ${a}, but should be a non empty string"}
   assert_type(String[0], $disk_discovery_string)  |$e, $a| { fail "disk_discovery_string is ${a}, but should be a string"}
-  assert_type(Enum['NORMAL','EXTERNAL'], $disk_redundancy)
+  assert_type(Enum['NORMAL','EXTERNAL', 'HIGH'], $disk_redundancy)
                                                   |$e, $a| { fail "disk_redundancy is ${a}, but should be either EXTERNAL or NORMAL"}
   assert_type(Array[Hash], $config_scripts)   |$e, $a| {
    fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
