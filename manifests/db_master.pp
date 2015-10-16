@@ -105,7 +105,7 @@ class ora_rac::db_master(
       group   => $ora_rac::settings::install_group,
       source  => 'puppet:///modules/ora_rac/cvu_config',
       require => Oradb::Installdb[$ora_rac::settings::_oracle_file],
-      before  => Oradb::Database[$db_name],
+      before  => Ora_database[$db_name],
     }
 
     file{"${ora_rac::settings::grid_home}/cv/admin/cvu_config":
@@ -114,7 +114,7 @@ class ora_rac::db_master(
       group   => $ora_rac::settings::install_group,
       source  => 'puppet:///modules/ora_rac/cvu_config',
       require => Oradb::Installasm[$ora_rac::settings::_grid_file],
-      before  => Oradb::Database[$db_name],
+      before  => Ora_database[$db_name],
     }
   }
 
