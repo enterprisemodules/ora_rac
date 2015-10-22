@@ -1,6 +1,11 @@
 History
 ========
 
+22-10-2015  version 0.8.16
+--------------------------
+- Add support for setting password of oracle and grid os users.
+- fix requires when running on rhel 6
+
 18-08-2015  version 0.8.15
 --------------------------
 - Fix typo in db_server

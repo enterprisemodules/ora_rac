@@ -1,6 +1,6 @@
 {
   "name": "hajee-ora_rac",
-  "version": "0.8.15",
+  "version": "0.8.16",
   "author": "Bert Hajee",
   "summary": "the custom types needed to manage the basic setup of an Oracle database",
   "license": "Apache License, Version 2.0",
