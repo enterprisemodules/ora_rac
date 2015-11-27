@@ -33,6 +33,11 @@ class ora_rac::params(
   $disk_discovery_string      =  '',
   $disk_redundancy            = 'NORMAL',
   $config_scripts             = [],
+# 
+# This is a small hack to get a size in Mb without further subclassing. 
+# 
+  $memory_target              = join([floor( $::memorysize_mb/ 2), 'M'], ''),  # Default is half of the reported memory size
+  $memory_max_target          = join([floor( $::memorysize_mb/ 2), 'M'], ''),  # Default is half of the reported memory size
 )
 {
   #
@@ -59,9 +64,28 @@ class ora_rac::params(
   assert_type(String[0], $disk_discovery_string)  |$e, $a| { fail "disk_discovery_string is ${a}, but should be a string"}
   assert_type(Enum['NORMAL','EXTERNAL', 'HIGH'], $disk_redundancy)
                                                   |$e, $a| { fail "disk_redundancy is ${a}, but should be either EXTERNAL or NORMAL"}
+  $size_pattern = '^[0-9]*[k|K|m|M|g|G|t|T]?$'
+  assert_type(Pattern[$size_pattern], $memory_target)
+                                                   | $e, $a | { fail "memory_target ${a}, but should be a valid size. (e.g. 10G, 10M or another number."}
+  assert_type(Pattern[$size_pattern], $memory_max_target)
+                                                   | $e, $a | { fail "memory_max_target ${a}, but should be a valid size. (e.g. 10G, 10M or another number."}
+
+  $virtual_services.each | $key, $value| {
+    # lint:ignore:variable_scope
+    assert_type(Hash[Enum['ip', 'interface_number', 'fwmark', 'send_program', 'scheduler', 'protocol', 'port', 'url', 'servers'], Data], $value) | $e, $a | { fail "${key} is ${a}, but should be a valid hash that should contains following keys: [ip, interface_number, fwmark, send_program, scheduler, protocol, port, url, servers]."}
+
+    if has_key($value, 'ip') {
+      assert_type(Pattern[$ipaddress_pattern], $value[ip])        | $e, $a | { fail "virtual_services::${key}::ip is ${a}, but should be a valid IP address."}
+    } else {
+      fail "virtual_services::${key} has no ip"
+    }
+  }
+
   assert_type(Array[Hash], $config_scripts)   |$e, $a| {
    fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
   }
+  assert_type(String[0], $memory_target)  |$e, $a| { fail "memory_target is ${a}, but should be a string"}
+
   #
   # Build the string needed by oracle grid installer
   #
