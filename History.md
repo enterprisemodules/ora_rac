@@ -1,6 +1,10 @@
 History
 ========
 
+26-11-2015  version 0.8.17
+--------------------------
+- Export memory_target and memory_max_target on the parameter. This makes it possible to specify these two parameters for an RAC instance
+
 22-10-2015  version 0.8.16
 --------------------------
 - Add support for setting password of oracle and grid os users.
