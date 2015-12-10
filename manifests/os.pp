@@ -30,7 +30,6 @@ class ora_rac::os inherits ora_rac::params {
     'G', 'g': { $memory_size = floor($memory_value * 1024 * 1024 * 1024 * $extra_percentage) }
     'T', 't': { $memory_size = floor($memory_value * 1024 * 1024 * 1024 * 1024 * $extra_percentage) }
   }
-  notice $memory_size
 
   augeas {'ensure_tmpfs_size':
     context => '/files/etc/fstab',
