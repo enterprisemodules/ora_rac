@@ -25,11 +25,6 @@ class ora_rac::iptables inherits ora_rac::params
     action => 'accept',
   }
 
-  firewall { '200 RAC Multicast':
-    chain   => $input_chain,
-    pkttype => 'multicast',
-    action => 'accept',
-  }
 
   $private_network_interfaces.each | $interface| {
     firewall {"200 Oracle Cluster Interconnect on interface ${interface}":
