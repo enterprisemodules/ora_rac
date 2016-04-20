@@ -1,6 +1,13 @@
 History
 ========
 
+20-04-2016  version 0.10.0
+--------------------------
+- move to oradb V2
+- Add support for hugepages
+- remove unused firewall rule
+
+
 10-12-2015  version 0.8.18
 --------------------------
 - Remove extra notice
