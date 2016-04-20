@@ -38,6 +38,7 @@ class ora_rac::params(
 # 
   $memory_target              = join([floor( $::memorysize_mb/ 2), 'M'], ''),  # Default is half of the reported memory size
   $memory_max_target          = join([floor( $::memorysize_mb/ 2), 'M'], ''),  # Default is half of the reported memory size
+  $shared_memory_size         = undef,
 )
 {
   #
