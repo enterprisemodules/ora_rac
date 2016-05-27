@@ -1,6 +1,10 @@
 History
 ========
 
+20-04-2016  version 0.10.1
+--------------------------
+- Change firewall rule syntax to newest version of firewall type. Remvoed deprecation message
+
 20-04-2016  version 0.10.0
 --------------------------
 - move to oradb V2
