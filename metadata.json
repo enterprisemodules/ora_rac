@@ -1,39 +1,35 @@
 {
-  "name": "hajee-ora_rac",
-  "version": "0.10.1",
+  "name": "enterprisemodules-ora_rac",
+  "version": "1.0.0",
   "author": "Bert Hajee",
-  "summary": "the custom types needed to manage the basic setup of an Oracle database",
+  "summary": "The classed and defined types to install a RAC database",
   "license": "Apache License, Version 2.0",
   "summary": "Build an Oarcle RAC cluster with Puppet.",
   "description": "Classes to help you build a Oracle RAC cluster",
-  "project_page": "http:/www.github.com/hajee/ora_rac",
-  "source": "http:/www.github.com/hajee/ora_rac",
-  "project_page": "http:/www.github.com/hajee/ora_rac",
-  "issues_url": "https://github.com/hajee/ora_rac/issues",
+  "project_page": "http:/www.github.com/enterprisemodules/ora_rac",
+  "source": "http:/www.github.com/enterprisemodules/ora_rac",
+  "project_page": "http:/www.github.com/enterprisemodules/ora_rac",
+  "issues_url": "https://github.com/enterprisemodules/ora_rac/issues",
   "dependencies": [
     {
       "name": "hajee/backport",
       "version_requirement": "0.x.x"
     },
     {
-      "name": "hajee/partition",
-      "version_requirement": ">=0.0.6 <0.1.0"
+      "name": "enterprisemodules/partition"
     },
     {
       "name": "hajee/hacks",
       "version_requirement": "0.x.x"
     },
     {
-      "name": "hajee/oracle",
-      "version_requirement": "1.5.4"
+      "name": "enterprisemodules/ora_install"
     },
     {
-      "name": "biemond/oradb",
-      "version_requirement": "1.0.x"
+      "name": "enterprisemodules/ora_config"
     },
     {
-      "name": "fiddyspence/puppet-sleep",
-      "version_requirement": "1.2.x"
+      "name": "fiddyspence/sleep"
     },
     {
       "name": "puppetlabs/firewall"
@@ -66,7 +62,8 @@
       "operatingsystemrelease": [
         "4",
         "5",
-        "6"
+        "6",
+        "7"
       ]
     }
   ],
@@ -79,8 +76,5 @@
       "name": "puppet",
       "version_requirement": ">=2.7.20"
     }
-  ],
-  "dependencies": [
-    {"name":"hajee/easy_type","version_requirement":">= 0.13.1"}
   ]
 }

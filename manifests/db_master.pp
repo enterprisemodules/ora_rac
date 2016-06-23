@@ -104,7 +104,7 @@ class ora_rac::db_master(
       owner   => $ora_rac::settings::oracle_user,
       group   => $ora_rac::settings::install_group,
       source  => 'puppet:///modules/ora_rac/cvu_config',
-      require => Oradb::Installdb[$ora_rac::settings::_oracle_file],
+      require => Ora_install::Installdb[$ora_rac::settings::_oracle_file],
       before  => Ora_database[$db_name],
     }
 
@@ -113,15 +113,15 @@ class ora_rac::db_master(
       owner   => $ora_rac::settings::grid_user,
       group   => $ora_rac::settings::install_group,
       source  => 'puppet:///modules/ora_rac/cvu_config',
-      require => Oradb::Installasm[$ora_rac::settings::_grid_file],
+      require => Ora_install::Installasm[$ora_rac::settings::_grid_file],
       before  => Ora_database[$db_name],
     }
   }
 
   # Create all ASM disks before staring the ASM installation
-  Ora_rac::Asm_disk<||> -> Oradb::Installasm<||> 
+  Ora_rac::Asm_disk<||> -> Ora_install::Installasm<||> 
 
-  oradb::installasm{ $ora_rac::settings::_grid_file:
+  ora_install::installasm{ $ora_rac::settings::_grid_file:
     version                   => $ora_rac::settings::version,
     file                      => $ora_rac::settings::_grid_file,
     grid_type                 => 'CRS_CONFIG',
@@ -149,7 +149,7 @@ class ora_rac::db_master(
     storage_option            => 'ASM_STORAGE',
   } ->
 
-  oradb::installdb{ $ora_rac::settings::_oracle_file:
+  ora_install::installdb{ $ora_rac::settings::_oracle_file:
     version                   => $ora_rac::settings::version,
     file                      => $ora_rac::settings::_oracle_file,
     user                      => $ora_rac::settings::oracle_user,
@@ -164,7 +164,7 @@ class ora_rac::db_master(
     download_dir              => $ora_rac::settings::download_dir,
     cluster_nodes             => $::hostname,
     remote_file               => $ora_rac::settings::remote_file,
-    require                   => Oradb::Installasm[$ora_rac::settings::_grid_file],
+    require                   => Ora_install::Installasm[$ora_rac::settings::_grid_file],
     before                    => Ora_database[$db_name],
   }
 
