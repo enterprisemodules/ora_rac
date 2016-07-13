@@ -13,14 +13,14 @@
   "dependencies": [
     {
       "name": "hajee/backport",
-      "version_requirement": "0.x.x"
+      "version_requirement": ">= 0.0.1"
     },
     {
       "name": "enterprisemodules/partition"
     },
     {
       "name": "hajee/hacks",
-      "version_requirement": "0.x.x"
+      "version_requirement": ">= 0.0.1"
     },
     {
       "name": "enterprisemodules/ora_install"
@@ -70,11 +70,11 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": ">=2.7.20"
+      "version_requirement": ">=3.6.8"
     },
     {
       "name": "puppet",
-      "version_requirement": ">=2.7.20"
+      "version_requirement": ">=3.6.8"
     }
   ]
 }
