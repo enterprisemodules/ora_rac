@@ -1,6 +1,15 @@
 History
 ========
 
+13-7-2016  version 1.0.1
+--------------------------
+- Fix database creation defaults.
+- fix problem with directory ownership and access
+
+13-7-2016  version 1.0.0
+--------------------------
+- Moved to EM modules
+
 20-04-2016  version 0.10.1
 --------------------------
 - Change firewall rule syntax to newest version of firewall type. Remvoed deprecation message
@@ -82,7 +91,7 @@ History
 
 15-04-2015  version 0.8.2
 --------------------------
-- Change instanc from 2 to 3 logfiles with a size of 512 
+- Change instanc from 2 to 3 logfiles with a size of 512
 
 10-04-2015  version 0.8.1
 --------------------------
