@@ -48,7 +48,6 @@ ora_rac::internal::database_definition:
       autoextend:
         next:                    "%{ora_rac::settings::undo_next}"
         maxsize:                 "%{ora_rac::settings::undo_max_size}"
-  create_catalog:                'yes'
   spfile_location:               '+RECODG'
   scan_name:                     'SCAN'
   logfile_groups:
