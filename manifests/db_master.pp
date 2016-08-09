@@ -43,7 +43,7 @@ class ora_rac::db_master(
     fail "dbname is ${a}, but must be between 1 and 8 character length string"
   }
   assert_type(Array, $scan_adresses) |$e, $a| {
-    fail "scan_addresses is ${a}, but must be an array of IP adresses" 
+    fail "scan_addresses is ${a}, but must be an array of IP adresses"
   }
   assert_type(String[1], $domain_name) |$e, $a| {
     fail "domain_name is ${a}, but must be a non empty string"
@@ -65,29 +65,29 @@ class ora_rac::db_master(
     fail "unused_network_interfaces is a ${a}, but must be an array of interfaces"
   }
   assert_type(String[1], $cluster_name) |$e, $a| {
-   fail "cluster_name is ${a}, but should be a non empty string"
+    fail "cluster_name is ${a}, but should be a non empty string"
   }
   assert_type(String[1], $password) |$e, $a| {
-   fail "password is ${a}, but should be a non empty string"
+    fail "password is ${a}, but should be a non empty string"
   }
   assert_type(String[1], $scan_name) |$e, $a| {
-   fail "scan_name is ${a}, but should be a non empty string"
+    fail "scan_name is ${a}, but should be a non empty string"
   }
   assert_type(Integer, $scan_port) |$e, $a| {
-   fail "scan_port is ${a}, but should be an integer number"
+    fail "scan_port is ${a}, but should be an integer number"
   }
   assert_type(String[1], $crs_disk_group_name) |$e, $a| {
-   fail "crs_disk_group_name is ${a}, but should be a non empty string"
+    fail "crs_disk_group_name is ${a}, but should be a non empty string"
   }
   assert_type(String[1], $crs_disk)  |$e, $a| {
-   fail "crs_disk is ${a}, but should be a non empty string"
+    fail "crs_disk is ${a}, but should be a non empty string"
   }
   assert_type(String[1], $data_disk_group_name)   |$e, $a| {
-   fail "data_disk_group_name is ${a}, but should be a non empty string"
+    fail "data_disk_group_name is ${a}, but should be a non empty string"
   }
   assert_type(Enum['NORMAL','EXTERNAL', 'HIGH'], $disk_redundancy)
   assert_type(Array[Hash], $config_scripts)   |$e, $a| {
-   fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
+    fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
   }
 
 
@@ -119,7 +119,7 @@ class ora_rac::db_master(
   }
 
   # Create all ASM disks before staring the ASM installation
-  Ora_rac::Asm_disk<||> -> Ora_install::Installasm<||> 
+  Ora_rac::Asm_disk<||> -> Ora_install::Installasm<||>
 
   ora_install::installasm{ $ora_rac::settings::_grid_file:
     version                   => $ora_rac::settings::version,
@@ -147,6 +147,10 @@ class ora_rac::db_master(
     cluster_nodes             => "${::hostname}:${::hostname}-vip",
     network_interface_list    => $ora_rac::params::nw_interface_list,
     storage_option            => 'ASM_STORAGE',
+  } ->
+
+  exec{'reset_permissions':
+    command => "/bin/chown ${ora_rac::settings::oracle_user}:${ora_rac::settings::install_group} ${ora_rac::settings::oracle_base} && /bin/chmod 775 ${ora_rac::settings::oracle_base}",
   } ->
 
   ora_install::installdb{ $ora_rac::settings::_oracle_file:
@@ -179,12 +183,12 @@ class ora_rac::db_master(
   }->
 
   exec{'register_diskgroups':
-    refreshonly   => true,
-    user          => $ora_rac::settings::oracle_user,
-    environment   => ["ORACLE_SID=${db_name}1", "ORAENV_ASK=NO", "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
-    command       => "${ora_rac::settings::grid_home}/bin/srvctl modify database -d ${db_name} -a ${ora_rac::settings::disk_group_names.join(',')}",
-    logoutput     => on_failure,
-    subscribe     => Ora_database[$db_name],
+    refreshonly => true,
+    user        => $ora_rac::settings::oracle_user,
+    environment => ["ORACLE_SID=${db_name}1", 'ORAENV_ASK=NO', "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
+    command     => "${ora_rac::settings::grid_home}/bin/srvctl modify database -d ${db_name} -a ${ora_rac::settings::disk_group_names}.join(',')",
+    logoutput   => on_failure,
+    subscribe   => Ora_database[$db_name],
   }
 
   $cluster_nodes.each | $index, $instance| {
@@ -195,15 +199,15 @@ class ora_rac::db_master(
     if ($instance_number > 1) { # Not a master node
 
       ora_rac::ora_instance{$instance_name:
-        on                 => $master_instance,
-        number             => $instance_number,
-        thread             => $thread,
-        datafile           => $ora_rac::settings::data_file_destination,
-        undo_initial_size  => $ora_rac::settings::undo_initial_size,
-        undo_next          => $ora_rac::settings::undo_next,
-        undo_autoextend    => $ora_rac::settings::undo_autoextend,
-        undo_max_size      => $ora_rac::settings::undo_max_size,
-        require => [
+        on                => $master_instance,
+        number            => $instance_number,
+        thread            => $thread,
+        datafile          => $ora_rac::settings::data_file_destination,
+        undo_initial_size => $ora_rac::settings::undo_initial_size,
+        undo_next         => $ora_rac::settings::undo_next,
+        undo_autoextend   => $ora_rac::settings::undo_autoextend,
+        undo_max_size     => $ora_rac::settings::undo_max_size,
+        require           => [
           Ora_rac::Oratab_entry["${db_name}1"],
         ]
       }
