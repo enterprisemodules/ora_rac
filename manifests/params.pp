@@ -33,6 +33,7 @@ class ora_rac::params(
   $disk_discovery_string      =  '',
   $disk_redundancy            = 'NORMAL',
   $config_scripts             = [],
+  $virtual_services           = {},
 # 
 # This is a small hack to get a size in Mb without further subclassing. 
 # 
