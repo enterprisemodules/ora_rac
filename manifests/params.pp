@@ -44,7 +44,7 @@ class ora_rac::params(
   #
   # Validate input
   #
-  validate_re($::puppetversion, '^[2,3,4].[6-9]\..*$', 'Ora_Rac required Pupet version 2.6 or higher')
+  #validate_re($::puppetversion, '^[2,3,4].[6-9]\..*$', 'Ora_Rac required Pupet version 2.6 or higher')
   assert_type(String[1,8], $db_name)              |$e, $a| { fail "dbname is ${a}, but must be between 1 and 8 character length string" }
   assert_type(Array, $scan_adresses)              |$e, $a| { fail "scan_addresses is ${a}, but must be an array of IP adresses" }
   assert_type(String[1], $domain_name)            |$e, $a| { fail "domain_name is ${a}, but must be a non empty string"}
