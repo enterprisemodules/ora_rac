@@ -16,8 +16,9 @@
 # Bert Hajee <hajee@moretIA.com>
 #
 define ora_rac::user_equivalence(
+  $private_key,
   $nodes        = ['localhost'],
-  $private_key
+  $ssh_module   = 'ssh_access'
 )
 {
   #
@@ -26,7 +27,7 @@ define ora_rac::user_equivalence(
   assert_type(Array[String[1]], $nodes)   |$e, $a| { fail "nodes is ${a}, expected an array of non empty strings"}
   assert_type(String[1], $name)           |$e, $a| { fail "name is ${a}, expect a non empty string"}
 
-  include ssh
+  contain $ssh_module
 
   file{"/home/${name}/.ssh":
     ensure  => 'directory',

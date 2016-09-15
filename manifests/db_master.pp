@@ -149,10 +149,6 @@ class ora_rac::db_master(
     storage_option            => 'ASM_STORAGE',
   } ->
 
-  exec{'reset_permissions':
-    command => "/bin/chown ${ora_rac::settings::oracle_user}:${ora_rac::settings::install_group} ${ora_rac::settings::oracle_base} && /bin/chmod 775 ${ora_rac::settings::oracle_base}",
-  } ->
-
   ora_install::installdb{ $ora_rac::settings::_oracle_file:
     version                   => $ora_rac::settings::version,
     file                      => $ora_rac::settings::_oracle_file,

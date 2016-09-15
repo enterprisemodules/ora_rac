@@ -1,6 +1,6 @@
 # == Class: ora_rac::settings
 #
-# This class contains some of the global settings to be used by the oracle RAC 
+# This class contains some of the global settings to be used by the oracle RAC
 # instalation
 #
 # === Parameters
@@ -109,7 +109,7 @@ class ora_rac::settings(
   $db_minor_version     = $_version_array[1]
   $db_version           = "${db_major_version}.${db_minor_version}"
 
-  if $db_major_version == 12 {
+  if $db_major_version == '12' {
     $add_node_path ='/addnode/addnode.sh -silent -ignorePrereq'
   } else {
     $add_node_path = '/oui/bin/addNode.sh -ignorePrereq'
@@ -134,13 +134,13 @@ class ora_rac::settings(
     fail( 'You must specify either the file or a grid_file for db_master')
   }
 
-  if $db_major_version == 12 {
+  if $db_major_version == '12' {
     $_grid_file = $_grid_basic_file
   } else {
     $_grid_file = "${_grid_basic_file}_3of7"
   }
   #
-  # Extract the diskgroup names from the datastructure. We need this 
+  # Extract the diskgroup names from the datastructure. We need this
   #
   $disk_group_names = $asm_disk_groups.keys.map |$d| {$d.split('@')[0]}
 
