@@ -99,7 +99,7 @@ class ora_rac::db_server(
 
   exec{'start_instance':
     user          => $ora_rac::settings::oracle_user,
-    environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO","ORACLE_HOME=/opt/oracle/app/${ora_rac::settings::version}/db_1"],
+    environment   => ["ORACLE_SID=${current_instance}", "ORAENV_ASK=NO","ORACLE_HOME=${ora_rac::settings::oracle_home}"],
     command       => "${ora_rac::settings::oracle_home}/bin/srvctl start instance -d ${db_name} -i ${current_instance}",
     onlyif        => "${ora_rac::settings::oracle_home}/bin/srvctl status instance -d ${db_name} -i ${current_instance} | grep not",
     logoutput     => on_failure,
