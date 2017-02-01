@@ -34,6 +34,7 @@ class ora_rac::db_master(
   $data_disk_group_name       = $ora_rac::params::data_disk_group_name,
   $disk_redundancy            = $ora_rac::params::disk_redundancy,
   $config_scripts             = $ora_rac::params::config_scripts,
+  $temp_dir                  = '/tmp',
 ) inherits ora_rac::params {
 
   #
@@ -89,7 +90,9 @@ class ora_rac::db_master(
   assert_type(Array[Hash], $config_scripts)   |$e, $a| {
     fail "config_scripts is ${a}, but should be a an array of Hashes describing the config scripts."
   }
-
+  assert_type(String[1], $temp_dir) |$e, $a| {
+    fail "temp_dir is ${a}, but must be a string"
+  }
 
   require ora_rac::settings
 
@@ -147,6 +150,7 @@ class ora_rac::db_master(
     cluster_nodes             => "${::hostname}:${::hostname}-vip",
     network_interface_list    => $ora_rac::params::nw_interface_list,
     storage_option            => 'ASM_STORAGE',
+    temp_dir                  => $temp_dir,
   } ->
 
   ora_install::installdb{ $ora_rac::settings::_oracle_file:
@@ -164,6 +168,7 @@ class ora_rac::db_master(
     download_dir              => $ora_rac::settings::download_dir,
     cluster_nodes             => $::hostname,
     remote_file               => $ora_rac::settings::remote_file,
+    temp_dir                  => $temp_dir,
     require                   => Ora_install::Installasm[$ora_rac::settings::_grid_file],
     before                    => Ora_database[$db_name],
   }
