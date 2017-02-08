@@ -19,6 +19,7 @@ class ora_rac::settings(
   $ora_inventory_dir          = '/opt/oracle',
   $puppet_download_mnt_point  = '/opt/software',
   $download_dir               = '/install',
+  $temp_dir                   = '/tmp',
   $zip_extract                = true,
   $remote_file                = false,
   $oracle_user                = 'oracle',
