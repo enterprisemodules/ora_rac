@@ -149,6 +149,16 @@ class ora_rac::db_master(
     storage_option            => 'ASM_STORAGE',
   } ->
 
+  ora_setting { '+ASM1':
+    oracle_home => $ora_rac::settings::grid_home,
+    syspriv     => 'sysasm',
+  } ->
+
+  ora_setting { "${db_name}1":
+    oracle_home => $ora_rac::settings::oracle_home,
+    default     => true,
+  } ->
+
   ora_install::installdb{ $ora_rac::settings::_oracle_file:
     version                   => $ora_rac::settings::version,
     file                      => $ora_rac::settings::_oracle_file,
@@ -167,17 +177,17 @@ class ora_rac::db_master(
     remote_file               => $ora_rac::settings::remote_file,
     require                   => Ora_install::Installasm[$ora_rac::settings::_grid_file],
     before                    => Ora_database[$db_name],
-  }
-
-  $full_database_definition = merge($database_definition, {config_scripts => $config_scripts})
-  ensure_resource(ora_database, $db_name, $full_database_definition)
+  } ->
 
   ora_rac::oratab_entry{"${db_name}1":
     home    => $ora_rac::settings::oracle_home,
     start   => 'N',
     comment => 'Added by puppet',
     require => Ora_database[$db_name],
-  }->
+  }
+
+  $full_database_definition = merge($database_definition, {config_scripts => $config_scripts})
+  ensure_resource(ora_database, $db_name, $full_database_definition)
 
   exec{'register_diskgroups':
     refreshonly => true,
@@ -185,6 +195,7 @@ class ora_rac::db_master(
     environment => ["ORACLE_SID=${db_name}1", 'ORAENV_ASK=NO', "ORACLE_HOME=${ora_rac::settings::oracle_home}"],
     command     => "${ora_rac::settings::grid_home}/bin/srvctl modify database -d ${db_name} -a ${ora_rac::settings::disk_group_names.join(',')}",
     logoutput   => on_failure,
+    require     => Ora_rac::Oratab_entry["${db_name}1"],
     subscribe   => Ora_database[$db_name],
   }
 
@@ -204,9 +215,7 @@ class ora_rac::db_master(
         undo_next         => $ora_rac::settings::undo_next,
         undo_autoextend   => $ora_rac::settings::undo_autoextend,
         undo_max_size     => $ora_rac::settings::undo_max_size,
-        require           => [
-          Ora_rac::Oratab_entry["${db_name}1"],
-        ]
+        require           => Ora_rac::Oratab_entry["${db_name}1"],
       }
     }
   }
