@@ -33,7 +33,7 @@
     },
     {
       "name": "puppetlabs/firewall"
-    },
+    }
   ],
   "operatingsystem_support": [
     {
