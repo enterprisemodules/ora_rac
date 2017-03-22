@@ -1,6 +1,18 @@
 History
 ========
 
+22-3-2016  version 1.0.3
+--------------------------
+- Remove module data requirement. This doesn't work on Puppet3
+
+12-01-2016  version 1.0.2
+--------------------------
+- Fix dynamically insert oracle_home
+- Misc fixes
+- Fix error in register_diskgroups
+- Re-add virtual services parameter
+- Remove version check on puppet
+
 13-7-2016  version 1.0.1
 --------------------------
 - Fix database creation defaults.
