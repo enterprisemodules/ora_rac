@@ -27,6 +27,7 @@ class ora_rac::params(
   $password                   = 'manager123',
   $scan_name                  = 'scan',
   $scan_port                  = 1521,
+  $scan_name_in_hostfile      = true,
   $crs_disk_group_name        = 'CRS',
   $crs_disk                   = 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
   $data_disk_group_name       = 'DATA',

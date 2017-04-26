@@ -64,14 +64,20 @@ class ora_rac::hosts inherits ora_rac::params
   }
 
   #
-  # Set the virtual private IP hostname
+  # Register SCAN name in hostfile
   #
-  if $scan_name {
+  if $scan_name_in_hostfile {
     host{"${scan_name}.${::domain}":
+      ensure       => present,
       host_aliases => $scan_name,
       ip           => $scan_adresses,
     }
   } else {
-    notice('Scan name not defined by puppet.Be sure it is in the DNS')
+    host{"${scan_name}.${::domain}":
+      ensure       => absent,
+      host_aliases => $scan_name,
+      ip           => $scan_adresses,
+    }
+    notice('SCAN name not defined in hostfile by puppet. Be sure it is in the DNS')
   }
 }
