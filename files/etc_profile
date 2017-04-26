@@ -65,3 +65,4 @@ if [ $USER = "oracle" ] || [ $USER = "grid" ]; then
         ulimit -u 16384 -n 65536
     fi
 fi
+alias vi='vim'
