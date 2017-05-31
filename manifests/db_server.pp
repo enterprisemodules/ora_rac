@@ -105,4 +105,15 @@ class ora_rac::db_server(
     logoutput     => on_failure,
   }
 
+  $current_asm_instance = $current_instance[-1,1]
+
+  ora_setting { "+ASM${current_asm_instance}":
+    oracle_home => $ora_rac::settings::grid_home,
+    syspriv     => 'sysasm',
+  }
+
+  ora_setting { "${current_instance}":
+    oracle_home => $ora_rac::settings::oracle_home,
+    default     => true,
+  }
 }
