@@ -1,6 +1,6 @@
 {
   "name": "enterprisemodules-ora_rac",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "author": "Bert Hajee",
   "summary": "The classed and defined types to install a RAC database",
   "license": "Apache License, Version 2.0",
@@ -12,15 +12,7 @@
   "issues_url": "https://github.com/enterprisemodules/ora_rac/issues",
   "dependencies": [
     {
-      "name": "hajee/backport",
-      "version_requirement": ">= 0.0.1"
-    },
-    {
       "name": "enterprisemodules/partition"
-    },
-    {
-      "name": "hajee/hacks",
-      "version_requirement": ">= 0.0.1"
     },
     {
       "name": "enterprisemodules/ora_install"
@@ -67,11 +59,11 @@
   "requirements": [
     {
       "name": "pe",
-      "version_requirement": ">=3.6.8"
+      "version_requirement": ">=2017.1"
     },
     {
       "name": "puppet",
-      "version_requirement": ">=3.6.8"
+      "version_requirement": ">=4.8.0"
     }
   ]
 }
