@@ -1,26 +1,29 @@
-# == Class: ora_rac::swapspace
 #
-# Create temporary swapspace for Oracle.
-#
-# === Parameters
-#
-#  none
-#
-# === Variables
-#
-# none
-#
-# === Authors
-#
-# Bert Hajee <hajee@moretIA.com>
+# $size - The size of the swapspace in mb. If no value specified the following calculation will be used:
+#         if    $::memorysize_mb < 2048 --> ceiling(($::memorysize_mb * 1.5) - $::swapsize_mb)
+#         elsif $::memorysize_mb < 8192 --> ceiling($::memorysize_mb - $::swapsize_mb)
+#         else  ceiling($::memorysize_mb *0.75 - $::swapsize_mb)
 #
 class ora_rac::swapspace(
-  $size = floor($::memorysize_mb * 2),
-)
-{
-  exec{'oracle_temporary_swapspace':
-    timeout => 0,
-    command => "/bin/dd if=/dev/zero of=/tmp/ora_tmp_swap.1 bs=1M count=${size}; /bin/chmod 0600 /tmp/ora_tmp_swap.1; /sbin/mkswap /tmp/ora_tmp_swap.1; /sbin/swapon /tmp/ora_tmp_swap.1",
-    onlyif  => '/usr/bin/test ! -f /tmp/ora_tmp_swap.1',
+  $size = undef,
+) {
+  if $size  {
+    $swapfile_size = ceiling($size - $::swapsize_mb)
+  } else {
+    if $::memorysize_mb <= 2048 {
+      $swapfile_size = ceiling(($::memorysize_mb * 1.5) - $::swapsize_mb)
+    } elsif $::memorysize_mb <= 8192 {
+      $swapfile_size = ceiling($::memorysize_mb - $::swapsize_mb)
+    } else {
+      $swapfile_size = ceiling(($::memorysize_mb * 0.75) - $::swapsize_mb)
+    }
+  }
+
+  if $swapfile_size > 0 {
+    swap_file::files { 'swap_file':
+      swapfilesize => "${swapfile_size} MB",
+      swapfile     => '/mnt/swapfile',
+      add_mount    => true,
+    }
   }
 }

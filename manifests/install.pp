@@ -13,11 +13,11 @@
 #
 # === Authors
 #
-# Bert Hajee hajee@moretIA.com
+# Bert Hajee bert.hajee@enterprisemodules.com
 #
 #
 class ora_rac::install
 {
-  require ora_rac::internal
-  create_resources('package', $ora_rac::internal::packages)
+  require ::ora_rac::internal
+  create_resources('package', $::ora_rac::internal::packages)
 } # end ora_rac::install

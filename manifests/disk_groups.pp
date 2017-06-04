@@ -13,21 +13,21 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 class ora_rac::disk_groups inherits ora_rac::params
 {
-  require ora_rac::settings
+  require ::ora_rac::settings
 
   $defaults = {
     ensure        => 'present',
-    compat_asm    => $ora_rac::settings::db_version,
-    compat_rdbms  => $ora_rac::settings::db_version,
+    compat_asm    => $::ora_rac::settings::db_version,
+    compat_rdbms  => $::ora_rac::settings::db_version,
   }
-  create_resources('ora_asm_diskgroup', $ora_rac::settings::asm_disk_groups, $defaults)
+  create_resources('ora_asm_diskgroup', $::ora_rac::settings::asm_disk_groups, $defaults)
   #
   # Define all required relations
   #
   Ora_install::Installasm<||> -> Ora_asm_diskgroup<||> -> Ora_install::Installdb<||>
-  Ora_rac::Asm_disk<||> -> Ora_asm_diskgroup<||> -> Ora_asm_volume<||> 
+  Ora_rac::Asm_disk<||> -> Ora_asm_diskgroup<||> -> Ora_asm_volume<||>
 }

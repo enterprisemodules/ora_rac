@@ -13,10 +13,10 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 class ora_rac::disk_config inherits ora_rac::params
 {
-  require ora_rac::settings
-  create_resources('ora_rac::asm_disk', $ora_rac::settings::asm_disks)
+  require ::ora_rac::settings
+  create_resources('ora_rac::asm_disk', $::ora_rac::settings::asm_disks)
 }

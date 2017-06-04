@@ -8,18 +8,18 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 class ora_rac::authenticated_nodes inherits ora_rac::params {
-  require ora_rac::settings
+  require ::ora_rac::settings
 
-  ora_rac::user_equivalence{$ora_rac::settings::oracle_user:
-    nodes       => $ora_rac::params::cluster_nodes,
-    private_key => $ora_rac::params::oracle_private_key,
+  ora_rac::user_equivalence{$::ora_rac::settings::oracle_user:
+    nodes       => $::ora_rac::params::cluster_nodes,
+    private_key => $::ora_rac::params::oracle_private_key,
   }
 
-  ora_rac::user_equivalence{$ora_rac::settings::grid_user:
-    nodes       => $ora_rac::params::cluster_nodes,
-    private_key => $ora_rac::params::grid_private_key,
+  ora_rac::user_equivalence{$::ora_rac::settings::grid_user:
+    nodes       => $::ora_rac::params::cluster_nodes,
+    private_key => $::ora_rac::params::grid_private_key,
   }
 }

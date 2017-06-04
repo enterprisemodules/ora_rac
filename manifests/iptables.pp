@@ -1,14 +1,15 @@
+#
+# Create the correct Firewall rules for the RAC nodes
+#
 class ora_rac::iptables inherits ora_rac::params
 {
-  $input_chain = hiera('ora_rac::internal::iptables::input_chain')
+  $input_chain = lookup('ora_rac::internal::iptables::input_chain', String[1])
 
-  assert_type(String[1], $input_chain)  |$e, $a| { fail "input_chain is ${a}, expected a non empty string"}
-
-  $all_ip_addresses.each |$ipadress| {
+  $ora_rac::params::all_ip_addresses.each |$ipadress| {
     firewall{"200 RAC communication for ${ipadress}":
-      chain   => $input_chain,
-      source  => $ipadress,
-      action  => 'accept',
+      chain  => $input_chain,
+      source => $ipadress,
+      action => 'accept',
     }
   }
 
@@ -25,8 +26,7 @@ class ora_rac::iptables inherits ora_rac::params
     action => 'accept',
   }
 
-
-  $private_network_interfaces.each | $interface| {
+  $ora_rac::params::private_network_interfaces.each | $interface| {
     firewall {"200 Oracle Cluster Interconnect on interface ${interface}":
       chain   => $input_chain,
       proto   => 'all',

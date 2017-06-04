@@ -20,7 +20,7 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 class ora_rac::hosts inherits ora_rac::params
 {
@@ -30,11 +30,11 @@ class ora_rac::hosts inherits ora_rac::params
     host_aliases => [
       'localhost.localdomain',
       'localhost4',
-      'localhost4.localdomain4'
+      'localhost4.localdomain4',
     ],
   }
 
-  $db_machines.each | $host, $information| {
+  $::ora_rac::params::db_machines.each | $host, $information| {
     #
     # Set the public IP hostname
     #
@@ -66,17 +66,17 @@ class ora_rac::hosts inherits ora_rac::params
   #
   # Register SCAN name in hostfile
   #
-  if $scan_name_in_hostfile {
-    host{"${scan_name}.${::domain}":
+  if $::ora_rac::params::scan_name_in_hostfile {
+    host{"${::ora_rac::params::scan_name}.${::domain}":
       ensure       => present,
-      host_aliases => $scan_name,
-      ip           => $scan_adresses,
+      host_aliases => $::ora_rac::params::scan_name,
+      ip           => $::ora_rac::params::scan_adresses,
     }
   } else {
-    host{"${scan_name}.${::domain}":
+    host{"${::ora_rac::params::scan_name}.${::domain}":
       ensure       => absent,
-      host_aliases => $scan_name,
-      ip           => $scan_adresses,
+      host_aliases => $::ora_rac::params::scan_name,
+      ip           => $::ora_rac::params::scan_adresses,
     }
     notice('SCAN name not defined in hostfile by puppet. Be sure it is in the DNS')
   }

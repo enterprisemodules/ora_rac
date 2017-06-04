@@ -14,15 +14,14 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 class ora_rac::interfaces(){
 
   #
   # Borrow the db_machines parameter from ora_rac::params
   #
-  $db_machines = hiera('ora_rac::params::db_machines')
-  assert_type(Hash, $db_machines)                 |$e, $a| { fail "db_machines is ${a}, but should be a Hash of machines"}
+  $db_machines = lookup('ora_rac::params::db_machines', Hash)
   #
   # Calculate the private ip adress of the current node
   #
@@ -55,9 +54,9 @@ class ora_rac::interfaces(){
     hotplug   => true,
     ipaddress => $private_ipaddress,
     netmask   => $netmask,
-  } ~>
+  }
 
-  service{'network':
+  ~> service{'network':
     ensure  => 'running',
   }
 

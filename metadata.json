@@ -12,6 +12,12 @@
   "issues_url": "https://github.com/enterprisemodules/ora_rac/issues",
   "dependencies": [
     {
+      "name": "puppetlabs/stdlib"
+    },
+    {
+      "name": "enterprisemodules/easy_type"
+    },
+    {
       "name": "enterprisemodules/partition"
     },
     {

@@ -8,15 +8,15 @@ ora_rac::internal::yumrepos:
     enabled:  1
 
 ora_rac::internal::asm_packages:
-  kmod-oracleasm-2.0.6.rh1-2.el6:
+  kmod-oracleasm-2.0.8-15.el6_9:
     ensure:   installed
   oracleasm-support:
     ensure:   installed
-    require:  Package[kmod-oracleasm-2.0.6.rh1-2.el6]
+    require:  Package[kmod-oracleasm-2.0.8-15.el6_9]
   oracleasmlib:
     ensure:   installed
-    source:   %{ora_rac::settings::puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el6.x86_64.rpm
-    require:  Package[oracleasm-support] 
+    source:   "%{ora_rac::settings::puppet_download_mnt_point}/oracleasmlib-2.0.12-1.el6.x86_64.rpm"
+    require:  Package[oracleasm-support]
     provider: rpm
 
 
@@ -86,4 +86,3 @@ ora_rac::internal::packages:
   'unixODBC-devel':         {}
   'coreutils':              {}
   'compat-libcap1':         {}
-

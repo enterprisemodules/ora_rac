@@ -10,15 +10,15 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 # lint:ignore:inherits_across_namespaces lint:ignore:class_inherits_from_params_class
 class ora_rac::os (
-  $sysctl = {},
-  $limits = {},
+  Hash $sysctl = {},
+  Hash $limits = {},
 )inherits ora_rac::params {
 # lint:endignore
-  require ora_rac::settings
+  require ::ora_rac::settings
   #
   # If shared memory is not defined, we memory_target and memory_max_target to
   # calculate it.
@@ -42,7 +42,7 @@ class ora_rac::os (
 
   $limits_defaults = {
     ensure  => 'present',
-    user    => "@${ora_rac::settings::install_group}",
+    user    => "@${::ora_rac::settings::install_group}",
   }
 
   $default_limits = {
@@ -58,15 +58,14 @@ class ora_rac::os (
     },
   }
 
-  assert_type(Hash, $limits) |$e, $a| { fail "limits is ${a}, expected a Hash"}
+
+
   create_resources('limits::limits', $default_limits, $limits_defaults)
   create_resources('limits::limits', $limits, $limits_defaults)
-
-  assert_type(Hash, $sysctl) |$e, $a| { fail "sysctl is ${a}, expected a Hash"}
   create_resources('sysctl', $sysctl)
 
-  if $shared_memory_size {
-    $memory_size = $shared_memory_size
+  if $::ora_rac::params::shared_memory_size {
+    $memory_size = $ora_rac::params::shared_memory_size
   } else {
     $memory_size = $calculated_memory_size
   }
@@ -92,7 +91,7 @@ class ora_rac::os (
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
-    source => 'puppet:///modules/ora_rac/etc_profile'
+    source => 'puppet:///modules/ora_rac/etc_profile',
   }
 
 } # end ora_rac::os

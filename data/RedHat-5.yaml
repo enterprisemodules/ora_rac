@@ -4,16 +4,16 @@ ora_rac::internal::asm_packages:
   oracleasm-support:
     provider:          rpm
     install_options:  '--nosignature'
-    source:           %{ora_rac::settings::puppet_download_mnt_point}/oracleasm-support-2.1.8-1.el5.x86_64.rpm
+    source:           "%{ora_rac::settings::puppet_download_mnt_point}/oracleasm-support-2.1.8-1.el5.x86_64.rpm"
 
   oracleasm-2.6.18-371.el5:
     provider:         rpm
     install_options:  '--nosignature'
-    source:           %{ora_rac::settings::puppet_download_mnt_point}/oracleasm-2.6.18-371.el5-2.0.5-1.el5.x86_64.rpm
+    source:           "%{ora_rac::settings::puppet_download_mnt_point}/oracleasm-2.6.18-371.el5-2.0.5-1.el5.x86_64.rpm"
     require:          Package[oracleasm-support]
 
   oracleasmlib:
-    source:            %{ora_rac::settings::puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el5.x86_64.rpm
+    source:            "%{ora_rac::settings::puppet_download_mnt_point}/oracleasmlib-2.0.4-1.el5.x86_64.rpm"
     install_options:  '--nosignature'
     provider:         rpm
     require:          Package[oracleasm-2.6.18-371.el5]

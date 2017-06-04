@@ -1,6 +1,6 @@
 # == Class: ora_rac::asm_drivers
 #
-# Install the base ASM packges and ocnfigure the ASM driver and service for 
+# Install the base ASM packges and ocnfigure the ASM driver and service for
 # Linux
 #
 # === Parameters
@@ -14,18 +14,18 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 class ora_rac::asm_drivers inherits ora_rac::params {
 
-  require ora_rac::internal
-  require ora_rac::settings
+  require ::ora_rac::internal
+  require ::ora_rac::settings
 
-  create_resources('yumrepo', $ora_rac::internal::yumrepos)
-  create_resources('package', $ora_rac::internal::asm_packages)
+  create_resources('yumrepo', $::ora_rac::internal::yumrepos)
+  create_resources('package', $::ora_rac::internal::asm_packages)
 
-  $grid_user  = $ora_rac::settings::grid_user 
-  $grid_group = $ora_rac::settings::grid_group
+  $grid_user  = $::ora_rac::settings::grid_user
+  $grid_group = $::ora_rac::settings::grid_group
 
   file{'/etc/sysconfig/oracleasm-_dev_oracleasm':
     ensure  => file,

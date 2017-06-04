@@ -13,18 +13,17 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 define ora_rac::user_equivalence(
-  $private_key,
-  $nodes        = ['localhost'],
-  $ssh_module   = 'ssh_access'
+  String            $private_key,
+  Array[String[1]]  $nodes        = ['localhost'],
+  String            $ssh_module   = 'ssh_access'
 )
 {
   #
   # Validate input
   #
-  assert_type(Array[String[1]], $nodes)   |$e, $a| { fail "nodes is ${a}, expected an array of non empty strings"}
   assert_type(String[1], $name)           |$e, $a| { fail "name is ${a}, expect a non empty string"}
 
   contain $ssh_module
@@ -36,10 +35,11 @@ define ora_rac::user_equivalence(
     require => User[$name],
   }
 
-
   file{"/home/${name}/.ssh/id_rsa":
     ensure  => 'file',
     content => $private_key,
+    mode    => '0700',
+    owner   => $name,
     require => File["/home/${name}/.ssh"],
   }
 
@@ -52,5 +52,4 @@ define ora_rac::user_equivalence(
       require => File["/home/${name}/.ssh/id_rsa"],
     }
   }
-
 }

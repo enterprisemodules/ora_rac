@@ -12,12 +12,11 @@
 #
 # === Authors
 #
-# Bert Hajee <hajee@moretIA.com>
+# Bert Hajee <bert.hajee@enterprisemodules.com>
 #
 class ora_rac::sysctl inherits ora_rac::params
 {
-  $sysctl_params = hiera('ora_rac::internal::sysctl_params')
-  assert_type(Hash, $sysctl_params) |$e, $a| { fail "sysctl_params is ${a}, expected a Hash"}
+  $sysctl_params = lookup('ora_rac::internal::sysctl_params', Hash)
   create_resources('sysctl', $sysctl_params)
 
   # TODO: Fix the devices
