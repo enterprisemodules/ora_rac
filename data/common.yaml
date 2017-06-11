@@ -48,7 +48,7 @@ ora_rac::internal::database_definition:
       autoextend:
         next:                    "%{ora_rac::settings::undo_next}"
         maxsize:                 "%{ora_rac::settings::undo_max_size}"
-  spfile_location:               '+RECODG'
+  spfile_location:               "%{ora_rac::settings::recovery_area_destination}"
   scan_name:                     'SCAN'
   logfile_groups:
     - { size: 512M}

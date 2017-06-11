@@ -20,7 +20,8 @@ class ora_rac::params(
   Hash              $db_machines,
   String[1]         $oracle_private_key,
   String[1]         $grid_private_key,
-  String[1]         $init_ora_content           = template('ora_rac/init.ora.erb'),
+  Optional[String[1]]
+                    $init_ora_content           = undef,
   Array[String[1]]  $public_network_interfaces  = ['eth1'],
   Array[String[1]]  $private_network_interfaces = ['eth2'],
   Array[String[1]]  $unused_network_interfaces  = [],
@@ -37,9 +38,6 @@ class ora_rac::params(
                     $disk_redundancy            = 'NORMAL',
   Array[Hash]       $config_scripts             = [],
   Hash              $virtual_services           = {},
-#
-# This is a small hack to get a size in Mb without further subclassing.
-#
   Easy_type::Size   $memory_target              = join([floor( $::memorysize_mb/ 2), 'M'], ''),  # Default is half of the reported memory size
   Easy_type::Size   $memory_max_target          = join([floor( $::memorysize_mb/ 2), 'M'], ''),  # Default is half of the reported memory size
   Optional[Easy_type::Size]

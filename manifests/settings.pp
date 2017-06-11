@@ -51,7 +51,7 @@ class ora_rac::settings(
   String[1]             $national_character_set     = 'UTF8',
   String[1]             $database_type              = 'MULTIPURPOSE',
   String[1]             $data_file_destination      = '+DATA',
-  String[1]             $recovery_area_destination  = '+DATA',
+  String[1]             $recovery_area_destination  = '+RECO',
   Easy_type::Size       $undo_initial_size          = '200M',
   Easy_type::Size       $undo_next                  = '100M',
   Enum['on','off']      $undo_autoextend            = 'ON',

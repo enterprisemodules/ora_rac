@@ -97,7 +97,7 @@ class ora_rac::db_master(
     scan_port                 => $scan_port,
     cluster_nodes             => "${::hostname}:${::hostname}-vip",
     network_interface_list    => $::ora_rac::params::nw_interface_list,
-    storage_option            => 'ASM_STORAGE',
+    storage_option            => 'LOCAL_ASM_STORAGE',
   }
 
   -> ora_setting { '+ASM1':
