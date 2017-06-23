@@ -22,7 +22,7 @@ ORACLEASM_SCANBOOT=true
 ORACLEASM_SCANORDER="dm"
 
 # ORACLEASM_SCANEXCLUDE: Matching patterns to exclude disks from scan
-ORACLEASM_SCANEXCLUDE="sd"
+ORACLEASM_SCANEXCLUDE="<%= @scan_exclude %>"
 
 # ORACLEASM_USE_LOGICAL_BLOCK_SIZE: 'true' means use the logical block size
 # reported by the underlying disk instead of the physical. The default
