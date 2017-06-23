@@ -25,6 +25,7 @@ class ora_rac::params(
   Array[String[1]]  $public_network_interfaces  = ['eth1'],
   Array[String[1]]  $private_network_interfaces = ['eth2'],
   Array[String[1]]  $unused_network_interfaces  = [],
+  String            $scan_exclude               = 'sd',
   String[1]         $cluster_name               = 'cluster',
   String[1]         $password                   = 'manager123',
   String[1]         $scan_name                  = 'scan',

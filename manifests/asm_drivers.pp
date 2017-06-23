@@ -27,6 +27,7 @@ class ora_rac::asm_drivers inherits ora_rac::params {
   $grid_user  = $::ora_rac::settings::grid_user
   $grid_group = $::ora_rac::settings::grid_group
 
+  $scan_exclude = $::ora_rac::params::scan_exclude
   file{'/etc/sysconfig/oracleasm-_dev_oracleasm':
     ensure  => file,
     owner   => root,
