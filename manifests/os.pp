@@ -14,8 +14,8 @@
 #
 # lint:ignore:inherits_across_namespaces lint:ignore:class_inherits_from_params_class
 class ora_rac::os (
-  Hash $sysctl = {},
-  Hash $limits = {},
+  Hash $sysctl = lookup('ora_rac::internal::sysctl_params', Hash),
+  Hash $limits = lookup('ora_rac::internal::limits', Hash, undef, {}),
 )inherits ora_rac::params {
 # lint:endignore
   require ::ora_rac::settings
