@@ -32,7 +32,7 @@ define ora_rac::ora_instance(
 
   ora_tablespace{"UNDOTBS${number}@${on}":
     contents   => 'undo',
-    datafile   => $datafile,
+    datafile   => [$datafile],
     size       => $undo_initial_size,
     autoextend => $undo_autoextend,
     next       => $undo_next,

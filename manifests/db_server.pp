@@ -67,7 +67,7 @@ class ora_rac::db_server(
     logoutput   => on_failure,
   }
 
-  -> ora_rac::oratab_entry{$::ora_rac::params::ora_rac::params::current_instance:
+  -> ora_rac::oratab_entry{$::ora_rac::params::current_instance:
     home    => $::ora_rac::settings::oracle_home,
     start   => 'N',
     comment => 'Added by puppet',
