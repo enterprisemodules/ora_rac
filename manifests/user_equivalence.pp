@@ -18,7 +18,7 @@
 define ora_rac::user_equivalence(
   String            $private_key,
   Array[String[1]]  $nodes        = ['localhost'],
-  String            $ssh_module   = 'ssh_access'
+  String            $ssh_module   = lookup('ora_rac::user_equivalence::ssh_module', String, 'deep', 'ssh_access'),
 )
 {
   #
@@ -26,7 +26,7 @@ define ora_rac::user_equivalence(
   #
   assert_type(String[1], $name)           |$e, $a| { fail "name is ${a}, expect a non empty string"}
 
-  contain $ssh_module
+  include $ssh_module
 
   file{"/home/${name}/.ssh":
     ensure  => 'directory',

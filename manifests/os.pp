@@ -73,9 +73,16 @@ class ora_rac::os (
   augeas {'ensure_tmpfs_size':
     context => '/files/etc/fstab',
     changes => [
-      "ins opt after *[spec = 'tmpfs'][file = '/dev/shm']/opt[last()]",
-      "set *[spec = 'tmpfs']/opt[last()] size",
-      "set *[spec = 'tmpfs']/opt[last()]/value ${memory_size}",
+      "set 01/spec tmpfs",
+      "set 01/file /dev/shm",
+      "set 01/vfstype tmpfs",
+      "set 01/opt size",
+      "set 01/opt/value ${memory_size}",
+      "set 01/dump 0",
+      "set 01/passno 0",
+      # "ins opt after *[spec = 'tmpfs'][file = '/dev/shm']/opt[last()]",
+      # "set *[spec = 'tmpfs']/opt[last()] size",
+      # "set *[spec = 'tmpfs']/opt[last()]/value ${memory_size}",
     ],
     onlyif  => "match *[spec='tmpfs'][file = '/dev/shm']/opt[. = 'size'] size == 0",
   }
