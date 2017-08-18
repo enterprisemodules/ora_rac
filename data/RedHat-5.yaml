@@ -24,46 +24,46 @@ ora_rac::internal::iptables::input_chain: RH-Firewall-1-INPUT
 ora_rac::internal::sysctl_params:
   'net.ipv4.ip_local_port_range':
     value:     '9000 65500'
-    # comment:   'TODO: Add comment'
+    comment:   'TODO: Add comment'
   'kernel.shmall':
     value:     '65536000'
-    # comment:   'TODO: Add comment'
+    comment:   'TODO: Add comment'
   'kernel.shmmax':
     value:     '4294967296'
-    # comment:   'TODO: Add comment'
+    comment:   'TODO: Add comment'
   'kernel.msgmni':
     value:      '2878'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'kernel.sem':
     value:      '2510 356420 2510 142'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'kernel.shmmni':
     value:      '4096'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'fs.file-max':
     value:      '6815744'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'fs.aio-max-nr':
     value:      '1572864'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'net.core.rmem_default':
     value:      '262144'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'net.core.rmem_max':
     value:      '4194304'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'net.core.wmem_default':
     value:      '262144'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'net.core.wmem_max':
     value:      '1048576'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'sunrpc.tcp_slot_table_entries':
     value:      '128'
-    # comment:    'TODO: Add comment'
+    comment:    'TODO: Add comment'
   'vm.max_map_count':
     value:        '100000'
-    # comment:      'TODO: Add comment'
+    comment:      'TODO: Add comment'
 
 
 ora_rac::internal::packages:

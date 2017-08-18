@@ -29,14 +29,52 @@ class ora_rac::os (
   # check the specified value and normalize it to a byte value and add 10% to it
   #
   #
+  if $::ora_rac::params::shared_memory_size {
+    $mem_size = $ora_rac::params::shared_memory_size
+    $calculate_size = false
+  } else {
+    $mem_size = $memory_max_target
+    $calculate_size = true
+  }
   $extra_percentage = 1.1
-  $memory_value = inline_template("<%= @memory_max_target.scan(/^([0-9]+) *([K|k|M|m|G|g|T|t]) ?$/).flatten[0] -%>")
-  $memory_unit  = inline_template("<%= @memory_max_target.scan(/^([0-9]+) *([K|k|M|m|G|g|T|t]) ?$/).flatten[1] -%>")
+  $memory_value = inline_template("<%= @mem_size.scan(/^([0-9]+) *([K|k|M|m|G|g|T|t]) ?$/).flatten[0] -%>")
+  $memory_unit  = inline_template("<%= @mem_size.scan(/^([0-9]+) *([K|k|M|m|G|g|T|t]) ?$/).flatten[1] -%>")
   case($memory_unit) {
-    'K', 'k': { $calculated_memory_size = floor($memory_value * 1024 * $extra_percentage) }
-    'M', 'm': { $calculated_memory_size = floor($memory_value * 1024 * 1024 * $extra_percentage) }
-    'G', 'g': { $calculated_memory_size = floor($memory_value * 1024 * 1024 * 1024 * $extra_percentage) }
-    'T', 't': { $calculated_memory_size = floor($memory_value * 1024 * 1024 * 1024 * 1024 * $extra_percentage) }
+    'K', 'k': { if ( $calculate_size ) {
+                  $memory_size = floor($memory_value * 1024 * $extra_percentage)
+                  $memory_size_k = $memory_size * 1024
+                } else {
+                  $memory_size = $mem_size
+                  $memory_size_k = $memory_value
+                }
+              }
+    'M', 'm': { if ( $calculate_size ) {
+                  $memory_size = floor($memory_value * 1024 * 1024 * $extra_percentage)
+                  $memory_size_k = $memory_size * 1024
+                } else {
+                  $memory_size = $mem_size
+                  $memory_size_k = $memory_value * 1024
+                }
+              }
+              #{ $calculated_memory_size = floor($memory_value * 1024 * 1024 * $extra_percentage) }
+    'G', 'g': { if ( $calculate_size ) {
+                  $memory_size = floor($memory_value * 1024 * 1024 * 1024 * $extra_percentage)
+                  $memory_size_k = $memory_size * 1024
+                } else {
+                  $memory_size = $mem_size
+                  $memory_size_k = $memory_value * 1024 * 1024
+                }
+              }
+              # { $calculated_memory_size = floor($memory_value * 1024 * 1024 * 1024 * $extra_percentage) }
+    'T', 't': { if ( $calculate_size ) {
+                  $memory_size = floor($memory_value * 1024 * 1024 * 1024 * 1024 * $extra_percentage)
+                  $memory_size_k = $memory_size * 1024
+                } else {
+                  $memory_size = $mem_size
+                  $memory_size_k = $memory_value * 1024 * 1024 * 1024
+                }
+              }
+              # { $calculated_memory_size = floor($memory_value * 1024 * 1024 * 1024 * 1024 * $extra_percentage) }
     default:  { fail 'Unkown unit for memory_max_target'}
   }
 
@@ -64,12 +102,6 @@ class ora_rac::os (
   create_resources('limits::limits', $limits, $limits_defaults)
   create_resources('sysctl', $sysctl)
 
-  if $::ora_rac::params::shared_memory_size {
-    $memory_size = $ora_rac::params::shared_memory_size
-  } else {
-    $memory_size = $calculated_memory_size
-  }
-
   augeas {'ensure_tmpfs_size':
     context => '/files/etc/fstab',
     changes => [
@@ -87,9 +119,9 @@ class ora_rac::os (
     onlyif  => "match *[spec='tmpfs'][file = '/dev/shm']/opt[. = 'size'] size == 0",
   }
 
-  exec {'remount_tmpfs':
+  exec {'remount_/dev/shm':
     command => '/bin/mount -o remount /dev/shm',
-    onlyif  => "/usr/bin/test -z $(/bin/mount | /bin/grep /dev/shm | /bin/grep -o size=${memory_size})",
+    onlyif  => "/usr/bin/test -z $(/bin/mount | /bin/grep /dev/shm | /bin/egrep -o \"size=${memory_size}|size=${memory_size_k}\")",
     require => Augeas['ensure_tmpfs_size'],
   }
 
