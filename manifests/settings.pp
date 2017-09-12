@@ -23,7 +23,6 @@ class ora_rac::settings(
   Stdlib::Absolutepath  $download_dir               = '/install',
   Stdlib::Absolutepath  $temp_dir                   = '/tmp',
   Boolean               $zip_extract                = true,
-  Boolean               $remote_file                = false,
   String[1]             $oracle_user                = 'oracle',
   Integer               $oracle_user_id             = 7000,
   Optional[String]      $oracle_user_password       = undef,

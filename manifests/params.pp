@@ -111,7 +111,8 @@ class ora_rac::params(
     if ($node == $::hostname) {
       "${db_name}${instance}"
     } else {
-      if is_numeric($instance) {$instance + 1}
+      $instance_integer = assert_type(Integer, $instance) |$expected, $actual| { 0 }
+      if ( $instance_integer > 0 ) { $instance + 1 }
     }
   }
 
