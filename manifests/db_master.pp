@@ -91,7 +91,6 @@ class ora_rac::db_master(
     download_dir              => $::ora_rac::settings::download_dir,
     temp_dir                  => $::ora_rac::settings::temp_dir,
     zip_extract               => $::ora_rac::settings::zip_extract,
-    remote_file               => $::ora_rac::settings::remote_file, #false,
     cluster_name              => $cluster_name,
     scan_name                 => $scan_name,
     scan_port                 => $scan_port,
@@ -125,7 +124,6 @@ class ora_rac::db_master(
     download_dir              => $::ora_rac::settings::download_dir,
     temp_dir                  => $::ora_rac::settings::temp_dir,
     cluster_nodes             => $::hostname,
-    remote_file               => $::ora_rac::settings::remote_file,
     require                   => Ora_install::Installasm[$::ora_rac::settings::_grid_file],
     before                    => Ora_database[$db_name],
   }
