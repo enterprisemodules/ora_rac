@@ -39,27 +39,33 @@ class ora_rac::hosts inherits ora_rac::params
     # Set the public IP hostname
     #
     $ip     = $information['ip']
-    host{"${host}.${::domain}":
-      host_aliases => $host,
-      ip           => $ip,
+    unless ( defined(Host["${host}.${::domain}"]) ) {
+        host{"${host}.${::domain}":
+        host_aliases => $host,
+        ip           => $ip,
+      }
     }
 
     #
     # Set the private IP hostname
     #
     $priv   = $information['priv']
-    host{"${host}-priv.${::domain}":
-      host_aliases => "${host}-priv",
-      ip           => $priv,
+    unless ( defined(Host["${host}-priv.${::domain}"]) ) {
+      host{"${host}-priv.${::domain}":
+        host_aliases => "${host}-priv",
+        ip           => $priv,
+      }
     }
 
     #
     # Set the virtual private IP hostname
     #
     $vip    = $information['vip']
-    host{"${host}-vip.${::domain}":
-      host_aliases => "${host}-vip",
-      ip           => $vip,
+    unless ( defined(Host["${host}-vip.${::domain}"]) ) {
+      host{"${host}-vip.${::domain}":
+        host_aliases => "${host}-vip",
+        ip           => $vip,
+      }
     }
   }
 
@@ -67,17 +73,21 @@ class ora_rac::hosts inherits ora_rac::params
   # Register SCAN name in hostfile
   #
   if $::ora_rac::params::scan_name_in_hostfile {
-    host{"${::ora_rac::params::scan_name}.${::domain}":
-      ensure       => present,
-      host_aliases => $::ora_rac::params::scan_name,
-      ip           => $::ora_rac::params::scan_adresses,
+    unless ( defined(Host["${::ora_rac::params::scan_name}.${::domain}"]) ) {
+      host{"${::ora_rac::params::scan_name}.${::domain}":
+        ensure       => present,
+        host_aliases => $::ora_rac::params::scan_name,
+        ip           => $::ora_rac::params::scan_adresses,
+      }
     }
   } else {
-    host{"${::ora_rac::params::scan_name}.${::domain}":
-      ensure       => absent,
-      host_aliases => $::ora_rac::params::scan_name,
-      ip           => $::ora_rac::params::scan_adresses,
+    unless ( defined(Host["${::ora_rac::params::scan_name}.${::domain}"]) ) {
+      host{"${::ora_rac::params::scan_name}.${::domain}":
+        ensure       => absent,
+        host_aliases => $::ora_rac::params::scan_name,
+        ip           => $::ora_rac::params::scan_adresses,
+      }
+      notice('SCAN name not defined in hostfile by puppet. Be sure it is in the DNS')
     }
-    notice('SCAN name not defined in hostfile by puppet. Be sure it is in the DNS')
   }
 }

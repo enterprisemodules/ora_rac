@@ -14,7 +14,7 @@
 #
 class ora_rac::params(
   String[1]         $db_name,
-  Array[Stdlib::Compat::Ip_address]
+  Array[String[1]]
                     $scan_adresses,
   String[1]         $domain_name,
   Hash              $db_machines,
@@ -51,7 +51,8 @@ class ora_rac::params(
     assert_type(Hash[Enum['ip', 'interface_number', 'fwmark', 'send_program', 'scheduler', 'protocol', 'port', 'url', 'servers'], Data], $value) | $e, $a | { fail "${key} is ${a}, but should be a valid hash that should contains following keys: [ip, interface_number, fwmark, send_program, scheduler, protocol, port, url, servers]."}
 
     if has_key($value, 'ip') {
-      assert_type(Stdlib::Compat::Ip_address, $value[ip])        | $e, $a | { fail "virtual_services::${key}::ip is ${a}, but should be a valid IP address."}
+      # assert_type(Stdlib::Compat::Ip_address, $value[ip])        | $e, $a | { fail "virtual_services::${key}::ip is ${a}, but should be a valid IP address."}
+      unless validate_legacy(String, 'is_ip_address', $value[ip]) { fail "virtual_services::${key}::ip is ${a}, but should be a valid IP address." }
     } else {
       fail "virtual_services::${key} has no ip"
     }
