@@ -51,8 +51,8 @@ ora_rac::internal::database_definition:
   spfile_location:               "%{ora_rac::settings::recovery_area_destination}"
   scan_name:                     'SCAN'
   logfile_groups:
-    - { size: 512M}
-    - { size: 512M}
+    - { size: 512M }
+    - { size: 512M }
 
 
 ora_rac::params::oracle_private_key: &private_key |
