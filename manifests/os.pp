@@ -14,7 +14,7 @@
 #
 # lint:ignore:inherits_across_namespaces lint:ignore:class_inherits_from_params_class
 class ora_rac::os (
-  Hash $sysctl = lookup('ora_rac::internal::sysctl_params', Hash),
+  Hash $sysctl = lookup('ora_rac::internal::sysctl_params', Hash, 'hash', {}),
   Hash $limits = lookup('ora_rac::internal::limits', Hash, undef, {}),
 )inherits ora_rac::params {
 # lint:endignore
@@ -37,7 +37,7 @@ class ora_rac::os (
     $calculate_size = true
   }
   $extra_percentage = 1.1
-  $memory_value = inline_template("<%= @mem_size.scan(/^([0-9]+) *([K|k|M|m|G|g|T|t]) ?$/).flatten[0] -%>")
+  $memory_value = Numeric(inline_template("<%= @mem_size.scan(/^([0-9]+) *([K|k|M|m|G|g|T|t]) ?$/).flatten[0] -%>"))
   $memory_unit  = inline_template("<%= @mem_size.scan(/^([0-9]+) *([K|k|M|m|G|g|T|t]) ?$/).flatten[1] -%>")
   case($memory_unit) {
     'K', 'k': { if ( $calculate_size ) {

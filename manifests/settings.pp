@@ -13,7 +13,7 @@
 #
 class ora_rac::settings(
   Hash                  $asm_disk_groups,
-  Hash                  $asm_disks,
+  Hash                  $asm_disks                  = lookup(::ora_rac::settings::asm_disks, Hash, 'hash', {}),
   Stdlib::Absolutepath  $oracle_base                = '/opt/oracle',
   Stdlib::Absolutepath  $grid_base                  = '/opt/oracle/grid',
   Stdlib::Absolutepath  $oracle_home                = '/opt/oracle/app/11.2.0.4/db_1',

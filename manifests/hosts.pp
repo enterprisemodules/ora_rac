@@ -40,7 +40,7 @@ class ora_rac::hosts inherits ora_rac::params
     #
     $ip     = $information['ip']
     unless ( defined(Host["${host}.${::domain}"]) ) {
-        host{"${host}.${::domain}":
+      host{"${host}.${::domain}":
         host_aliases => $host,
         ip           => $ip,
       }
