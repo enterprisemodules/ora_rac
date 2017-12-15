@@ -43,8 +43,10 @@ class ora_rac::params(
   Easy_type::Size   $memory_max_target          = join([floor( $::memorysize_mb/ 2), 'M'], ''),  # Default is half of the reported memory size
   Optional[Easy_type::Size]
                     $shared_memory_size         = undef,
+  Optional[Boolean] $configure_afd              = false,
 )
 {
+  require ::ora_rac::settings
 
   $virtual_services.each | $key, $value| {
     # lint:ignore:variable_scope
@@ -70,6 +72,17 @@ class ora_rac::params(
   #
   # For example: eth0:140.87.24.0:1,eth1:10.2.1.0:2,eth2:140.87.52.0:3
   #
+  # In oracle 12.2 two more interface types have been introduced, namely
+  # 4) ASM and 5) ASM & private. And it is mandatory to define at least one interface
+  # for ASM. So instead of 2 we should use 5 here.
+  case $::ora_rac::settings::version {
+    '11.2.0.4', '12.1.0.2': {
+      $priv_int_type = 2
+    }
+    '12.2.0.1': {
+      $priv_int_type = 5
+    }
+  }
 
   $_public_list = $public_network_interfaces.reduce('') | $list, $interface | {
     $network = getvar("::network_${interface}")
@@ -85,9 +98,9 @@ class ora_rac::params(
     $network = getvar("::network_${interface}")
     unless $network { fail "network for interface ${interface} not defined"}
     if $list == ''{
-        "${interface}:${network}:2"
+        "${interface}:${network}:$priv_int_type"
       } else {
-        "${list},${interface}:${network}:2"
+        "${list},${interface}:${network}:$priv_int_type"
       }
   }
 
@@ -101,7 +114,7 @@ class ora_rac::params(
       }
   }
 
-  $nw_interface_list     = join([$_public_list,$_private_list,$_unused_list],',')
+  $nw_interface_list     = join([$_unused_list,$_public_list,$_private_list],',')
   $master_instance      = "${db_name}1"
   $cluster_nodes        = sort(keys($db_machines))
   $master_node          = $cluster_nodes[0]

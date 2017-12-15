@@ -39,6 +39,8 @@ class ora_rac::db_master(
   Enum['NORMAL','EXTERNAL', 'HIGH']
               $disk_redundancy            = $::ora_rac::params::disk_redundancy,
   Array[Hash] $config_scripts             = $::ora_rac::params::config_scripts,
+  Optional[Boolean]
+              $configure_afd              = $::ora_rac::params::configure_afd
 ) inherits ::ora_rac::params {
 
   require ::ora_rac::settings
@@ -87,6 +89,9 @@ class ora_rac::db_master(
     asm_diskgroup             => $crs_disk_group_name,
     disks                     => $crs_disk,
     disk_redundancy           => $disk_redundancy,
+    disk_au_size              => '4',
+    disks_failgroup_names     => "${crs_disk},",
+    configure_afd             => $configure_afd,
     puppet_download_mnt_point => $::ora_rac::settings::puppet_download_mnt_point,
     download_dir              => $::ora_rac::settings::download_dir,
     temp_dir                  => $::ora_rac::settings::temp_dir,
@@ -94,9 +99,26 @@ class ora_rac::db_master(
     cluster_name              => $cluster_name,
     scan_name                 => $scan_name,
     scan_port                 => $scan_port,
-    cluster_nodes             => "${::hostname}:${::hostname}-vip",
+    cluster_nodes             => case $::ora_rac::settings::version {
+                                   '11.2.0.4', '12.1.0.2': {
+                                     "${::hostname}:${::hostname}-vip"
+                                   }
+                                   '12.2.0.1': {
+                                     "${::hostname}:${::hostname}-vip:HUB"
+                                   }
+                                 },
     network_interface_list    => $::ora_rac::params::nw_interface_list,
-    storage_option            => 'LOCAL_ASM_STORAGE',
+    storage_option            => case $::ora_rac::settings::version {
+                                   '11.2.0.4': {
+                                     'ASM_STORAGE'
+                                   }
+                                   '12.1.0.2': {
+                                     'LOCAL_ASM_STORAGE'
+                                   }
+                                   '12.2.0.1': {
+                                     'FLEX_ASM_STORAGE'
+                                   }
+                                 },
   }
 
   -> ora_setting { '+ASM1':
@@ -104,9 +126,14 @@ class ora_rac::db_master(
     syspriv     => 'sysasm',
   }
 
-  -> ora_setting { "${db_name}1":
+  if ( $::ora_rac::params::configure_afd ) {
+    create_resources('ora_rac::afd_label', $::ora_rac::settings::afd_disks)
+  }
+
+  ora_setting { "${db_name}1":
     oracle_home => $::ora_rac::settings::oracle_home,
     default     => true,
+    require     => Ora_setting['+ASM1'],
   }
 
   -> ora_install::installdb{ $::ora_rac::settings::_oracle_file:

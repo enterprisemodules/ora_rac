@@ -28,6 +28,6 @@ class ora_rac::disk_groups inherits ora_rac::params
   #
   # Define all required relations
   #
-  Ora_install::Installasm<||> -> Ora_asm_diskgroup<||> -> Ora_install::Installdb<||>
-  Ora_rac::Asm_disk<||> -> Ora_asm_diskgroup<||> -> Ora_asm_volume<||>
+  Ora_install::Installasm<||> -> Ora_rac::Afd_label<||> -> Ora_asm_diskgroup<||> -> Ora_install::Installdb<||>
+  Ora_rac::Asm_disk<||> -> Ora_rac::Afd_label<||> -> Ora_asm_diskgroup<||> -> Ora_asm_volume<||>
 }

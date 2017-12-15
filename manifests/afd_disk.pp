@@ -1,4 +1,4 @@
-# == Class: ora_rac::asm_disk
+# == Class: ora_rac::afd_disk
 #
 # === Parameters
 #
@@ -13,14 +13,15 @@
 #
 # === Authors
 #
-# Bert Hajee <bert.hajee@enterprisemodules.com>
+# Remy van Berkum <remy.van.berkum@enterprisemodules.com>
 #
 #
-define ora_rac::asm_disk(
+define ora_rac::afd_disk(
   Ora_rac::RawDevice         $raw_device,
-  Optional[Easy_type::Size]  $start      = undef,
-  Optional[Easy_type::Size]  $end        = undef,
-  Enum['gpt','msdos']        $table_type = 'msdos',
+  Optional[String[1]]        $udev_name   = undef,
+  Optional[Easy_type::Size]  $start       = undef,
+  Optional[Easy_type::Size]  $end         = undef,
+  Enum['gpt','msdos']        $table_type  = 'msdos',
 )
 {
   #
@@ -28,18 +29,12 @@ define ora_rac::asm_disk(
   #
   $_device_array    = split($raw_device,'[:]')
   $device_name      = $_device_array[0]
-  $partition_number = $_device_array[1]
-  $mapped_device    = regsubst($device_name,'\/dev\/mapper\/.*', '') != $device_name
-  #
-  #
-  # Mapped devices use the 'p1' and 'p2' extensions for partitions
-  #
-  if $mapped_device {
-    $device         = "${device_name}p${partition_number}"
+  if ( $_device_array.length > 1 ) {
+    $partition_number = $_device_array[1]
   } else {
-    $device         = "${device_name}${partition_number}"
+    $partition_number = '0'
   }
-
+  $mapped_device    = regsubst($device_name,'\/dev\/mapper\/.*', '') != $device_name
   sleep { "until_${device_name}_available":
     bedtime       => '120',                                     # how long to sleep for
     wakeupfor     => "/usr/bin/test -b ${device_name}",         # an optional test, run in a shell
@@ -48,19 +43,17 @@ define ora_rac::asm_disk(
     refreshonly   => false,
   }
 
-  -> partition_table { $device_name:
+  partition_table { $device_name:
     ensure  => $table_type,
   }
 
-  -> partition { $raw_device:
-    ensure    => 'present',
-    part_type => 'primary',
-    start     => $start,
-    end       => $end,
-  }
-
-  -> exec { "/usr/sbin/oracleasm createdisk ${name} ${device}":
-    unless  => "/usr/sbin/oracleasm querydisk -v ${device}",
-    require => Service['oracleasm'],
+  if ( $partition_number != '0' ) {
+    partition { $raw_device:
+      ensure    => 'present',
+      part_type => 'primary',
+      start     => $start,
+      end       => $end,
+      require   => Partition_table[$device_name],
+    }
   }
 }
