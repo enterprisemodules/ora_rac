@@ -16,5 +16,6 @@ class ora_rac::internal(
   Hash $yumrepos,
   Hash $packages,
   Hash $asm_packages,
+  Hash $afd_packages,
 )
 {}

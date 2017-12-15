@@ -36,3 +36,16 @@ ora_rac::internal::sysctl_params:
   'net.core.wmem_max':
     value:      '1048576'
     comment:    'TODO: Add comment'
+
+ora_rac::internal::afd_packages:
+  cvuqdisk:
+    ensure:   installed
+    source:   "%{ora_rac::settings::puppet_download_mnt_point}/cvuqdisk-1.0.10-1.rpm"
+    provider: rpm
+    require:
+      - Package[smartmontools]
+      - Package[nfs-utils]
+  smartmontools:
+    ensure:   installed
+  nfs-utils:
+    ensure:   installed

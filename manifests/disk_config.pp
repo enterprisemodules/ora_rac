@@ -18,5 +18,9 @@
 class ora_rac::disk_config inherits ora_rac::params
 {
   require ::ora_rac::settings
-  create_resources('ora_rac::asm_disk', $::ora_rac::settings::asm_disks)
+  if ( $::ora_rac::params::configure_afd ) {
+    create_resources('ora_rac::afd_disk', $::ora_rac::settings::afd_disks)
+  } else {
+    create_resources('ora_rac::asm_disk', $::ora_rac::settings::asm_disks)
+  }
 }

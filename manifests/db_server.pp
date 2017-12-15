@@ -18,10 +18,19 @@
 class ora_rac::db_server(
   Hash $db_machines                = $::ora_rac::params::db_machines,
 ) inherits ::ora_rac::params {
+  case $::ora_rac::settings::version {
+    '11.2.0.4', '12.1.0.2': {
+      $cluster_new_node_roles=""
+    }
+    '12.2.0.1': {
+      $cluster_new_node_roles="\"CLUSTER_NEW_NODE_ROLES={HUB}\""
+    }
+  }
+
   exec{'add_grid_node':
     timeout => 0,
     user    => $::ora_rac::settings::grid_user,
-    command => "/usr/bin/ssh ${ora_rac::settings::grid_user}@${::ora_rac::params::master_node} \"${ora_rac::settings::grid_home}/\"${ora_rac::settings::add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    command => "/usr/bin/ssh ${ora_rac::settings::grid_user}@${::ora_rac::params::master_node} \"${ora_rac::settings::grid_home}/\"${ora_rac::settings::add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\" ${cluster_new_node_roles}",
     creates => "${ora_rac::settings::grid_home}/root.sh",
   }
 
@@ -53,7 +62,7 @@ class ora_rac::db_server(
   exec{'add_oracle_node':
     timeout   => 0,
     user      => $::ora_rac::settings::grid_user,
-    command   => "/usr/bin/ssh ${ora_rac::settings::oracle_user}@${ora_rac::params::master_node} \"${ora_rac::settings::oracle_home}/\"${ora_rac::settings::add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\"",
+    command   => "/usr/bin/ssh ${ora_rac::settings::oracle_user}@${ora_rac::params::master_node} \"${ora_rac::settings::oracle_home}/\"${ora_rac::settings::add_node_path} \"CLUSTER_NEW_NODES={${::hostname}}\" \"CLUSTER_NEW_VIRTUAL_HOSTNAMES={${::hostname}-vip}\" ${cluster_new_node_roles}",
     logoutput => on_failure,
     creates   => "${ora_rac::settings::oracle_home}/root.sh",
     require   => Exec['register_grid_node'],

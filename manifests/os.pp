@@ -15,7 +15,7 @@
 # lint:ignore:inherits_across_namespaces lint:ignore:class_inherits_from_params_class
 class ora_rac::os (
   Hash $sysctl = lookup('ora_rac::internal::sysctl_params', Hash, 'hash', {}),
-  Hash $limits = lookup('ora_rac::internal::limits', Hash, undef, {}),
+  Hash $limits = lookup('ora_rac::internal::limits', Hash, 'hash', {}),
 )inherits ora_rac::params {
 # lint:endignore
   require ::ora_rac::settings
@@ -94,6 +94,11 @@ class ora_rac::os (
       'hard'       => '16384',
       'soft'       => '16384',
     },
+    'oracle_stack' => {
+      'limit_type' => 'stack',
+      'hard'       => '32768',
+      'soft'       => '32768',
+    },
   }
 
 
@@ -125,7 +130,7 @@ class ora_rac::os (
     require => Augeas['ensure_tmpfs_size'],
   }
 
-  file {'/etc/profile':
+  file {'/etc/profile.d/oracle.sh':
     ensure => file,
     owner  => 'root',
     group  => 'root',

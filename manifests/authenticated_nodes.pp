@@ -10,8 +10,12 @@
 #
 # Bert Hajee <bert.hajee@enterprisemodules.com>
 #
-class ora_rac::authenticated_nodes inherits ora_rac::params {
+class ora_rac::authenticated_nodes (
+  Hash $keys = {},
+) inherits ora_rac::params {
   require ::ora_rac::settings
+
+  create_resources('ssh_authorized_key', $keys)
 
   ora_rac::user_equivalence{$::ora_rac::settings::oracle_user:
     nodes       => $::ora_rac::params::cluster_nodes,
