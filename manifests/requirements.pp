@@ -25,9 +25,9 @@ class ora_rac::requirements
   }
 
   contain ::ora_rac::os
+  contain ::ora_rac::disk_config
   contain ::ora_rac::hosts
   contain ::ora_rac::os_users
-  contain ::ora_rac::disk_config
   contain ::ora_rac::authenticated_nodes
   contain ::ora_rac::swapspace
   contain ::ora_rac::iptables
@@ -37,7 +37,6 @@ class ora_rac::requirements
   Class['::ora_rac::os']
   -> Class['::ora_rac::hosts']
   -> Class['::ora_rac::os_users']
-  -> Class['::ora_rac::disk_config']
   -> Class['::ora_rac::authenticated_nodes']
   -> Class['::ora_rac::swapspace']
   -> Class['::ora_rac::iptables']
