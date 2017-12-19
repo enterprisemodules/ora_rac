@@ -119,16 +119,14 @@ class ora_rac::params(
   $cluster_nodes        = sort(keys($db_machines))
   $master_node          = $cluster_nodes[0]
   #
-  # Calculate the current instance by looping through the cluster_nodes
+  # Get the current instance by looping instances from database_definition
   #
-  $current_instance = $cluster_nodes.reduce(1) | $instance, $node| {
-    if ($node == $::hostname) {
-      "${db_name}${instance}"
-    } else {
-      $instance_integer = assert_type(Integer, $instance) |$expected, $actual| { 0 }
-      if ( $instance_integer > 0 ) { $instance + 1 }
-    }
-  }
+  $database_definition = lookup({name          => 'ora_rac::internal::database_definition',
+                                 value_type    => Hash,
+                                 merge         => {strategy => 'deep', merge_hash_arrays => true},
+                                 default_value => {}})
+  $instances = $database_definition['instances']
+  $current_instance = join(delete_undef_values($instances.map | $instance, $node | { if $node == $::hostname {$instance} }))
 
   $public_ip_addresses  = $db_machines.map | $list, $node | { $node['ip'] }
   $private_ip_addresses = $db_machines.map | $list, $node | { $node['priv'] }

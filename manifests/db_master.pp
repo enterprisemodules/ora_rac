@@ -22,7 +22,8 @@ class ora_rac::db_master(
   Array[Stdlib::Compat::Ip_address]
               $scan_adresses              = $::ora_rac::params::scan_adresses,
   Hash        $db_machines                = $::ora_rac::params::db_machines,
-  String[1]   $init_ora_content           = $::ora_rac::params::init_ora_content,
+  Optional[String[1]]
+              $init_ora_content           = $::ora_rac::params::init_ora_content,
   Array[String[1]]
               $public_network_interfaces  = $::ora_rac::params::public_network_interfaces,
   Array[String[1]]
@@ -45,7 +46,10 @@ class ora_rac::db_master(
 
   require ::ora_rac::settings
 
-  $database_definition = lookup('ora_rac::internal::database_definition')
+  $database_definition = lookup({name          => 'ora_rac::internal::database_definition',
+                                 value_type    => Hash,
+                                 merge         => {strategy => 'deep', merge_hash_arrays => true},
+                                 default_value => {}})
 
   if $::operatingsystemmajrelease == '6' {
     #
