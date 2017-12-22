@@ -20,7 +20,7 @@ class ora_rac::settings(
   Stdlib::Absolutepath  $oracle_home                = '/opt/oracle/app/11.2.0.4/db_1',
   Stdlib::Absolutepath  $grid_home                  = '/opt/oracle/app/11.2.0.4/grid',
   Stdlib::Absolutepath  $ora_inventory_dir          = '/opt/oracle',
-  Stdlib::Absolutepath  $puppet_download_mnt_point  = '/opt/software',
+  String[1]             $puppet_download_mnt_point  = '/opt/software',
   Stdlib::Absolutepath  $download_dir               = '/install',
   Stdlib::Absolutepath  $temp_dir                   = '/tmp',
   Boolean               $zip_extract                = true,
