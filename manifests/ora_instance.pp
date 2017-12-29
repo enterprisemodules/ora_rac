@@ -60,21 +60,10 @@ define ora_rac::ora_instance(
     require => Ora_tablespace["UNDOTBS${number}@${on}"],
   }
 
-  file{"/tmp/add_logfiles_${thread}.sql":
-    ensure  => 'present',
-    content => template('ora_rac/add_logfiles.sql.erb'),
-  }
-
-  ora_exec{"@/tmp/add_logfiles_${thread}.sql@${on}":
-    unless  => "select * from v\$log where THREAD#=${thread}",
-    require => File["/tmp/add_logfiles_${thread}.sql"],
-  }
-
   ora_thread{"${thread}@${on}":
     ensure  => 'enabled',
     require => [
       Ora_init_param["SPFILE/undo_tablespace:${name}@${on}"],
-      Ora_exec["@/tmp/add_logfiles_${thread}.sql@${on}"],
     ],
   }
 

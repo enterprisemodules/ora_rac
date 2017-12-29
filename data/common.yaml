@@ -51,8 +51,12 @@ ora_rac::internal::database_definition:
   spfile_location:               "%{ora_rac::settings::recovery_area_destination}"
   scan_name:                     'SCAN'
   logfile_groups:
-    - { size: 512M }
-    - { size: 512M }
+    - { group: 1, size: 100M, thread: 1, type: 'ONLINE' }
+    - { group: 2, size: 100M, thread: 1, type: 'ONLINE' }
+    - { group: 3, size: 100M, thread: 1, type: 'ONLINE' }
+    - { group: 4, size: 100M, thread: 2, type: 'ONLINE' }
+    - { group: 5, size: 100M, thread: 2, type: 'ONLINE' }
+    - { group: 6, size: 100M, thread: 2, type: 'ONLINE' }
 
 
 ora_rac::params::oracle_private_key: &private_key |
