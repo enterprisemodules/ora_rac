@@ -12,7 +12,7 @@ ora_rac::internal::database_definition:
   oracle_user:                     "%{ora_rac::settings::oracle_user}"
   character_set:                   AL32UTF8
   national_character_set:          AL16UTF16
-  init_ora_content:                "%{ora_rac::db_master::init_ora_content}"
+  init_ora_content:                "%{lookup('ora_rac::db_master::init_ora_content')}"
   system_password:                 "%{ora_rac::params::password}"
   sys_password:                    "%{ora_rac::params::password}"
   maxinstances:                    32
