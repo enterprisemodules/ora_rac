@@ -114,7 +114,11 @@ class ora_rac::params(
       }
   }
 
-  $nw_interface_list     = join([$_unused_list,$_public_list,$_private_list],',')
+  if $_unused_list == [] {
+    $nw_interface_list     = join([$_unused_list,$_public_list,$_private_list],',')
+  } else {
+    $nw_interface_list     = join([$_public_list,$_private_list],',')
+  }
   $master_instance      = "${db_name}1"
   $cluster_nodes        = sort(keys($db_machines))
   $master_node          = $cluster_nodes[0]
