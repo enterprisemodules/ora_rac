@@ -44,6 +44,7 @@ class ora_rac::params(
   Optional[Easy_type::Size]
                     $shared_memory_size         = undef,
   Optional[Boolean] $configure_afd              = false,
+  Optional[Boolean] $configure_asmlib           = true,
 )
 {
   require ::ora_rac::settings

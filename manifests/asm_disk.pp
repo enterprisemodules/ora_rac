@@ -23,6 +23,7 @@ define ora_rac::asm_disk(
   Enum['gpt','msdos']        $table_type = 'msdos',
 )
 {
+  include ora_rac::params
   #
   # Manipulation and translation of parameters
   #
@@ -59,8 +60,13 @@ define ora_rac::asm_disk(
     end       => $end,
   }
 
-  -> exec { "/usr/sbin/oracleasm createdisk ${name} ${device}":
-    unless  => "/usr/sbin/oracleasm querydisk -v ${device}",
-    require => Service['oracleasm'],
+  if $ora_rac::params::configure_asmlib {
+    exec { "/usr/sbin/oracleasm createdisk ${name} ${device}":
+      unless  => "/usr/sbin/oracleasm querydisk -v ${device}",
+      require => [
+        Service['oracleasm'],
+        Partition[$raw_device],
+      ]
+    }
   }
 }

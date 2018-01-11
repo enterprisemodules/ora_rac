@@ -1,4 +1,6 @@
-class ora_rac::requirements
+class ora_rac::requirements(
+  Boolean $asm_drivers = true,
+)
 {
   include ::ora_rac::params
 
@@ -31,8 +33,16 @@ class ora_rac::requirements
   contain ::ora_rac::authenticated_nodes
   contain ::ora_rac::swapspace
   contain ::ora_rac::iptables
-  contain ::ora_rac::asm_drivers
   contain ::ora_rac::install
+
+  if $ora_rac::params::configure_asmlib {
+    contain ::ora_rac::asm_drivers
+
+    Class['::ora_rac::iptables']
+    -> Class['::ora_rac::asm_drivers']
+    -> Class['::ora_rac::install']
+  }
+
 
   Class['::ora_rac::os']
   -> Class['::ora_rac::hosts']
@@ -40,6 +50,5 @@ class ora_rac::requirements
   -> Class['::ora_rac::authenticated_nodes']
   -> Class['::ora_rac::swapspace']
   -> Class['::ora_rac::iptables']
-  -> Class['::ora_rac::asm_drivers']
   -> Class['::ora_rac::install']
 }

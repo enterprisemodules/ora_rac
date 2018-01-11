@@ -23,7 +23,7 @@ class ora_rac::asm_drivers inherits ora_rac::params {
 
   if ( $::ora_rac::params::configure_afd ) {
     create_resources('package', $::ora_rac::internal::afd_packages)
-  } else {
+  } elsif $::ora_rac::params::configure_asmlib {
     create_resources('yumrepo', $::ora_rac::internal::yumrepos)
     create_resources('package', $::ora_rac::internal::asm_packages)
 
@@ -50,5 +50,7 @@ class ora_rac::asm_drivers inherits ora_rac::params {
       subscribe => File['/etc/sysconfig/oracleasm'],
       require   => Package['oracleasm-support'],
     }
+  } else {
+    notice 'No ASM drivers configured.'
   }
 }
