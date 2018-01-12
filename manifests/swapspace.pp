@@ -8,7 +8,11 @@ class ora_rac::swapspace(
   $size = undef,
 ) {
   if $size != undef {
-    $swapfile_size = ceiling($size - $::swapsize_mb)
+    if $::swapsize_mb {
+      $swapfile_size = ceiling($size - $::swapsize_mb)
+    } else {
+      $swapfile_size = 0
+    }
   } else {
     if $::memorysize_mb <= 2048 {
       $swapfile_size = ceiling(($::memorysize_mb * 1.5) - $::swapsize_mb)
