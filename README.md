@@ -1,105 +1,94 @@
 
-####Table of Contents
+[![Enterprise Modules](https://raw.githubusercontent.com/enterprisemodules/public_images/master/banner1.jpg)](https://www.enterprisemodules.com)
+
+#### Table of Contents
 
 1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with ora_rac](#setup)
-    * [What ora_rac affects](#what-ora_rac-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with ora_rac](#beginning-with-ora_rac)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
-    * [OS support](#os-support)
-    * [Oracle versions support](#oracle-version-support)
-    * [Tests - Testing your configuration](#testing)
+2. [License](#license)
+3. [Description - What the module does and why it is useful](#description)
+4. [Setup](#setup)
+  * [Requirements](#requirements)
+  * [Installing the ora_config module](#installing-the-ora_config-module)
+5. [Usage - Configuration options and additional functionality](#usage)
+6. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+7. [Limitations - OS compatibility, etc.](#limitations)
 
-##Overview
+## Overview
 
-This module contains all classes needed to successfully install an Oracle RAC cluster. This module is based heavily on the [oradb module](https://forge.puppetlabs.com/biemond/oradb) Edwin Biemond.
+This module allows you to configure and manage an Oracle RAC cluster.
+It is part of our family of Puppet modules to install, manage and secure Oracle databases with Puppet. Besides the `ora_rac` module, this family also contains:
 
-##Module Description
-The module contains two main definitions. A `db_master` and a `db_server`.  These are the main classes for defining the two or more nodes in a RAC cluster. 
+- [ora_install](https://www.enterprisemodules.com/shop/products/puppet-ora_install-module?taxon_id=14) For installing an Oracle database and other database related Oracle products
+- [ora_config](https://www.enterprisemodules.com/shop/products/puppet-ora_config-module?taxon_id=14) For configuring every aspect of your Oracle database
+- [ora_cis](https://www.enterprisemodules.com/shop/products/puppet-oracle-security-module?taxon_id=14) To secure your databases according to the CIS benchmarks.
 
-Next to these two main classes, the module contains supporting classed to get the environment needed to get a RAC node running. Some of these classes can (and should) be  included in your own definition of a RAC node. Other classed are just samples of what you could do. These sample classed are used in the two  example's we provide. 
+## License
 
-We crafted two examples. A set of vagrant boxes installing an Oracle 11.2.0.4 RAC cluster. You can find them [here](https://github.com/hajee/vagrant-ora11-rac). We've also made a more current box showing an Oracle 12c RAC cluster. Those boxes can be found [here](https://github.com/hajee/vagrant-ora12-rac). For guidance, you can look at their definition
+Most of the [Enterprise Modules](https://www.enterprisemodules.com) modules are commercial modules. This one is **NOT**. It is an Open Source module. You are free to use it any way you like. It however is based on our commercial Puppet Oracle modules.
+
+## Description
+
+The module contains two main definitions. A `db_master` and a `db_server`. These are the main classes for defining the two or more nodes in a RAC cluster. 
+
+Next to these two main classes, the module contains supporting classed to get the environment needed to get a RAC node running. Some of these classes can (and should) be  included in your own definition of a RAC node. Other classed are just samples of what you could do. These sample classed are used in the two  example's we provide.
 
 
-##Setup
+## Setup
 
-###What ora_rac affects
+### Requirements
+
 To build an Oracle RAC system, you need at least two machines. Best is to have them dedicated for database serving purposes. The classes affect a lot of system components. The following modifications are made to the system:
 
-* users and groups are added
-* ssh keys are added for those users and access between nodes is based on these keys.
-* `sysctl` parameters are added.
-* rules are added to the `iptables`
-* a set of required rpm packages are installed.
-* oracle and grid software is installed
 
-###Setup Requirements
+The `ora_rac` module requires:
 
-To run the `ora_rac` classes, you need:
+- Puppet module [`enterprisemodules-easy_type`](https://forge.puppet.com/enterprisemodules/easy_type) installed.
+- Puppet module [`enterprisemodules-ora_config`](https://forge.puppet.com/enterprisemodules/ora_config) installed.
+- Puppet module [`enterprisemodules-ora_install`](https://forge.puppet.com/enterprisemodules/ora_install) installed.
+- Puppet version 3.0 or higher. Can be Puppet Enterprise or Puppet Open Source
+- Oracle 11 higher
+- A valid Oracle license
+- A valid Enterprise Modules license for usage.
+- Runs on most Linux systems.
+- Runs on Solaris
+- Windows systems are **NOT** supported
 
-* hajee/oracle         >= 0.4.0'
-* biemond/oradb    >= 1.0.17
+### Installing the ora_rac module
 
-For running the demo boxes you also need:
+To install these modules, you can use a `Puppetfile`
 
-* hajee/partition
-* hajee/hacks
-
-The provided `Modulefile` manages all requirements so you can install the `ora_rac` module with:
-
-```sh
-$ puppet module install hajee-ora_rac
+```
+mod 'enterprisemodules/ora_rac'               ,'x.x.x'
 ```
 
-###Beginning with ora_rac module
+Then use the `librarian-puppet` or `r10K` to install the software.
 
-Like mentioned before, this module builds on the module [oradb module](https://forge.puppetlabs.com/biemond/oradb). A lot of the specific parameters you can use, are directly forwarded to: 
+You can also install the software using the `puppet module`  command:
 
-* `oradb::installdb`
-* `oradb::installasm`
-* `oradb::database`
+```
+puppet module install enterprisemodules-ora_rac
+```
 
-So if you need some more documentation, check out the documentation of those classes.
+## Usage
 
-##Usage
+## Reference
 
-Although Oracle RAC doesn't normally use these concepts, we introduce it here to explain their role during deployment. A `db_master` is the first node we need to deploy. To install RAC on the `db_master`, the `db_master` needs access to the software for installing Oracle and the software for installing Oracle grid.
+Here you can find some more information regarding this puppet module:
 
-A `db_server` on the other hand clones all needed software from the `db_master` in the RAC cluster.
+Here are a related blog posts:
+- [How to ensure you only use Oracle features you paid for](https://www.enterprisemodules.com/blog/2017/09/how-to-ensure-you-only-use-oracle-features-you-paid-for/)
+- [Oracle 12.2 support added to our Oracle modules](https://www.enterprisemodules.com/blog/2017/03/oracle12-2-support/)
+- [Secure your Oracle Database](https://www.enterprisemodules.com/blog/2017/02/secure-your-oracle-database/)
+- [Manage Oracle containers with Puppet](https://www.enterprisemodules.com/blog/2017/01/manage-oracle-containers-with-puppet/)
+- [Manage your oracle users with Puppet](https://www.enterprisemodules.com/blog/2016/10/manage-oracle-users-with-puppet/)
+- [Reaching into your Oracle Database with Puppet](https://www.enterprisemodules.com/blog/2015/12/reaching-into-your-oracle-database-with-puppet/)
+- [Manage your Oracle database schemas with Puppet](https://www.enterprisemodules.com/blog/2015/12/manage-your-oracle-database-schemas-with-puppet/)
+- [Managing your Oracle database size with Puppet](https://www.enterprisemodules.com/blog/2015/11/managing-your-oracle-database-size-with-puppet/)
+- [Using Puppet to manage Oracle](https://www.enterprisemodules.com/blog/2014/02/using-puppet-to-manage-oracle/)
 
-##Limitations
 
- This module is tested with Oracle 11.2.0.4 and Oracle 12.1.0.1 on CentOS 5.10It will probably work on other Linux distributions. It will definitely **not** work on Windows. As far as Oracle compatibility.
+## Limitations
 
-##Development
+This module runs on  most Linux versions. It requires a puppet version higher than 4. The module does **NOT** run on windows systems.
 
-This is an open source project, and **ALL** contributions are welcome.
 
-###OS support
-
-Currently, we have tested:
-
-* CentOS 5.10
-
-It would be great if we could get it working and tested on:
-
-* Oracle 12
-* Debian
-* Ubuntu
-* ....
-
-###Oracle version support
-
-Currently we have tested:
-
-* Oracle 11.2.0.4
-* Oracle 12.1.0.1
-
-###Testing
-
-No tests yet
