@@ -1,6 +1,10 @@
 History
 ========
 
+25-01-2017  version 2.0.0
+--------------------------
+- Updated to Puppet 4 and newest Oracle modules from Enterprise Modules
+
 22-3-2016  version 1.0.3
 --------------------------
 - Remove module data requirement. This doesn't work on Puppet3

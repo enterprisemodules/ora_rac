@@ -3,12 +3,9 @@
   "version": "2.0.0",
   "author": "Bert Hajee",
   "summary": "The classed and defined types to install a RAC database",
-  "license": "Apache License, Version 2.0",
-  "summary": "Build an Orcle RAC cluster with Puppet.",
-  "description": "Classes to help you build a Oracle RAC cluster",
+  "license": "Apache-2.0",
   "project_page": "http:/www.github.com/enterprisemodules/ora_rac",
   "source": "http:/www.github.com/enterprisemodules/ora_rac",
-  "project_page": "http:/www.github.com/enterprisemodules/ora_rac",
   "issues_url": "https://github.com/enterprisemodules/ora_rac/issues",
   "dependencies": [
     {
