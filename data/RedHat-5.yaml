@@ -51,7 +51,7 @@ ora_rac::internal::packages:
   'libstdc++-devel.i386':         {}
   'libaio.i386':                  {}
   'libaio-devel.i386':            {}
-  # 'nfs-utils':                    {}
+  'nfs-utils':                    {}
   'nscd':                         {}
   'elfutils':                     {}
   'elfutils-libs':                {}

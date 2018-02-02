@@ -38,6 +38,7 @@ ora_rac::internal::packages:
   'libgcc':                 {}
   'libstdc++':              {}
   'libstdc++-devel':        {}
+  'nfs-utils':              {}
   'make':                   {}
   'sysstat':                {}
   'unixODBC':               {}
