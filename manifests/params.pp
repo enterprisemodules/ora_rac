@@ -30,7 +30,7 @@ class ora_rac::params(
   String[1]         $password                   = 'manager123',
   String[1]         $scan_name                  = 'scan',
   Integer           $scan_port                  = 1521,
-  Boolean           $scan_name_in_hostfile      = true,
+  Boolean           $scan_name_in_hostfile      = false,
   String[1]         $crs_disk_group_name        = 'CRS',
   String[1]         $crs_disk                   = 'ORCL:CRSVOL1,ORCL:CRSVOL2,ORCL:CRSVOL3',
   String[1]         $data_disk_group_name       = 'DATA',
