@@ -14,6 +14,7 @@ class ora_rac::os_users inherits ora_rac::params {
 
   require ::ora_rac::settings
 
+
   ['install','dba','oper', 'grid','grid_oper', 'grid_admin'].each |$group| {
     $variable_name  = "ora_rac::settings::${group}_group"
     $group_name     = getvar($variable_name)
@@ -32,8 +33,9 @@ class ora_rac::os_users inherits ora_rac::params {
     password   => $::ora_rac::settings::oracle_user_password,
     groups     => [
                     $::ora_rac::settings::dba_group,
-                    $::ora_rac::settings::grid_group,
                     $::ora_rac::settings::oper_group,
+                    $::ora_rac::settings::grid_group,
+                    $::ora_rac::settings::grid_oper_group,
                   ],
     uid        => $::ora_rac::settings::oracle_user_id,
     shell      => '/bin/bash',
