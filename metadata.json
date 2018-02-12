@@ -1,7 +1,7 @@
 {
   "name": "enterprisemodules-ora_rac",
-  "version": "2.0.0",
-  "author": "Bert Hajee",
+  "version": "2.0.1",
+  "author": "Bert Hajee, Remy van Berkum",
   "summary": "The classed and defined types to install a RAC database",
   "license": "Apache-2.0",
   "project_page": "http:/www.github.com/enterprisemodules/ora_rac",

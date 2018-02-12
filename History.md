@@ -1,6 +1,12 @@
 History
 ========
 
+12-02-2017  version 2.0.1
+
+- [os_users] Add group grid_oper_group to oracle
+- [core] Install nfs-utils
+- [params] Make scan_name_in_hostfile default false
+
 25-01-2017  version 2.0.0
 --------------------------
 - Updated to Puppet 4 and newest Oracle modules from Enterprise Modules
