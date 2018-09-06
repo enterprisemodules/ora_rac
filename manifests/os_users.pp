@@ -30,7 +30,7 @@ class ora_rac::os_users inherits ora_rac::params {
     ensure     => present,
     comment    => 'Oracle user',
     gid        => $::ora_rac::settings::install_group_id,
-    password   => $::ora_rac::settings::oracle_user_password,
+    password   => pw_hash($::ora_rac::settings::oracle_user_password, 'SHA-512', regsubst($::networking[mac],':','','G')),
     groups     => [
                     $::ora_rac::settings::dba_group,
                     $::ora_rac::settings::oper_group,
@@ -48,7 +48,7 @@ class ora_rac::os_users inherits ora_rac::params {
     ensure     => present,
     comment    => 'Oracle Grid user',
     gid        => $::ora_rac::settings::install_group_id,
-    password   => $::ora_rac::settings::grid_user_password,
+    password   => pw_hash($::ora_rac::settings::grid_user_password, 'SHA-512', regsubst($::networking[mac],':','','G')),
     groups     => [
                     $::ora_rac::settings::dba_group,
                     $::ora_rac::settings::grid_group,
