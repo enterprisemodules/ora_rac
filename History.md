@@ -1,6 +1,10 @@
 History
 ========
 
+06-09-2017  version 2.0.2
+
+- [os_users] Fix password settings
+
 12-02-2017  version 2.0.1
 
 - [os_users] Add group grid_oper_group to oracle
