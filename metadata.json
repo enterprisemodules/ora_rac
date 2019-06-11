@@ -15,7 +15,8 @@
       "name": "enterprisemodules/easy_type"
     },
     {
-      "name": "enterprisemodules/partition"
+      "name": "enterprisemodules/partition",
+      "version_requirement": ">= 0.5.0 < 1.0.0"      
     },
     {
       "name": "enterprisemodules/ora_install"
